@@ -60,17 +60,46 @@ To solve this issue, habistat includes a simplified method of applying inundatio
 
 ![](figures/flowchart_duration.png)
 
-<mark>TODO: add step numbers so that they can be referenced elsewhere in the chart</mark>
+#### Input flow-to-suitable-area curve
 
-We start with the static depth and velocity based flow-to-suitable-area curve.
+We start with the static depth and velocity based flow-to-suitable-area curve, predicted by the habistat [Statistical Model](statistical_model.html). The same method could also be applied to a flow-to-suitable-area curve calculated through a different manner. 
 
-Next, we pull a hydrograph and calculate the inundation duration at each flow.To summarize the hydrology of a water year we are using the maximum contiguous days exceeding each given flow.
-Then, we map these against the duration weighting factors, assigning zero for flows that are never reached.
+#### Hydrograph
 
-Finally, we combine the flow-to-suitable-area curve and the flow-to-inundation-duration curve to produce a flow-to-suitable-area curve that has been scaled down using the duration criteria.
-The following figure illustrates the process, which is implemented in the habistat function [`duration_apply_dhsi_to_fsa_curve`](../reference/duration_apply_dhsi_to_fsa_curve.html).
+Next, we pull a hydrograph and calculate the inundation duration at each flow. To summarize the hydrology of a water year, the maximum contiguous days exceeding each given flow is calculated. 
 
-![](figures/flowchart_duration_detail.png)
+To capture only ecologically relevant time windows, we filter the hydrographs by relevant months for the salmonid run of interest: <mark>CITE?</mark>
+
++------------+-----------+-----------+
+| Run        | Rearing   | Spawning  |
++============+===========+===========+
+| Fall       | Jan - Jun | Aug - Oct |
++------------+-----------+-----------+
+| Late Fall  | Apr - Dec | Jan - Apr |
++------------+-----------+-----------+
+| Winter     | Jul - Mar | May - Aug |
++------------+-----------+-----------+
+| Spring     | Nov - May | Aug - Oct |
++------------+-----------+-----------+
+| Steelhead  | Jan - Dec | Jan - Mar |
++------------+-----------+-----------+
+
+Duration calculations are conducted for as many historical water years as are available in the streamgage data, and averaged across all water years within a given [water year type](https://data.ca.gov/dataset/cdec-water-year-type-dataset).
+
+If the streamgage being used is not located at the prediction point ($comid$), then the streamgage is scaled to the prediction point using drainage area ($DA$) and mean annual precipitation ($MAP$) ratios. These variables are derived from the habistat predictor variable dataset for the nearest NHD flowline. This method is consistent with the flow scaling used for [Watershed Aggregation](watershed_aggregation.html).
+
+$Q_{comid} = Q_{gage} * \frac{{DA}_{comid}}{{DA}_{gage}} * \frac{{MAP}_{comid}}{{MAP}_{gage}}$
+
+Hydrograph data was obtained from [CDEC](https://cdec.water.ca.gov/) and preprocessed. All active flow gages on  [`cv_mainstems`](../reference/cv_mainstems.html) flowlines are included. Results are stored in: 
+
+* [`streamgage_attr`](../reference/streamgage_attr.html) = attributes
+* [`streamgage_geom`](../reference/streamgage_geom.html) = geometries
+* [`streamgage_da_attr`](../reference/streamgage_da_attr.html) = DA and MAP information
+* [`streamgage_duration_rating_curves`](../reference/streamgage_duration_rating_curves.html) = calculated duration rating curves
+
+#### Calculating the Duration HSI
+
+These inundation duration values calculated in the previous step are next mapped against duration HSI weighting factors, assigning zero for flows that are never reached.
 
 We apply inundation duration suitability factors for the relevant habitat type corresponding to fish usage of the river. 
 
@@ -85,6 +114,12 @@ For rearing, the duration factors are defined in the Habitat Quantification Tool
 | -   25+ days: 0.66        |                           |                    |
 +---------------------------+---------------------------+--------------------+
 
+#### Applying the duration HSI to the flow-to-suitable-area curve
+
+Finally, we combine the flow-to-suitable-area curve and the flow-to-inundation-duration curve to produce a flow-to-suitable-area curve that has been scaled down using the duration criteria. The following figure illustrates the process, which is implemented in the habistat function [`duration_apply_dhsi_to_fsa_curve`](../reference/duration_apply_dhsi_to_fsa_curve.html).
+
+![](figures/flowchart_duration_detail.png)
+
 We assume that as we look at increasing flows (on the x axis), the marginal new habitat being added at each additional flow corresponds to area being newly inundated at that flow.
 This is a simplification that is assumed to reflect the typical case.
 So, the marginal habitat added at flow Q is multiplied by the corresponding inundation duration factor for that flow Q.
@@ -96,4 +131,5 @@ We don't know exactly where, so we apply an average of the previous duration fac
 The result is a scaled version of the original flow-to-suitable-area curve that accounts for the reduction in habitat suitability due to less-than-optimal duration lengths.
 The scaled curve will be less than or equal to the original curve at each flow, but will never exceed it.
 
-<mark>TODO: Example figure</mark>
+![](figures/duration_plot_example.png)
+

@@ -1,6 +1,7 @@
 #template:
 #  bootstrap: 5
-#  bootswatch: cerulean
+#  bootswatch: cosmo
+#  bootswatch: sandstone
 authors:
   Skyler Lewis:
     href: mailto:slewis@flowwest.com
@@ -21,6 +22,8 @@ articles:
   - predictor_variables
   - statistical_model
   - duration_analysis
+  - watershed_aggregation
+  - spawning_extents
 reference:
 - title: "Datasets"
   desc: "Packaged Datasets"
@@ -28,23 +31,31 @@ reference:
   - starts_with("flowline_")
   - starts_with("wua_")
   - starts_with("cv_")
+  - hqt
+  - starts_with("streamgage_")
 - title: "Suitability Functions"
-  desc: "..."
+  desc: "Functions for assembling the training dataset and calculating depth/velocity suitability criteria"
   contents:
   - starts_with("vector_")
   - starts_with("raster_")
   - starts_with("suitability_")
 - title: "Duration Time Series Functions"
-  desc: "..."
+  desc: "Functions for processing time series data and calculating/applying duration suitability criteria"
   contents:
-  - starts_with("cdec_csv_")
   - starts_with("duration_")
   - starts_with("flow_threshold_")
-- title: "Other"
+- title: "Utilities"
+  desc: "Assorted data and spatial data processing functions"
+  contents:
+  - starts_with("seq_")
+  - linterp
+  - pinterp
+  - glimpse_plot
+  - starts_with("drive_file_by_id")
+  - starts_with("cdec_csv_")
+  - starts_with("st_")
+  - starts_with("perpendicular_")
+- title: "Constants"
   desc: "Used Internally"
   contents:
   - starts_with("const_")
-  - ends_with("interp")
-  - starts_with("drive_file_by_id")
-  - starts_with("perpendicular_")
-  - starts_with("st_")

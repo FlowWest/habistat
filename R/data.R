@@ -32,7 +32,7 @@
 #' @title WUA/LF by ComID by Flow (training dataset, interpolated)
 #' @examples
 #' wua_hydraulic_interp |> pillar::glimpse()
-"wua_hydraulic"
+"wua_hydraulic_interp"
 
 #' @name wua_predicted
 #' @title WUA/LF by ComID by Flow (predicted by statistical model)

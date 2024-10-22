@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     default
 vignette: >
-  %\VignetteIndexEntry{Model Overview}
+  %\VignetteIndexEntry{Spawning Extents}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette:
     default
 vignette: >
-  %\VignetteIndexEntry{Model Overview}
+  %\VignetteIndexEntry{Watershed Delineation and Flow Aggregation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -58,11 +58,24 @@ The Upper Sacramento River and Upper San Joaquin River are treated as distinct t
 
 ## Aggregation
 
-<mark>TODO: Describe aggregation procedures for the following:</mark>
-
-### Flow relationship crosswalk
-
 ### Aggregation of flow-to-suitable habitat area curves
+
+Aggregating flow-to-suitable-area relationships from the individual `comid` reach to the river- or watershed-scale is not as simple as summing or averaging the curves. This is because, at a particular point in time, flow is not the same at all points in the river or watershed. For a river- or watershed-scale habitat curve, the nominal "flow" is the flow at the downstream end of the river in question, or the outlet point of the watershed. Habitat area for a given flow is the sum of the habitat area at the outlet reach for that flow, and all the habitat area upstream at whatever the *corresponding flows* are. 
+
+When the nominal flow at the outlet is $Q_{outlet}$, the flow for some prediction point (comid) farther up in the watershed is assumed to be
+
+$Q_{point} = Q_{outlet} * \frac{{DA}_{point}}{{DA}_{outlet}} * \frac{{MAP}_{point}}{{MAP}_{outlet}}$
+
+where $DA$ is the drainage area for the prediction point or outlet and $MAP$ is the mean annual precipitation for the prediction point or outlet.
+
+Looking at habitat area is a function of flow ($H(Q)$), the habitat area for the watershed ${H}_{watershed}$ at nominal flow $Q_{outlet}$ is the sum of the habitat areas for individual points (`comid`s) at their respective *corresponding flows*:
+
+$H_{watershed}(Q_{outlet}) = {H}_{outlet}(Q_{outlet}) + {H}_{point1}(Q_{point1}) + {H}_{point2}(Q_{point2}) + ...$
 
 ### Aggregation of flow-to-duration suitability curves
 
+For calculating duration suitability at an individual prediction point (`comid`), as described in [Duration Analysis](duration_analysis.html), the flow values on the inundation duration curve are scaled from the streamgage to the prediction point using an equivalent method. 
+
+$Q_{point} = Q_{gage} * \frac{{DA}_{point}}{{DA}_{gage}} * \frac{{MAP}_{point}}{{MAP}_{gage}}$
+
+Then, this scaled duration curve is applied to the flow-to-suitable-area curve for the `comid` using the methods described in [Duration Analysis](duration_analysis.html). Finally, the duration-scaled flow-to-suitable-area curves for all relevant `comid`s within the watershed are aggregated using the methods described above. 
