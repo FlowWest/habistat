@@ -312,3 +312,15 @@ st_coalesce <- function(x, y, radius = 0) {
     bind_rows(x, st_difference(y, st_union(x) |> st_morph_open(radius)) |> st_morph_close(radius))
   }
 }
+
+#' Glimpse plot
+#'
+#' @param x object of any class with valid `plot` method
+#' @param ... additional parameters passed to `plot` method
+#'
+#' @returns the same object, invisibly, while printing a plot to the console
+#' @md
+glimpse_plot <- function(x, ...) {
+  plot(x, ...)
+  invisible(x)
+}
