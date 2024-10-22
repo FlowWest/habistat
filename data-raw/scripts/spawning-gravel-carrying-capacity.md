@@ -1,7 +1,7 @@
 Spawning Gravel Carrying Capacity
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-10-18
+2024-10-22
 
 - [Spawning Reach Lengths](#spawning-reach-lengths)
 - [Validation against Redd Surveys](#validation-against-redd-surveys)
@@ -969,14 +969,17 @@ for (x in names(redd_data)) {
     spawning_context_comid_rm |>
     filter(river_name == x) |>
     pivot_longer(cols = starts_with("spawning_")) |>
+    mutate(name = factor(name, levels = var_labels$name, labels = var_labels$label)) |>
     ggplot() + 
     facet_wrap(~name, ncol=1) +
     geom_rect(aes(xmin = rm_start, xmax = rm_end, ymin = -1, ymax = 1, fill = value)) +
     theme(panel.grid.major.y = element_blank(), 
           panel.grid.minor.y = element_blank(), 
-          axis.text.y = element_blank()) +
+          axis.text.y = element_blank(),
+          legend.position = "none") +
     xlab("River Mile") + labs(subtitle="Habistat Geographic Context") + 
-    scale_x_continuous(breaks=scales::breaks_width(10))
+    scale_x_continuous(breaks=scales::breaks_width(10)) +
+    scale_fill_manual(values = c("TRUE"="black", "FALSE"="white"))
   
   plt_preds <- 
     spawning_pred_comid_rm |>
@@ -1003,13 +1006,13 @@ for (x in names(redd_data)) {
     facet_grid(rows=vars(survey_year), scales="free_y", space="free_y", switch="y")  +
     labs(subtitle="Redd Surveys") + 
     guides(color = guide_legend(nrow=1, byrow=TRUE, title = "")) +
-    scale_y_continuous(sec.axis = sec_axis(name = "Redd Area (ac) per RM", transform = ~.*94/43560),
-                       breaks = scales::breaks_width(1000)) +
+    scale_y_continuous(sec.axis = sec_axis(name = "Redd Area (ac) per RM", transform = ~.*94/43560, breaks = scales::breaks_pretty(2)),
+                       breaks = scales::breaks_pretty(2)) +
     theme(panel.grid.minor = element_blank(), legend.position="top",
           strip.text.y = element_text(angle = 0), strip.placement = "outside")
   
   plt_combined <- (plt_context / plt_preds / plt_redds) + 
-    plot_layout(axes = "collect", heights=c(3,1,5)) +
+    plot_layout(axes = "collect", heights=c(2,1,6)) +
     plot_annotation(title = x) &
     scale_x_continuous(expand=c(0,0), limits=c(min(redd_data[[x]]$rm_start), max(redd_data[[x]]$rm_start)+1))
   
@@ -1066,6 +1069,86 @@ for (x in names(redd_data)) {
     ## Adding another scale for x, which will replace the existing scale.
 
 ![](spawning-gravel-carrying-capacity_files/figure-gfm/combined_plot-4.png)<!-- -->![](spawning-gravel-carrying-capacity_files/figure-gfm/combined_plot-5.png)<!-- -->
+
+``` r
+# redd_max <-
+#   redd_data |>
+#   lapply(\(data) data |> group_by(rm_start, time_range) |> summarize(n_redds = max(n_redds))) |> bind_rows(.id = "river_name")
+
+for (x in names(redd_data)) {
+  
+  plt_context <- 
+    spawning_context_comid_rm |>
+    filter(river_name == x) |>
+    pivot_longer(cols = starts_with("spawning_")) |>
+    mutate(name = factor(name, levels = var_labels$name, labels = var_labels$label)) |>
+    ggplot() + 
+    facet_wrap(~name, ncol=1) +
+    geom_rect(aes(xmin = rm_start, xmax = rm_end, ymin = -1, ymax = 1, fill = value)) +
+    theme(panel.grid.major.y = element_blank(), 
+          panel.grid.minor.y = element_blank(), 
+          axis.text.y = element_blank(),
+          legend.position = "none") +
+    xlab("River Mile") + labs(subtitle="Habistat Geographic Context") + 
+    scale_x_continuous(breaks=scales::breaks_width(10)) +
+    scale_fill_manual(values = c("TRUE"="black", "FALSE"="white"))
+  
+  plt_redds <- 
+    redd_data[[x]] %>%
+    bind_rows(expand_grid(rm_start = c(min(.$rm_start) - 1, max(.$rm_start) + 1), 
+                          n_redds = 0, 
+                          survey_year = unique(.$survey_year),
+                          time_range = unique(.$time_range))) |>
+    group_by(rm_start, time_range) |>
+    mutate(n_redds = max(n_redds)) |>
+    ggplot() + 
+    geom_step(aes(x = rm_start, y = n_redds, color = time_range)) +
+    xlab("River Mile") + ylab("Number of Redds") + 
+    labs(subtitle="Redd Surveys (upper envelope)") + 
+    guides(color = guide_legend(nrow=1, byrow=TRUE, title = "")) +
+    scale_y_continuous(sec.axis = sec_axis(name = "Redd Area (ac) per RM", transform = ~.*94/43560)) +
+    theme(panel.grid.minor = element_blank(), legend.position="top",
+          strip.text.y = element_text(angle = 0), strip.placement = "outside")
+  
+  plt_combined <- (plt_context / plt_redds) + 
+    plot_layout(axes = "collect", heights=c(1,1)) +
+    plot_annotation(title = x) &
+    scale_x_continuous(expand=c(0,0), limits=c(min(redd_data[[x]]$rm_start), max(redd_data[[x]]$rm_start)+1))
+  
+  print(plt_combined)
+}
+```
+
+    ## Scale for x is already present.
+    ## Adding another scale for x, which will replace the existing scale.
+    ## Scale for x is already present.
+    ## Adding another scale for x, which will replace the existing scale.
+
+![](spawning-gravel-carrying-capacity_files/figure-gfm/simple_plot-1.png)<!-- -->
+
+    ## Warning: Removed 300 rows containing missing values or values outside the scale range
+    ## (`geom_rect()`).
+
+    ## Scale for x is already present.
+    ## Adding another scale for x, which will replace the existing scale.
+
+![](spawning-gravel-carrying-capacity_files/figure-gfm/simple_plot-2.png)<!-- -->
+
+    ## Warning: Removed 165 rows containing missing values or values outside the scale range
+    ## (`geom_rect()`).
+
+    ## Scale for x is already present.
+    ## Adding another scale for x, which will replace the existing scale.
+
+![](spawning-gravel-carrying-capacity_files/figure-gfm/simple_plot-3.png)<!-- -->
+
+    ## Warning: Removed 130 rows containing missing values or values outside the scale range
+    ## (`geom_rect()`).
+
+    ## Scale for x is already present.
+    ## Adding another scale for x, which will replace the existing scale.
+
+![](spawning-gravel-carrying-capacity_files/figure-gfm/simple_plot-4.png)<!-- -->![](spawning-gravel-carrying-capacity_files/figure-gfm/simple_plot-5.png)<!-- -->
 
 ## Yuba Comparison against Relicensing Study
 
