@@ -141,6 +141,8 @@ wua_predicted_cv_mainstems_grouped <-
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
+
+wua_predicted_cv_mainstems_grouped |> usethis::use_data(overwrite=T)
 ```
 
 Plotting the output
