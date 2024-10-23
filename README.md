@@ -14,7 +14,7 @@ You can install the development version of habistat from [GitHub](https://github
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("FlowWest/swc-habitat-suitability")
+devtools::install_github("FlowWest/habistat")
 ```
 
 ## Example
