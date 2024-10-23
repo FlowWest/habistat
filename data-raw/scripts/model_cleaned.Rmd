@@ -1022,6 +1022,9 @@ model_predicted_final |>
 ```
 
 ```{r}
+model_predicted_final <-
+    readRDS(here::here("data-raw", "results", "model_predicted_final.Rds"))
+
 wua_predicted <-
   model_predicted_final |>
   pivot_wider(names_from = model_name, values_from = wua_per_lf_pred, names_prefix = "wua_per_lf_pred_") |>
