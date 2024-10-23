@@ -26,10 +26,7 @@ predictions <- get_data(wua_predicted, package = "habistat") |>
                            #if_else((habitat=="rearing" & model_bfc),
                            #paste0(model_name, "_ph_bfc_rm"), # post-hoc baseflow channel removal
                            #model_name)) |>
-  select(comid, flow_idx, flow_cfs, habitat, model_id = model_name, wua_per_lf_pred, river_cvpia, watershed_level_3, reach_length_ft) |>
-  pivot_wider(names_from = model_id,
-              values_from = wua_per_lf_pred,
-              names_glue = c("wua_per_lf_pred_{model_id}")) |>
+  select(comid, flow_idx, flow_cfs, habitat, starts_with("wua_per_lf_pred"), river_cvpia, watershed_level_3, reach_length_ft) |>
   left_join(get_data(wua_hydraulic_interp, package = "habistat") |>
               # filter((habitat=="rearing" & !bfc) | (habitat=="spawning")) |> # only showing the actuals with prior bfc removed for now
               select(habitat, comid, flow_cfs, wua_per_lf_actual = wua_per_lf),
@@ -39,7 +36,8 @@ predictions <- get_data(wua_predicted, package = "habistat") |>
                         chan_width_ft = chan_width_m/0.3048,
                         baseflow_cfs = nf_bfl_dry_cfs),
             by = join_by(comid)) |>
-  mutate(wua_acres_pred_SD = wua_per_lf_pred_SD * reach_length_ft / 43560,
+  mutate(wua_acres_pred = wua_per_lf_pred * reach_length_ft / 43560,
+         wua_acres_pred_SD = wua_per_lf_pred_SD * reach_length_ft / 43560,
          wua_acres_pred_SN = wua_per_lf_pred_SN * reach_length_ft / 43560,
          wua_acres_actual = wua_per_lf_actual * reach_length_ft / 43560)
 
@@ -140,18 +138,11 @@ gc()
 
 predictions_watershed <- get_data(wua_predicted_cv_watersheds, package = "habistat") |>
   ungroup() |>
-  select(watershed_level_3, flow_idx, flow_cfs, habitat, model_id = model_name, wua_per_lf_pred, wua_acres_pred) |>
-  pivot_wider(names_from = model_id,
-              values_from = c(wua_per_lf_pred, wua_acres_pred),
-              names_glue = c("{.value}_{model_id}"))
+  select(watershed_level_3, flow_idx, flow_cfs, habitat, starts_with("wua_per_lf_pred"), starts_with("wua_acres_pred"))
 
 predictions_mainstem <- get_data(wua_predicted_cv_mainstems, package = "habistat") |>
   ungroup() |>
-#  select(watershed_level_3, flow_idx, flow_cfs, habitat, model_id = model_name, wua_per_lf_pred, wua_acres_pred) |>
-  select(river_cvpia, flow_idx, flow_cfs, habitat, model_id = model_name, wua_per_lf_pred, wua_acres_pred) |>
-  pivot_wider(names_from = model_id,
-              values_from = c(wua_per_lf_pred, wua_acres_pred),
-              names_glue = c("{.value}_{model_id}"))
+  select(river_cvpia, flow_idx, flow_cfs, habitat, model_id = model_name, starts_with("wua_per_lf_pred"), starts_with("wua_acres_pred"))
 
 gc() # garbage collect after loading from habistat package
 

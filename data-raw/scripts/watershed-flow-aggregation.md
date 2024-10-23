@@ -24,7 +24,7 @@ library(tidyverse)
     ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
     ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
     ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-    ## ✔ ggplot2   3.5.0     ✔ tibble    3.2.1
+    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
     ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
     ## ✔ purrr     1.0.2     
     ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -36,7 +36,7 @@ library(tidyverse)
 library(sf)
 ```
 
-    ## Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE
+    ## Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.3.1; sf_use_s2() is TRUE
 
 ``` r
 library(habistat)
@@ -69,7 +69,7 @@ cv_watersheds_flow_xw |> usethis::use_data(overwrite=T)
 ```
 
     ## ✔ Setting active project to
-    ##   "C:/Users/Skyler/Documents/GitHub/swc-habitat-suitability".
+    ##   "C:/Users/skylerlewis/Github/swc-habitat-suitability-parallel".
 
     ## ✔ Saving "cv_watersheds_flow_xw" to "data/cv_watersheds_flow_xw.rda".
 
@@ -118,8 +118,14 @@ habistat::flowline_geom_proj |>
 ### Applying the crosswalk to aggregate model results
 
 ``` r
+model_predicted_final <-
+    readRDS(here::here("data-raw", "results", "model_predicted_final.Rds"))
+# for backwards compatibility because habistat::wua_predicted is now pivoted
+
+load(here::here("data", "wua_predicted.Rda")) # this contains the ensemble predictions
+
 wua_predicted_cv_watersheds <- 
-  habistat::wua_predicted |>
+  model_predicted_final |>
   inner_join(cv_watersheds_flow_xw, 
              by=join_by(watershed_level_3, comid)) |>
   expand_grid(scaled = c(FALSE, TRUE)) |>
@@ -134,10 +140,15 @@ wua_predicted_cv_watersheds <-
   group_by(habitat, model_name, watershed_level_3, flow_idx) |>
   summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
             wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
-  inner_join(habistat::wua_predicted |> 
+  inner_join(model_predicted_final |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
+
+wua_predicted_cv_watersheds <- wua_predicted_cv_watersheds |>
+  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_watersheds |> usethis::use_data(overwrite=T)
 ```
@@ -149,7 +160,7 @@ wua_predicted_cv_watersheds |> usethis::use_data(overwrite=T)
 
 ``` r
 wua_predicted_cv_mainstems <- 
-  habistat::wua_predicted |> 
+  model_predicted_final |> 
   inner_join(cv_mainstems_flow_xw, 
              by=join_by(river_cvpia, comid)) |>
   expand_grid(scaled = c(FALSE, TRUE)) |>
@@ -164,10 +175,15 @@ wua_predicted_cv_mainstems <-
   group_by(habitat, model_name, river_cvpia, flow_idx) |>
   summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
             wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
-  inner_join(habistat::wua_predicted |> 
+  inner_join(model_predicted_final |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
-             by = join_by(flow_idx))
+             by = join_by(flow_idx)) 
+
+wua_predicted_cv_mainstems <- wua_predicted_cv_mainstems |>
+  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_mainstems |> usethis::use_data(overwrite=T)
 ```
@@ -178,7 +194,7 @@ wua_predicted_cv_mainstems |> usethis::use_data(overwrite=T)
 ``` r
 # these are the mainstems grouped for CVPIA model comparison
 wua_predicted_cv_mainstems_grouped <- 
-  habistat::wua_predicted |> 
+  model_predicted_final |> 
   inner_join(cv_mainstems_flow_xw, 
              by=join_by(river_cvpia, comid)) |>
   expand_grid(scaled = c(FALSE, TRUE)) |>
@@ -193,10 +209,15 @@ wua_predicted_cv_mainstems_grouped <-
   group_by(habitat, model_name, river_group, flow_idx) |>
   summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
             wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
-  inner_join(habistat::wua_predicted |> 
+  inner_join(model_predicted_final |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
+
+wua_predicted_cv_mainstems_grouped <- wua_predicted_cv_mainstems_grouped |>
+  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_mainstems_grouped |> usethis::use_data(overwrite=T)
 ```
@@ -211,10 +232,11 @@ Plotting the output
 wua_predicted_cv_watersheds |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~watershed_level_3, scales="free") + 
-  geom_line(aes(y = wua_acres_pred, color = paste(habitat, model_name))) +
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = habitat), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, color = habitat)) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
-  scale_color_brewer(palette = "Paired") +
+  scale_color_brewer(palette = "Dark2", aesthetics = c("color", "fill")) +
   ylab("Predicted Total Habitat (acres)") + xlab("Flow at Outlet (cfs)") + 
   ggtitle("Watersheds (incl. tributaries)")
 ```
@@ -225,10 +247,11 @@ wua_predicted_cv_watersheds |>
 wua_predicted_cv_mainstems |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~river_cvpia, scales="free") + 
-  geom_line(aes(y = wua_acres_pred, color = paste(habitat, model_name))) +
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = habitat), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, color = habitat)) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
-  scale_color_brewer(palette = "Paired") +
+  scale_color_brewer(palette = "Dark2", aesthetics = c("color", "fill")) +
   ylab("Predicted Total Habitat (acres)") + xlab("Flow at Outlet (cfs)") + 
   ggtitle("Mainstems")
 ```
@@ -239,10 +262,11 @@ wua_predicted_cv_mainstems |>
 wua_predicted_cv_mainstems_grouped |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~river_group, scales="free") + 
-  geom_line(aes(y = wua_acres_pred, color = paste(habitat, model_name))) +
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = habitat), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, color = habitat)) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
-  scale_color_brewer(palette = "Paired") +
+  scale_color_brewer(palette = "Dark2", aesthetics = c("color", "fill")) +
   ylab("Predicted Total Habitat (acres)") + xlab("Flow at Outlet (cfs)") + 
   ggtitle("Mainstems (grouped by watershed)")
 ```
@@ -254,17 +278,20 @@ Versus the “naive” method
 ``` r
 wua_predicted |>
   filter(!is.na(watershed_level_3)) |>
-  group_by(habitat, model_name, watershed_level_3, flow_idx, flow_cfs) |>
+  group_by(habitat, watershed_level_3, flow_idx, flow_cfs) |>
   summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
             wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~watershed_level_3, scales="free") + 
-  geom_line(aes(y = wua_acres_pred, color = paste(habitat, model_name))) +
+  geom_line(aes(y = wua_acres_pred, color = habitat)) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
-  scale_color_brewer(palette = "Paired") +
+  scale_color_brewer(palette = "Dark2", aesthetics = c("color", "fill")) +
   ylab("Predicted Total Habitat (acres)") + xlab("Flow (cfs)")
 ```
+
+    ## Warning: Removed 250 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
 
 ![](watershed-flow-aggregation_files/figure-gfm/pred-watersheds-old-1.png)<!-- -->
 
@@ -403,15 +430,16 @@ wua_predicted_cv_mainstems_grouped |>
   mutate(watershed = river_group) |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~watershed, scales="free") + 
-  geom_line(aes(y = wua_acres_pred, color = paste("habistat", model_name))) +
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = "habistat rearing"), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, color = "habistat rearing")) +
   geom_line(data=dsm_habitat_suitable_ac |> 
               filter(flow_cfs <= 15000), 
             aes(x = flow_cfs, y = value, color = paste("vs", name))) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
-  scale_color_brewer(name = "", palette = "Paired") +
+  scale_color_brewer(name = "", palette = "Dark2", aesthetics = c("color", "fill")) +
   ylab("Predicted Total Habitat (acres)") + xlab("Flow at Outlet (cfs)") + 
-    guides(color = guide_legend(nrow = 2))
+    guides(color = guide_legend(nrow = 1))
 ```
 
     ## Warning in scale_x_log10(): log-10 transformation introduced infinite values.
@@ -485,7 +513,7 @@ selected_run <- "fall"
 selected_wy_type <- "Dry"
 
 fsa <-
-  habistat::wua_predicted |>
+  model_predicted_final |>
   filter((model_name == selected_model) & 
            (habitat == selected_habitat) &
            (comid == selected_comid)) |>
@@ -589,7 +617,7 @@ selected_run <- "fall"
 selected_wy_type <- "Dry"
 
 fsas <-
-  habistat::wua_predicted |>
+  model_predicted_final |>
   filter((watershed_level_3 == selected_watershed) &
            (model_name == selected_model) & 
            (habitat == selected_habitat)) |>

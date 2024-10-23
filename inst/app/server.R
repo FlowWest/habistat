@@ -19,6 +19,7 @@ function(input, output, session){
   # WUA VARIABLE UNITS ---------------------------------------------------------
   wua_var <- reactive({
     switch(input$wua_var,
+           "wua_per_lf_pred" = paste0(input$wua_units,"_pred"),
            "wua_per_lf_pred_SD" = paste0(input$wua_units,"_pred_SD"),
            "wua_per_lf_pred_SN" = paste0(input$wua_units,"_pred_SN"),
            "wua_per_lf_actual" = paste0(input$wua_units,"_actual"))
@@ -224,18 +225,24 @@ function(input, output, session){
                            "Duration Scaled" = "dashed")
     palette_colors <- c("Scale-Dependent" = "#6388b4",
                         "Scale-Normalized" = "#8cc2ca",
+                        "Predicted" = "#78A5BF",
                         "Actual" = "#ffae34")
     if (most_recent_map_click$type == "comid") { #& (length(selected_point$comid)>0)) {
     predictions |>
       filter(comid == selected_point$comid) |>
       filter(habitat == input$habitat_type) |>
       ggplot(aes(x = flow_cfs)) + #|> add_color_scale(type = input$habitat_type) +
+      geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
+                      ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
+                      fill = "Predicted"), alpha = 0.33) +
+      geom_line(aes(y = !!sym(wua_var()), color="Predicted", linetype = "Unscaled")) +
       geom_line(aes(y = !!sym(paste0(input$wua_units,"_actual")), color="Actual", linetype = "Unscaled")) +
-      geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype = "Unscaled")) +
-      geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype = "Unscaled")) +
+      #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype = "Unscaled")) +
+      #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype = "Unscaled")) +
       geom_line(data=duration_curve(), aes(x = q, y = durwua, linetype="Duration Scaled", color = case_when(
         input$wua_var == "wua_per_lf_pred_SD" ~ "Scale-Dependent",
         input$wua_var == "wua_per_lf_pred_SN" ~ "Scale-Normalized",
+        input$wua_var == "wua_per_lf_pred" ~ "Predicted",
         input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
       #geom_line(aes(y = !!sym(var_not_selected), linetype = "Unscaled"), color = "gray") +
       #geom_line(aes(y = !!sym(input$wua_var), linetype = "Unscaled"), linewidth=1) +
@@ -248,7 +255,8 @@ function(input, output, session){
       #scale_y_continuous(trans = ihs, labels = scales::label_comma(), limits = c(0, NA)) +
       theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
       xlab("Flow (cfs)") + ylab(wua_lab()) +
-      scale_color_manual(name = "Model Type",
+      scale_color_manual(aesthetics = c("fill", "color"),
+                         name = "Model Type",
                          values = palette_colors) +
       scale_linetype_manual(name = paste("Duration Analysis", coalesce(paste0("(",str_to_upper(selected_gage()), ")"), "")),
                             values = palette_linetypes)
