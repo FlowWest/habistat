@@ -132,7 +132,8 @@ spawning_depth_hsi <- spawning_hsc |>
   mutate(units_si = round(units_si, 1)) |> 
   group_by(race) |> 
   filter(suitability_index > 0) |>
-  summarise(max_depth = max(units_si)) |> 
+  summarise(max_depth_m = max(units_si)) |> 
+  mutate(max_depth_ft = max_depth_m / 0.3048) |>
   rename(run = race) |> 
   mutate(run = janitor::make_clean_names(run))
 
@@ -161,20 +162,22 @@ usethis::use_data(spawning_depth_hsi, overwrite = T)
 spawning_vel_hsi <- 
   spawning_hsc_vel |> 
   rename(run = race,
-         velocity = units_si, # m/s
+         vel_m_s = units_si, # m/s
          hsi = max_suit_index) |>
   mutate(run = janitor::make_clean_names(run, allow_dupes=T)) |>
   group_by(run) |>
-  complete(velocity = sort(unique(spawning_hsc_vel$units_si))) |>
-  arrange(run, velocity) |>
-  mutate(hsi = zoo::na.approx(hsi, x = velocity, na.rm=F)) |> #, rule=2)) |>
+  complete(vel_m_s = sort(unique(spawning_hsc_vel$units_si))) |>
+  arrange(run, vel_m_s) |>
+  mutate(hsi = zoo::na.approx(hsi, x = vel_m_s, na.rm=F)) |> #, rule=2)) |>
   mutate(hsi = coalesce(hsi, 0)) |>
   mutate(hsi = round(hsi, 1)) %>%
   bind_rows(. |> 
-              group_by(velocity) |> 
+              group_by(vel_m_s) |> 
               summarize(hsi = max(hsi), 
                         run = "max") |>
-              ungroup())
+              ungroup()) |>
+  mutate(vel_ft_s = vel_m_s / 0.3048) |>
+  relocate(vel_ft_s, .before = hsi)
 
 knitr::kable(spawning_vel_hsi, caption = "Velocity HSI - for each run, the velocity HSI range") |> 
   kableExtra::kable_styling(position = "left")

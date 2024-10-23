@@ -156,6 +156,8 @@ wua_predicted_cv_mainstems_grouped <- wua_predicted_cv_mainstems_grouped |>
   pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
   mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
          wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
+
+wua_predicted_cv_mainstems_grouped |> usethis::use_data(overwrite=T)
 ```
 
 Plotting the output
