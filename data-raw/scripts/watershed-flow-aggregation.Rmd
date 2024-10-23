@@ -95,6 +95,11 @@ wua_predicted_cv_watersheds <-
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
 
+wua_predicted_cv_watersheds <- wua_predicted_cv_watersheds |>
+  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
+
 wua_predicted_cv_watersheds |> usethis::use_data(overwrite=T)
 
 wua_predicted_cv_mainstems <- 
@@ -116,7 +121,12 @@ wua_predicted_cv_mainstems <-
   inner_join(habistat::wua_predicted |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
-             by = join_by(flow_idx))
+             by = join_by(flow_idx)) 
+
+wua_predicted_cv_mainstems <- wua_predicted_cv_mainstems |>
+  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_mainstems |> usethis::use_data(overwrite=T)
 
@@ -141,6 +151,11 @@ wua_predicted_cv_mainstems_grouped <-
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
+
+wua_predicted_cv_mainstems_grouped <- wua_predicted_cv_mainstems_grouped |>
+  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 ```
 
 Plotting the output
