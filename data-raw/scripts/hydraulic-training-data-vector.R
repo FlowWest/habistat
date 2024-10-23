@@ -230,11 +230,11 @@ if(!file.exists(file.path(yuba_dir, "yuba_mesh_prepped_by_reach_nbfc.Rds"))) {
                                       })) |>
     select(reach, mesh_prepped)
 
-  yuba_mesh_prepped_by_reach_nbfc |> saveRDS("yuba_mesh_prepped_by_reach_nbfc.Rds")
+  yuba_mesh_prepped_by_reach_nbfc |> saveRDS(file.path(yuba_dir, "yuba_mesh_prepped_by_reach_nbfc.Rds"))
 
 } else {
 
-  yuba_mesh_prepped_by_reach_nbfc <- readRDS("yuba_mesh_prepped_by_reach_nbfc.Rds")
+  yuba_mesh_prepped_by_reach_nbfc <- readRDS(file.path(yuba_dir, "yuba_mesh_prepped_by_reach_nbfc.Rds"))
 
 }
 

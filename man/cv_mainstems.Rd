@@ -5,7 +5,7 @@
 \alias{cv_mainstems}
 \title{CVPIA Mainstems (geometry)}
 \format{
-An object of class \code{sf} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 2657 rows and 3 columns.
+An object of class \code{sf} (inherits from \code{tbl_df}, \code{tbl}, \code{data.frame}) with 3366 rows and 5 columns.
 }
 \usage{
 cv_mainstems

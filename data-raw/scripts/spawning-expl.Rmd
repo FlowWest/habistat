@@ -683,13 +683,15 @@ spawning_context <- habistat::flowline_attr |>
   select(comid) |>
   left_join(sediment_data, by=join_by(comid)) |>
   transmute(comid,
-            spawning_geographic_context = comid %in% spawning_flowlines_final$comid,
-            spawning_gravel_via_sediment = 
+            spawning_geographic_context = coalesce(comid %in% spawning_flowlines_final$comid, FALSE),
+            spawning_gravel_via_sediment = coalesce(
               (!(str_detect(largest_grain_class_suspended, "silt|clay")) & 
-                 str_detect(largest_grain_class_mobilized, "gravel|cobble")),
-            spawning_gravel_via_geomorph = comid %in% geomorph_filter_comid,
-            spawning_filter_all = spawning_geographic_context & 
-              (spawning_gravel_via_sediment | spawning_gravel_via_geomorph))
+                 str_detect(largest_grain_class_mobilized, "gravel|cobble")), FALSE),
+            spawning_gravel_via_geomorph = coalesce(comid %in% geomorph_filter_comid, FALSE),
+            spawning_gravel_either_method = spawning_gravel_via_sediment | spawning_gravel_via_geomorph,
+            spawning_filter_all = spawning_geographic_context & spawning_gravel_either_method)
 
 spawning_context |> saveRDS(here::here("data-raw", "results", "spawning_context.Rds"))
+flowline_spawning_attr <- spawning_context
+flowline_spawning_attr |> usethis::use_data(overwrite = T)
 ```
