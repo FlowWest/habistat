@@ -100,7 +100,7 @@ Prediction</h1>
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-10-22</h4>
+            <h4 data-toc-skip class="date">2024-10-23</h4>
       
 
       <div class="hidden name"><code>statistical_model.Rmd</code></div>
@@ -110,12 +110,22 @@ Prediction</h1>
     
     
 <div class="section level2">
-<h2 id="section"></h2>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>We are currently developing and refining a statistical model to
 predict flow-to-suitable-habitat-area relationships for stream reaches
 in the Sacramento-San Joaquin Basin, based on a variety of
 widely-available geospatial and hydrologic variables. Predictor variable
 data collection is detailed in the <a href="predictor_variables.html">Predictor Variables</a> article.</p>
+<p>This statistical model method was developed for predicting rearing
+habitat area versus flow at the <code>comid</code> scale.</p>
+<p>It is also applied for spawning habitat area, given training data
+generated using different habitat suitability indices (see <a href="habitat_training_data.html">Habitat Training Data</a>), with
+additional post-model filters required to eliminate areas that are
+non-suitable due to substrate (see <a href="spawning_extents.html">Spawning Extents</a>).</p>
+<p>Raw outputs from this method are then ready to be scaled based on
+hydrology and duration requirements (see <a href="duration_analysis.html">Duration Analysis</a>) and/or aggregated
+at the river or watershed level (see <a href="watershed_aggregation.html">Watershed Aggregation</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="model-development">Model Development<a class="anchor" aria-label="anchor" href="#model-development"></a>
@@ -201,16 +211,19 @@ to 26 miles, with a mean length of 1.2 miles. Weighting the estimate by
 linear ft allows longer reaches to have greater influence on the model
 and makes the somewhat arbitrary <code>comid</code> delineations less
 relevant.</p>
-<pre><code><span><span class="co">#&gt; Warning in log(x): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning in log(x): NaNs produced</span></span>
-<span><span class="co">#&gt; Warning: Removed 30 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span>
-<span><span class="co">#&gt; Removed 30 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre>
-<p><img src="figures/statistical-model-asinh-transform-1.png" width="700"></p>
+<p><img src="figures/statistical-model-asinh-transform-1.png" width="624"></p>
 </div>
 <div class="section level3">
-<h3 id="three-model-versions-tested">Three Model Versions Tested<a class="anchor" aria-label="anchor" href="#three-model-versions-tested"></a>
+<h3 id="flow-variable">Flow Variable<a class="anchor" aria-label="anchor" href="#flow-variable"></a>
+</h3>
+<p>Training flow data are resampled to a regular sequence of flows that
+is evenly spaced on a logarithmic axis:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">interp_flows</span> <span class="op">&lt;-</span> <span class="fu">habistat</span><span class="fu">::</span><span class="fu"><a href="../reference/seq_log10.html">seq_log10</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">15000</span>, <span class="fl">0.05</span>, snap<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/statistical-model-interp_flows-1.png" width="624"></p>
+</div>
+<div class="section level3">
+<h3 id="model-versions-tested">Model Versions Tested<a class="anchor" aria-label="anchor" href="#model-versions-tested"></a>
 </h3>
 <p>Two forms of the model were tested, discussed in sequence in the
 following sections.</p>
@@ -293,19 +306,36 @@ regression</p>
 flow-to-suitable-area curves that are more strongly proportional to the
 size of the river.</p>
 </div>
+<div class="section level4">
+<h4 id="ensemble-model">Ensemble Model<a class="anchor" aria-label="anchor" href="#ensemble-model"></a>
+</h4>
+<p>The ensemble model is the average of the output of the Version 1 and
+Version 2 models for each unique combination of <code>comid</code> and
+flow.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="exploratory-linear-regression">Exploratory Linear Regression<a class="anchor" aria-label="anchor" href="#exploratory-linear-regression"></a>
 </h2>
-<p><mark>TODO: Expand, just show some images of initial exploration,
-doesn’t need to be the final version.</mark></p>
-<ul>
-<li><p>Doesn’t produce a great fit, but useful for exploring effects of
-predictor variables</p></li>
-<li><p>Collinearity between variables is not addressed as this is only
-exploratory</p></li>
-</ul>
+<p>Linear regression was useful for exploring the effects of predictor
+variables and testing different model forms. However, the collinearity
+between variables and the limitations on the functional shape of
+relationships were limitations.</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>Model Version 1: Scale-Dependent</th>
+<th>Model Version 2: Scale-Normalized</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td><img src="figures/lm-sd2-coeffs-1.png" style="width:100.0%"></td>
+<td><img src="figures/lm-si2-coeffs-1.png" style="width:100.0%"></td>
+</tr></tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="random-forest-regression-model">Random Forest Regression Model<a class="anchor" aria-label="anchor" href="#random-forest-regression-model"></a>
@@ -315,27 +345,55 @@ alternative to linear regression. The model specifications are
 essentially identical to the linear regression formulations previously
 discussed. Unlike linear regression, there is no constraint on the
 functional form of the flow-to-habitat relationship or the effects of
-predictor variables.</p>
-<div class="section level3">
-<h3 id="train-test-split">Train / Test Split<a class="anchor" aria-label="anchor" href="#train-test-split"></a>
-</h3>
-<p><mark>TODO: details here</mark></p>
-</div>
-<div class="section level3">
-<h3 id="feature-selection">Feature Selection<a class="anchor" aria-label="anchor" href="#feature-selection"></a>
-</h3>
-<p><mark>TODO: details here</mark></p>
-</div>
-<div class="section level3">
-<h3 id="parameter-tuning-cross-validation">Parameter Tuning (Cross-Validation)<a class="anchor" aria-label="anchor" href="#parameter-tuning-cross-validation"></a>
-</h3>
-<p><mark>TODO: details here</mark></p>
-</div>
-<div class="section level3">
-<h3 id="inverse-transformation">Inverse Transformation<a class="anchor" aria-label="anchor" href="#inverse-transformation"></a>
-</h3>
-<p><mark>TODO: details here</mark></p>
-</div>
+predictor variables. Random forest models are fit using the
+<code>ranger</code> package via the <code>tidymodels</code>
+framework.</p>
+<ul>
+<li><p><strong>Train/Test Split</strong>: Flowlines
+(<code>comid</code>s) and their associated training data are split into
+training and testing datasets at a 75% training/25% testing random
+split, stratified by river and hydrologic class.</p></li>
+<li><p><strong>IHS Transformation</strong>: As described in the section
+above, all continuous numeric variables are transformed using the
+transformation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mi>′</mi><mo>=</mo><mtext mathvariant="normal">asinh</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mn>100</mn><mo>⋅</mo><mi>x</mi><mi>/</mi><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">x' = \text{asinh}(100 \cdot x / 2)</annotation></semantics></math>.
+Variables that represent proportions or ratios are not transformed. The
+response variable is also transformed.</p></li>
+<li><p><strong>DA/MAP Normalization</strong>: For the “scale-normalized”
+model, all variables are divided by the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>D</mi><mi>A</mi></mrow><mo>*</mo><mrow><mi>M</mi><mi>A</mi><mi>P</mi></mrow></mrow><annotation encoding="application/x-tex">{DA}*{MAP}</annotation></semantics></math>
+scaling factor described above.</p></li>
+<li><p><strong>Interaction</strong>: Any predictor variables included in
+the model are also included as interactions with flow:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mi>′</mi><mo>⋅</mo><mi>Q</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(x' \cdot Q)</annotation></semantics></math>.</p></li>
+<li><p><strong>Feature Selection</strong>: The training dataset is used
+for feature selection, i.e., identifying the set of predictor variables
+to be used in the prediction. We iteratively test versions of the model
+with and without each predictor variable. Predictor variables selected
+for inclusion are those that improve model fit (decrease RMSE) when they
+are included relative to when they are excluded.</p></li>
+<li><p><strong>Parameter Tuning</strong>: Random forest model parameters
+are tuned using 10-fold cross-validation with the training dataset.
+Tuned parameters are the number of trees (<code>trees</code>), number of
+predictors that will be randomly sampled at each split when creating the
+tree models (<code>mtry</code>), and the minimum number of data points
+in a node that are required for the node to be split further
+(<code>min_n</code>).</p></li>
+<li><p><strong>Prediction</strong>: Once a final tuned model has been
+selected, the full dataset of flowlines (<code>comid</code>s) and their
+attributes are input, once for each flow along a a regular log sequence
+of flows matching the <code>interp_flows</code> sequence described
+above. Predictions are run for all <code>comid</code>s; filters are
+applied after the fact.</p></li>
+<li><p><strong>Inverse IHS Transformation</strong>: Transformed
+variables and the final output are reverse-transformed using
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mtext mathvariant="normal">sinh</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mi>′</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><mn>2</mn><mi>/</mi><mn>100</mn></mrow><annotation encoding="application/x-tex">x = \text{sinh}(x') \cdot 2 / 100</annotation></semantics></math>.</p></li>
+<li><p><strong>Inverse DA/MAP Normalization</strong>: For the
+“scale-normalized” model, normalization is reversed by multiplying the
+result by the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>D</mi><mi>A</mi></mrow><mo>*</mo><mrow><mi>M</mi><mi>A</mi><mi>P</mi></mrow></mrow><annotation encoding="application/x-tex">{DA}*{MAP}</annotation></semantics></math>
+scaling factor described above.</p></li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="results">Results<a class="anchor" aria-label="anchor" href="#results"></a>
@@ -348,8 +406,6 @@ predictions will depend on those streams’ similarity to the training
 dataset. As training datasets are currently limited to foothill alluvial
 systems on major tributary streams, only these should be considered
 valid.</p>
-<p><mark>TODO: show results map overview images from the model methods
-comparison script</mark></p>
 </div>
   </div>
 

@@ -21,9 +21,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-## 
+## Introduction
 
 We are currently developing and refining a statistical model to predict flow-to-suitable-habitat-area relationships for stream reaches in the Sacramento-San Joaquin Basin, based on a variety of widely-available geospatial and hydrologic variables. Predictor variable data collection is detailed in the [Predictor Variables](predictor_variables.html) article.
+
+This statistical model method was developed for predicting rearing habitat area versus flow at the `comid` scale. 
+
+It is also applied for spawning habitat area, given training data generated using different habitat suitability indices  (see [Habitat Training Data](habitat_training_data.html)), with additional post-model filters required to eliminate areas that are non-suitable due to substrate  (see [Spawning Extents](spawning_extents.html)).  
+
+Raw outputs from this method are then ready to be scaled based on hydrology and duration requirements (see [Duration Analysis](duration_analysis.html)) and/or aggregated at the river or watershed level (see [Watershed Aggregation](watershed_aggregation.html)).
 
 ## Model Development
 
@@ -56,7 +62,7 @@ Additionally, all predictor variables were centered and scaled after transformat
 
 The length (linear ft) of each reach (`comid`) was applied as a case weight. Reaches vary substantially in length from several feet to 26 miles, with a mean length of 1.2 miles. Weighting the estimate by linear ft allows longer reaches to have greater influence on the model and makes the somewhat arbitrary `comid` delineations less relevant.
 
-```{r asinh-transform, echo=FALSE}
+```{r asinh-transform, echo=FALSE, fig.width=6.5, message=FALSE, warning=FALSE}
 x <- seq(-30, 30)
 ggplot2::ggplot() + 
   ggplot2::geom_line(ggplot2::aes(x=x, y=log(x), color="log(x)"), linewidth=1) +
@@ -71,7 +77,28 @@ ggplot2::ggplot() +
   ggplot2::theme(legend.title = ggplot2::element_blank())
 ```
 
-### Three Model Versions Tested
+### Flow Variable
+
+Training flow data are resampled to a regular sequence of flows that is evenly spaced on a logarithmic axis:
+
+```{r}
+interp_flows <- habistat::seq_log10(50, 15000, 0.05, snap=100)
+```
+
+```{r interp_flows, echo=FALSE, fig.height=1, fig.width=6.5, message=FALSE, warning=FALSE}
+ggplot2::ggplot() + 
+  ggplot2::geom_point(ggplot2::aes(x = interp_flows, y = 0)) + 
+  ggplot2::scale_x_log10() + 
+  ggplot2::annotation_logticks(sides="b") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(axis.title = ggplot2::element_blank(),
+        panel.grid = ggplot2::element_blank(),
+        axis.text.y = ggplot2::element_blank()) +
+  ggplot2::ggtitle("interp_flows")
+```
+
+
+### Model Versions Tested
 
 Two forms of the model were tested, discussed in sequence in the following sections.
 
@@ -125,37 +152,42 @@ The habitat and flow variables are multiplied by this scalar prior to prediction
 
 Compared to Version 1, the normalized Version 2 model creates flow-to-suitable-area curves that are more strongly proportional to the size of the river.
 
+#### Ensemble Model
+
+The ensemble model is the average of the output of the Version 1 and Version 2 models for each unique combination of `comid` and flow. 
+
 ## Exploratory Linear Regression
 
-<mark>TODO: Expand, just show some images of initial exploration, doesn't need to be the final version.</mark>
+Linear regression was useful for exploring the effects of predictor variables and testing different model forms. However, the collinearity between variables and the limitations on the functional shape of relationships were limitations.
 
--   Doesn't produce a great fit, but useful for exploring effects of predictor variables
-
--   Collinearity between variables is not addressed as this is only exploratory
++----------------------------------------------+----------------------------------------------+
+| Model Version 1: Scale-Dependent             | Model Version 2: Scale-Normalized            |
++==============================================+==============================================+
+| ![](figures/lm-sd2-coeffs-1.png){width=100%} | ![](figures/lm-si2-coeffs-1.png){width=100%} |
++----------------------------------------------+----------------------------------------------+
 
 ## Random Forest Regression Model
 
-Random Forest Regression is a decision tree based machine learning alternative to linear regression. The model specifications are essentially identical to the linear regression formulations previously discussed. Unlike linear regression, there is no constraint on the functional form of the flow-to-habitat relationship or the effects of predictor variables. 
+Random Forest Regression is a decision tree based machine learning alternative to linear regression. The model specifications are essentially identical to the linear regression formulations previously discussed. Unlike linear regression, there is no constraint on the functional form of the flow-to-habitat relationship or the effects of predictor variables. Random forest models are fit using the `ranger` package via the `tidymodels` framework. 
 
-### Train / Test Split
+- **Train/Test Split**: Flowlines (`comid`s) and their associated training data are split into training and testing datasets at a 75% training/25% testing random split, stratified by river and hydrologic class. 
 
-<mark>TODO: details here</mark>
+- **IHS Transformation**: As described in the section above, all continuous numeric variables are transformed using the transformation $x' = \text{asinh}(100 \cdot x / 2)$. Variables that represent proportions or ratios are not transformed. The response variable is also transformed.
 
-### Feature Selection
+- **DA/MAP Normalization**: For the "scale-normalized" model, all variables are divided by the ${DA}*{MAP}$ scaling factor described above.
 
-<mark>TODO: details here</mark>
+- **Interaction**: Any predictor variables included in the model are also included as interactions with flow: $(x' \cdot Q)$.
 
-### Parameter Tuning (Cross-Validation)
+- **Feature Selection**: The training dataset is used for feature selection, i.e., identifying the set of predictor variables to be used in the prediction. We iteratively test versions of the model with and without each predictor variable. Predictor variables selected for inclusion are those that improve model fit (decrease RMSE) when they are included relative to when they are excluded.
 
-<mark>TODO: details here</mark>
+- **Parameter Tuning**: Random forest model parameters are tuned using 10-fold cross-validation with the training dataset. Tuned parameters are the number of trees (`trees`), number of predictors that will be randomly sampled at each split when creating the tree models (`mtry`), and the minimum number of data points in a node that are required for the node to be split further (`min_n`).
 
-### Inverse Transformation
+- **Prediction**: Once a final tuned model has been selected, the full dataset of flowlines (`comid`s) and their attributes are input, once for each flow along a a regular log sequence of flows matching the `interp_flows` sequence described above. Predictions are run for all `comid`s; filters are applied after the fact.
 
-<mark>TODO: details here</mark>
+- **Inverse IHS Transformation**: Transformed variables and the final output are reverse-transformed using $x = \text{sinh}(x') \cdot 2 / 100$.
+
+- **Inverse DA/MAP Normalization**: For the "scale-normalized" model, normalization is reversed by multiplying the result by the ${DA}*{MAP}$ scaling factor described above.
 
 ## Results
 
 The trained statistical model can now be used to predict flow-to-suitable-area relationships for other streams within the study area. While the statistical model will produce predictions for any stream with valid predictor data, the validity and trustworthiness of predictions will depend on those streams' similarity to the training dataset. As training datasets are currently limited to foothill alluvial systems on major tributary streams, only these should be considered valid. 
-
-<mark>TODO: show results map overview images from the model methods comparison script</mark>
-
