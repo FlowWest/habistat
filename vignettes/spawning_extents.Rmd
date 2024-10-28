@@ -12,6 +12,7 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(tidyverse)
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -42,7 +43,7 @@ The spawning geographic scope consists of reaches meeting *all* of the following
 
 ### Spawning Gravels
 
-Reach-by-reach identification of spawning gravels is experimental. We tested two methods. Reaches are included if they pass the spawning gravel likelihood criteria under either method.  
+Reach-by-reach identification of spawning gravels is experimental. We tested two methods. Currently, reaches are included as likely spawning gravel reaches if they pass the spawning gravel likelihood criteria under *either* method. 
 
 #### Geomorphic Classification
 
@@ -65,16 +66,84 @@ For the San Joaquin basin, we trained a simple random forest classifier on the S
 
 This approach applies simple sediment transport relationships to estimate critical grain sizes at bankfull flow. Bankfull widths, depths, and velocities were sourced from the StreamCat NHDPlusLandscapeAttributes dataset for the NHDPlusV2 ComID reaches. 
 
-<mark>TODO: Add more detail about the calculation</mark>
-
 The following criteria were applied: 
+
+- **bed mobilization**: bankfull flows are sufficient to mobilize gravels/cobbles, but no so powerful as to be mobilizing boulders.
 
 - **suspended transport**: bankfull flows are able to transport particles larger than silts and clays
 
-- **bed mobilization**: bankfull flows are sufficient to mobilize gravels/cobbles, but no so powerful as to be mobilizing boulders
+##### Bed Mobilization
 
+The hydraulic radius is calculated from the bankfull width $W$ and height $H$ by assuming a rectangular channel shape:
+
+$$R = \frac{H \cdot W}{(2 \cdot H) + W}$$
+
+We assume that the density of the sediment particles is $\rho_s$ = 2.65 g/cm3 and the density of water is $\rho$ = 1.00 g/cm3, making the specific gravity of the sediment ${SG} = \rho_s / \rho$ = 2.65, i.e. in metric units, $(\rho_s - \rho) = ({SG} - 1)$.
+
+The bed mobilization competence was estimated by first estimating a dimensionless critical Shield's number $\tau_c^*$ for each `comid` reach using the reach's gradient (ft/ft) and the empirical relationship from Lamb et al. (2008):
+
+$$\tau_c^* = 0.15 S^{0.25}$$
+
+Shields' (1936) model for a uniform grain size distribution on a flat bed, expressed in CGS metric units, is
+
+$$\tau^*[\mathrm{1}] = \frac{\rho [\mathrm{g/cm^3}] \cdot R [\mathrm{cm}] \cdot S [\mathrm{1}]}{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot D_{50} [\mathrm{cm}])}$$
+
+This is a major simplification that assumes uniformity of particle size. Ideally, the model should account for the relative size of the individual particle being mobilized relative to the D50 of the reach--but the D50 of the reach is not known.
+
+An additional assumption in the calculation of the depth-slope product for shear stress is that the hydraulic radius is interchangeable for mean depth, which is only true in some cases.
+
+Rearranging Shields' equation, the maximum grain size mobilized is
+
+$$D_{50} [\mathrm{cm}] = \frac{\rho [\mathrm{g/cm^3}] \cdot R [\mathrm{cm}] \cdot S [\mathrm{1}]}{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot \tau^*[\mathrm{1}])}$$
+
+##### Suspended Transport
+
+The maximum suspended load was similarly calculated by relating settling velocity to particle size. 
+
+At bankfull flow, the settling velocity $w_s$ was assumed to equal the shear velocity $u*$, which is related to the hydraulic radius and slope by the gravitational constant. 
+
+$$w_s [\mathrm{cm/s}] = u^* [\mathrm{cm/s}]= \sqrt{g [\mathrm{cm/s^2}] \cdot R [\mathrm{cm}] \cdot S [1]}$$
+
+This settling velocity can be normalized by particle size to produce a dimensionless settling velocity. $nu$, the kinematic viscosity of water, is assumed to be 0.01 cm2/s.
+
+$$w^* [\mathrm{1}] = \frac{\rho [\mathrm{g/cm^3}] \cdot (w_s [\mathrm{cm/s}])^3}{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/s^2}] \cdot \nu [\mathrm{cm^2/s}]}$$
+...then related to dimensionless particle size $D^*$ via Dietrich (1982) eq. 8:
+
+$$w^* = (1.71 \cdot 10^{-4}) \cdot (D^*)^2$$
+...then converted back to grain size units by rearranging the definition of dimensionless grain size,
+
+$$D^* [\mathrm{1}]= \frac{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/s^2}] \cdot (D_{50} [\mathrm{cm}])^3}{\rho [\mathrm{g/cm^3}] \cdot \nu [\mathrm{cm^2/s}]}$$
+
+##### Classification
+
+Output $D_{50}$ values for bed mobilization and suspended transport thresholds were reclassified into the Wentworth (<mark>CITE</mark>) size classes. The size class phi ($\phi$) is defined as the negative base 2 logarithm of the median grain size diameter (on the intermediate axis) in millimeters. 
+
+```{r step-2-sed-transport-classes, echo=FALSE}
+# DEFINE WENTWORTH SIZE CLASSES
+phi_levels <- seq(-12, 14, 1)
+phi_labels <- c("very large boulder", "large boulder", "medium boulder", "small boulder", # -12:-9
+                "large cobble", "small cobble", "very coarse gravel", "coarse gravel", # -8:-5
+                "medium gravel", "fine gravel", "very fine gravel", "very coarse sand", # -4:-1
+                "coarse sand", "medium sand", "fine sand", "very fine sand", # 0:3
+                "coarse silt", "medium silt", "fine silt", "very fine silt", # 4:7
+                "clay", "clay", "clay", "clay", "clay", "clay", "clay") # 8:14
+
+tibble(phi = phi_levels, label = phi_labels) |> 
+  mutate(max_diam_mm = 2^-phi) |>
+  mutate(max_diam_mm = format(max_diam_mm, digits=3, scientific=F, drop0trailing=T)) |>
+  knitr::kable()
+```
+
+The following logic was applied. Both criteria must be met for a particular reach to be included. 
+
+- **bed mobilization**: bankfull flows are sufficient to mobilize gravels/cobbles, but no so powerful as to be mobilizing boulders. Where $\phi_B$ is the size class of the maximum bed grain size mobilized,
+
+$$-8 \leq \phi_B \leq -2$$
+
+- **suspended transport**: bankfull flows are able to transport particles larger than silts and clays. Where $\phi_S$ is the size class of the maximum grain size suspended,
+
+$$\phi_S \leq 3$$
 ## Validation
 
 <mark>TODO: Add here the validation based on redd surveys.</mark>
-
 

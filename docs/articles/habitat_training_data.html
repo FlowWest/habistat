@@ -64,7 +64,7 @@
       <a href="../articles/statistical_model.html">Statistical Model Development, Training, and Prediction</a>
     </li>
     <li>
-      <a href="../articles/duration_analysis.html">Duration Analysis and Baseflow</a>
+      <a href="../articles/duration_analysis.html">Duration Analysis</a>
     </li>
     <li>
       <a href="../articles/watershed_aggregation.html">Watershed Delineation and Flow Aggregation</a>
@@ -99,7 +99,7 @@
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-10-23</h4>
+            <h4 data-toc-skip class="date">2024-10-24</h4>
       
 
       <div class="hidden name"><code>habitat_training_data.Rmd</code></div>
@@ -173,7 +173,7 @@ models:</p>
 </tr>
 </tbody>
 </table>
-<p><img src="figures/training_reaches.png" style="width:50.0%"></p>
+<p><img src="figures/training-data-reaches-1.png" width="700"></p>
 <p>The depth and velocity raster grids (for HEC-RAS 2D models) or vector
 meshes (for SRH-2D models) were divided up based on ComID reach
 delineations. Currently, this is a manual process that requires
@@ -253,7 +253,7 @@ analyzed.</p>
 a curve relationship with fractional suitabilities. This curve is the
 upper envelope of all the individual suitability curves for different
 runs.</p>
-<p><mark>TODO: Plot here of the final suitability criteria.</mark></p>
+<p><img src="figures/training-data-spawning_velocity_hsi-1.png" width="700"></p>
 <p>If both depth and velocity criteria were fractional, then a geometric
 mean would be an appropriate method of combining the two. However, with
 the binary criterion, simple multiplication is appropriate. The overall

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Duration Analysis and Baseflow • habistat</title>
+<title>Duration Analysis • habistat</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Duration Analysis and Baseflow">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Duration Analysis">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -64,7 +64,7 @@
       <a href="../articles/statistical_model.html">Statistical Model Development, Training, and Prediction</a>
     </li>
     <li>
-      <a href="../articles/duration_analysis.html">Duration Analysis and Baseflow</a>
+      <a href="../articles/duration_analysis.html">Duration Analysis</a>
     </li>
     <li>
       <a href="../articles/watershed_aggregation.html">Watershed Delineation and Flow Aggregation</a>
@@ -94,12 +94,12 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Duration Analysis and Baseflow</h1>
+      <h1 data-toc-skip>Duration Analysis</h1>
                         <h4 data-toc-skip class="author">
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-10-23</h4>
+            <h4 data-toc-skip class="date">2024-10-28</h4>
       
 
       <div class="hidden name"><code>duration_analysis.Rmd</code></div>
@@ -159,7 +159,8 @@ hydrology.</p>
 applying inundation duration criteria to an already generated
 flow-to-suitable-area curve, approximating a duration-weighted
 estimate:</p>
-<p><img src="figures/flowchart_duration.png"></p>
+<p><img src="figures/flowchart_duration.png"><mark>TODO: Add updated
+version of this chart incl. scaling</mark></p>
 <div class="section level4">
 <h4 id="input-flow-to-suitable-area-curve">Input flow-to-suitable-area curve<a class="anchor" aria-label="anchor" href="#input-flow-to-suitable-area-curve"></a>
 </h4>
@@ -169,11 +170,16 @@ could also be applied to a flow-to-suitable-area curve calculated
 through a different manner.</p>
 </div>
 <div class="section level4">
-<h4 id="hydrograph">Hydrograph<a class="anchor" aria-label="anchor" href="#hydrograph"></a>
+<h4 id="hydrograph-datasets">Hydrograph Datasets<a class="anchor" aria-label="anchor" href="#hydrograph-datasets"></a>
 </h4>
 <p>Next, we pull a hydrograph and calculate the inundation duration at
 each flow. To summarize the hydrology of a water year, the maximum
 contiguous days exceeding each given flow is calculated.</p>
+<p>One inundation duration curve is calculated per salmonid run, per
+water year type group.</p>
+<div class="section level5">
+<h5 id="salmonid-runs">Salmonid Runs<a class="anchor" aria-label="anchor" href="#salmonid-runs"></a>
+</h5>
 <p>To capture only ecologically relevant time windows, we filter the
 hydrographs by relevant months for the salmonid run of interest:
 <mark>CITE?</mark></p>
@@ -216,10 +222,22 @@ hydrographs by relevant months for the salmonid run of interest:
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level5">
+<h5 id="water-year-type-groups">Water Year Type Groups<a class="anchor" aria-label="anchor" href="#water-year-type-groups"></a>
+</h5>
 <p>Duration calculations are conducted for as many historical water
 years as are available in the streamgage data, and averaged across all
 water years within a given <a href="https://data.ca.gov/dataset/cdec-water-year-type-dataset" class="external-link">water
-year type</a>.</p>
+year type</a>. Water year type classifications are regrouped simplified
+into <strong>Dry</strong> (“Critical Dry” or “Dry”),
+<strong>Normal</strong> (“Below Normal”, “Above Normal”), and
+<strong>Wet</strong> (“Wet”) classes.</p>
+</div>
+</div>
+<div class="section level4">
+<h4 id="hydrograph-scaling">Hydrograph Scaling<a class="anchor" aria-label="anchor" href="#hydrograph-scaling"></a>
+</h4>
 <p>If the streamgage being used is not located at the prediction point
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mi>o</mi><mi>m</mi><mi>i</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">comid</annotation></semantics></math>),
 then the streamgage is scaled to the prediction point using drainage

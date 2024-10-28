@@ -12,6 +12,10 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(tidyverse)
+library(sf)
+theme_set(theme_minimal() + theme(panel.grid.minor = element_blank()))
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -32,7 +36,16 @@ Depth and velocity outputs from existing two-dimensional hydraulic models were a
 | Stanislaus River | Knights Ferry to San Joaquin River confluence | 90,000 LF | NewFields | 2013 | SRH-2D | ___ - ___ cfs |
 | Tuolumne River | Basso-La Grange Reach | ___ LF | FlowWest | ___ | HEC-RAS 2D | ___ - ___ cfs |
 
-![](figures/training_reaches.png){width=50%}
+```{r reaches, echo=FALSE, message=FALSE, warning=FALSE}
+habistat::flowline_geom_proj |>
+  inner_join(habistat::wua_hydraulic, by=join_by(comid)) |>
+  ggplot() + 
+  geom_sf(data = habistat::cv_mainstems, color = "gray") +
+  geom_sf(aes(color = dataset), linewidth=1) +
+  theme_minimal() +
+  scale_color_brewer(palette = "Dark2", name = "Training Dataset") +
+  ggtitle("Training Reaches")
+```
 
 The depth and velocity raster grids (for HEC-RAS 2D models) or vector meshes (for SRH-2D models) were divided up based on ComID reach delineations. Currently, this is a manual process that requires importing the model domain polygon into a GIS system, splitting it up into reaches, and assigning each reach a ComID number that corresponds to the overlapping NHDPlusV2 flowline.
 
@@ -72,7 +85,21 @@ For winter run, a minimum depth also applies:
 
 The velocity factor of the HSI, rather than a binary threshold, uses a curve relationship with fractional suitabilities. This curve is the upper envelope of all the individual suitability curves for different runs. 
 
-<mark>TODO: Plot here of the final suitability criteria.</mark>
+```{r spawning_velocity_hsi, echo=FALSE, message=FALSE, warning=FALSE}
+habistat::suitability_hsi_vel_spawning |>
+  enframe() |>
+  unnest(cols = value) |>
+  filter(name != "max") |>
+  ggplot(aes(x = vel_ft_s, y = hsi)) +
+  geom_line(aes(color = name)) +
+  geom_line(data = habistat::suitability_hsi_vel_spawning$max, 
+            color = "black", 
+            linewidth = 1,
+            linetype = "dashed") +
+  ylab("Habitat Suitability Index") +
+  xlab("Velocity (ft/sec)") +
+  ggtitle("Velocity HSI as upper envelope of runs")
+```
 
 If both depth and velocity criteria were fractional, then a geometric mean would be an appropriate method of combining the two. However, with the binary criterion, simple multiplication is appropriate. The overall suitability equals the velocity suitability if and only if the depth is suitable, otherwise the overall suitability is zero.
 

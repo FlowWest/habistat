@@ -12,6 +12,10 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(tidyverse)
+library(sf)
+theme_set(theme_minimal() + theme(panel.grid.minor = element_blank()))
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -53,3 +57,75 @@ The spawning model follows similar methods to the rearing model, with the follow
 * **Applying duration criteria**: A different duration suitability factor is applied to account for the extended minimum period of continuous inundation required for spawning and incubation. 
 
 * **Filtering to geographic scope**: The spawning model includes a more substantial filtering of reaches into those within spawning range and likely to include spawning gravels. This analysis is documented in the [Spawning Extents](spawning_extents.html) article. The core dataset is intended to capture overall suitability for any run, so that it can be subsequently applied to a specific run based on geographic scope filters and season-specific hydrology. 
+
+## Suitability Criteria
+
+The following chart summarizes suitability criteria used in the model. These are designed to be generally applicable criteria across the Sacramento-San Joaquin basin, rather than tailored to individual stream reaches. Currently, criteria are also generally applied to all runs of Chinook salmon, but may be split out into different criteria for different runs in the future. Application of the depth and velocity criteria is described in the [Habitat Training Data](habitat_training_data.html) article, while application of the duration criteria is described in the [Duration Analysis](duration_analysis.html) article.
+
+```{r hsi_summary, echo=FALSE, message=FALSE, warning=FALSE, dpi=300, height=4, width=6.5}
+rearing_depth <- 
+  tribble(~idx, ~hsi,
+          0, 0,
+          1, 1,
+          3.28, 0,
+          Inf, 0)
+
+rearing_velocity <-
+  tribble(~idx, ~hsi,
+          0, 1,
+          1.5, 0,
+          Inf, 0)
+
+spawning_depth <- 
+  tribble(~idx, ~hsi,
+          0, 1,
+          6.56, 0,
+          Inf, 0)
+
+rearing_duration_vf <- 
+  tribble(~idx, ~hsi,
+          0, 1,
+          10, 0,
+          Inf, 0)
+
+rearing_duration_vl <- 
+  tribble(~idx, ~hsi,
+          0, 0.66,
+          18, 1,
+          25, 0,
+          Inf, 0)
+
+spawning_duration <- 
+  tribble(~idx, ~hsi,
+          0, 1,
+          7*12, 0,
+          Inf, 0)
+
+spawning_velocity <- 
+  habistat::suitability_hsi_vel_spawning$max |> 
+  transmute(idx = vel_ft_s, 
+            hsi = hsi)
+
+tribble(~type, ~habitat, ~criterion, ~gradient_class, ~data,
+        "step", "rearing",  "depth",    "both", rearing_depth,
+        "step", "rearing",  "velocity", "both", rearing_velocity,
+        "step", "rearing",  "duration", "Valley Lowland", rearing_duration_vl,
+        "step", "rearing",  "duration", "Valley Foothill", rearing_duration_vf,
+        "step", "spawning", "depth",    "both", spawning_depth,
+        "line", "spawning", "velocity", "both", spawning_velocity,
+        "step", "spawning",  "duration", "both", spawning_duration) |>
+  unnest(data) |>
+  mutate(criterion = criterion |> factor(levels = c("depth", "velocity", "duration"),
+                                         labels = c("depth (ft)", "velocity (ft/s)", "duration (days)"))) |>
+  ggplot(aes(x = idx, color = gradient_class)) +
+  facet_grid(rows = vars(str_glue("{habitat} hsi")), 
+             cols = vars(criterion), 
+             switch="both", scales = "free_x") + 
+  geom_step(aes(y = case_when(type=="step" ~ hsi))) +
+  geom_line(aes(y = case_when(type=="line" ~ hsi))) +
+  xlab("") + ylab("") + 
+  theme_minimal() + 
+  theme(strip.placement = "outside",
+        panel.grid.minor = element_blank()) 
+```
+

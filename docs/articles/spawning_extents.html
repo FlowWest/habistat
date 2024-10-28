@@ -64,7 +64,7 @@
       <a href="../articles/statistical_model.html">Statistical Model Development, Training, and Prediction</a>
     </li>
     <li>
-      <a href="../articles/duration_analysis.html">Duration Analysis and Baseflow</a>
+      <a href="../articles/duration_analysis.html">Duration Analysis</a>
     </li>
     <li>
       <a href="../articles/watershed_aggregation.html">Watershed Delineation and Flow Aggregation</a>
@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Spawning Extents</h1>
                         <h4 data-toc-skip class="author"><a href="slewis@flowwest.com">Skyler Lewis</a></h4>
             
-            <h4 data-toc-skip class="date">2024-10-23</h4>
+            <h4 data-toc-skip class="date">2024-10-28</h4>
       
 
       <div class="hidden name"><code>spawning_extents.Rmd</code></div>
@@ -151,8 +151,9 @@ at least 50 km²</li>
 <h3 id="spawning-gravels">Spawning Gravels<a class="anchor" aria-label="anchor" href="#spawning-gravels"></a>
 </h3>
 <p>Reach-by-reach identification of spawning gravels is experimental. We
-tested two methods. Reaches are included if they pass the spawning
-gravel likelihood criteria under either method.</p>
+tested two methods. Currently, reaches are included as likely spawning
+gravel reaches if they pass the spawning gravel likelihood criteria
+under <em>either</em> method.</p>
 <div class="section level4">
 <h4 id="geomorphic-classification">Geomorphic Classification<a class="anchor" aria-label="anchor" href="#geomorphic-classification"></a>
 </h4>
@@ -203,22 +204,255 @@ classifications for the San Joaquin reaches.</p>
 estimate critical grain sizes at bankfull flow. Bankfull widths, depths,
 and velocities were sourced from the StreamCat
 NHDPlusLandscapeAttributes dataset for the NHDPlusV2 ComID reaches.</p>
-<p><mark>TODO: Add more detail about the calculation</mark></p>
 <p>The following criteria were applied:</p>
 <ul>
-<li><p><strong>suspended transport</strong>: bankfull flows are able to
-transport particles larger than silts and clays</p></li>
 <li><p><strong>bed mobilization</strong>: bankfull flows are sufficient
 to mobilize gravels/cobbles, but no so powerful as to be mobilizing
-boulders</p></li>
+boulders.</p></li>
+<li><p><strong>suspended transport</strong>: bankfull flows are able to
+transport particles larger than silts and clays</p></li>
 </ul>
+<div class="section level5">
+<h5 id="bed-mobilization">Bed Mobilization<a class="anchor" aria-label="anchor" href="#bed-mobilization"></a>
+</h5>
+<p>The hydraulic radius is calculated from the bankfull width
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>W</mi><annotation encoding="application/x-tex">W</annotation></semantics></math>
+and height
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>H</mi><annotation encoding="application/x-tex">H</annotation></semantics></math>
+by assuming a rectangular channel shape:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mfrac><mrow><mi>H</mi><mo>⋅</mo><mi>W</mi></mrow><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo>⋅</mo><mi>H</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>W</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">R = \frac{H \cdot W}{(2 \cdot H) + W}</annotation></semantics></math></p>
+<p>We assume that the density of the sediment particles is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ρ</mi><mi>s</mi></msub><annotation encoding="application/x-tex">\rho_s</annotation></semantics></math>
+= 2.65 g/cm3 and the density of water is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ρ</mi><annotation encoding="application/x-tex">\rho</annotation></semantics></math>
+= 1.00 g/cm3, making the specific gravity of the sediment
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>S</mi><mi>G</mi></mrow><mo>=</mo><msub><mi>ρ</mi><mi>s</mi></msub><mi>/</mi><mi>ρ</mi></mrow><annotation encoding="application/x-tex">{SG} = \rho_s / \rho</annotation></semantics></math>
+= 2.65, i.e. in metric units,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ρ</mi><mi>s</mi></msub><mo>−</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi>S</mi><mi>G</mi></mrow><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">(\rho_s - \rho) = ({SG} - 1)</annotation></semantics></math>.</p>
+<p>The bed mobilization competence was estimated by first estimating a
+dimensionless critical Shield’s number
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>τ</mi><mi>c</mi><mo>*</mo></msubsup><annotation encoding="application/x-tex">\tau_c^*</annotation></semantics></math>
+for each <code>comid</code> reach using the reach’s gradient (ft/ft) and
+the empirical relationship from Lamb et al. (2008):</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>τ</mi><mi>c</mi><mo>*</mo></msubsup><mo>=</mo><mn>0.15</mn><msup><mi>S</mi><mn>0.25</mn></msup></mrow><annotation encoding="application/x-tex">\tau_c^* = 0.15 S^{0.25}</annotation></semantics></math></p>
+<p>Shields’ (1936) model for a uniform grain size distribution on a flat
+bed, expressed in CGS metric units, is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>τ</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mrow><mi>ρ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>R</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ρ</mi><mi>s</mi></msub><mo>−</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><msub><mi>D</mi><mn>50</mn></msub><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\tau^*[\mathrm{1}] = \frac{\rho [\mathrm{g/cm^3}] \cdot R [\mathrm{cm}] \cdot S [\mathrm{1}]}{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot D_{50} [\mathrm{cm}])}</annotation></semantics></math></p>
+<p>This is a major simplification that assumes uniformity of particle
+size. Ideally, the model should account for the relative size of the
+individual particle being mobilized relative to the D50 of the reach–but
+the D50 of the reach is not known.</p>
+<p>An additional assumption in the calculation of the depth-slope
+product for shear stress is that the hydraulic radius is interchangeable
+for mean depth, which is only true in some cases.</p>
+<p>Rearranging Shields’ equation, the maximum grain size mobilized
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mn>50</mn></msub><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mrow><mi>ρ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>R</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ρ</mi><mi>s</mi></msub><mo>−</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><msup><mi>τ</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">D_{50} [\mathrm{cm}] = \frac{\rho [\mathrm{g/cm^3}] \cdot R [\mathrm{cm}] \cdot S [\mathrm{1}]}{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot \tau^*[\mathrm{1}])}</annotation></semantics></math></p>
 </div>
+<div class="section level5">
+<h5 id="suspended-transport">Suspended Transport<a class="anchor" aria-label="anchor" href="#suspended-transport"></a>
+</h5>
+<p>The maximum suspended load was similarly calculated by relating
+settling velocity to particle size.</p>
+<p>At bankfull flow, the settling velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>s</mi></msub><annotation encoding="application/x-tex">w_s</annotation></semantics></math>
+was assumed to equal the shear velocity
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>*</mo></mrow><annotation encoding="application/x-tex">u*</annotation></semantics></math>,
+which is related to the hydraulic radius and slope by the gravitational
+constant.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>s</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msup><mi>u</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><msqrt><mrow><mi>g</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><msup><mi mathvariant="normal">s</mi><mn mathvariant="normal">2</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>R</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>S</mi><mrow><mo stretchy="true" form="prefix">[</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow></mrow></msqrt></mrow><annotation encoding="application/x-tex">w_s [\mathrm{cm/s}] = u^* [\mathrm{cm/s}]= \sqrt{g [\mathrm{cm/s^2}] \cdot R [\mathrm{cm}] \cdot S [1]}</annotation></semantics></math></p>
+<p>This settling velocity can be normalized by particle size to produce
+a dimensionless settling velocity.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mi>u</mi></mrow><annotation encoding="application/x-tex">nu</annotation></semantics></math>,
+the kinematic viscosity of water, is assumed to be 0.01 cm2/s.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>w</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mrow><mi>ρ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>w</mi><mi>s</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>3</mn></msup></mrow><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ρ</mi><mi>s</mi></msub><mo>−</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><msup><mi mathvariant="normal">s</mi><mn mathvariant="normal">2</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>ν</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">2</mn></msup><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">w^* [\mathrm{1}] = \frac{\rho [\mathrm{g/cm^3}] \cdot (w_s [\mathrm{cm/s}])^3}{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/s^2}] \cdot \nu [\mathrm{cm^2/s}]}</annotation></semantics></math>
+…then related to dimensionless particle size
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>D</mi><mo>*</mo></msup><annotation encoding="application/x-tex">D^*</annotation></semantics></math>
+via Dietrich (1982) eq. 8:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>w</mi><mo>*</mo></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.71</mn><mo>⋅</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>4</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>D</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">w^* = (1.71 \cdot 10^{-4}) \cdot (D^*)^2</annotation></semantics></math>
+…then converted back to grain size units by rearranging the definition
+of dimensionless grain size,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>D</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ρ</mi><mi>s</mi></msub><mo>−</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><msup><mi mathvariant="normal">s</mi><mn mathvariant="normal">2</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>D</mi><mn>50</mn></msub><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>3</mn></msup></mrow><mrow><mi>ρ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>ν</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">2</mn></msup><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">D^* [\mathrm{1}]= \frac{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/s^2}] \cdot (D_{50} [\mathrm{cm}])^3}{\rho [\mathrm{g/cm^3}] \cdot \nu [\mathrm{cm^2/s}]}</annotation></semantics></math></p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
-</h2>
+<div class="section level5">
+<h5 id="classification">Classification<a class="anchor" aria-label="anchor" href="#classification"></a>
+</h5>
+<p>Output
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>50</mn></msub><annotation encoding="application/x-tex">D_{50}</annotation></semantics></math>
+values for bed mobilization and suspended transport thresholds were
+reclassified into the Wentworth (<mark>CITE</mark>) size classes. The
+size class phi
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>)
+is defined as the negative base 2 logarithm of the median grain size
+diameter (on the intermediate axis) in millimeters.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="right">phi</th>
+<th align="left">label</th>
+<th align="left">max_diam_mm</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="right">-12</td>
+<td align="left">very large boulder</td>
+<td align="left">4096</td>
+</tr>
+<tr class="even">
+<td align="right">-11</td>
+<td align="left">large boulder</td>
+<td align="left">2048</td>
+</tr>
+<tr class="odd">
+<td align="right">-10</td>
+<td align="left">medium boulder</td>
+<td align="left">1024</td>
+</tr>
+<tr class="even">
+<td align="right">-9</td>
+<td align="left">small boulder</td>
+<td align="left">512</td>
+</tr>
+<tr class="odd">
+<td align="right">-8</td>
+<td align="left">large cobble</td>
+<td align="left">256</td>
+</tr>
+<tr class="even">
+<td align="right">-7</td>
+<td align="left">small cobble</td>
+<td align="left">128</td>
+</tr>
+<tr class="odd">
+<td align="right">-6</td>
+<td align="left">very coarse gravel</td>
+<td align="left">64</td>
+</tr>
+<tr class="even">
+<td align="right">-5</td>
+<td align="left">coarse gravel</td>
+<td align="left">32</td>
+</tr>
+<tr class="odd">
+<td align="right">-4</td>
+<td align="left">medium gravel</td>
+<td align="left">16</td>
+</tr>
+<tr class="even">
+<td align="right">-3</td>
+<td align="left">fine gravel</td>
+<td align="left">8</td>
+</tr>
+<tr class="odd">
+<td align="right">-2</td>
+<td align="left">very fine gravel</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="right">-1</td>
+<td align="left">very coarse sand</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="right">0</td>
+<td align="left">coarse sand</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">medium sand</td>
+<td align="left">0.5</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">fine sand</td>
+<td align="left">0.25</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">very fine sand</td>
+<td align="left">0.125</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">coarse silt</td>
+<td align="left">0.0625</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="left">medium silt</td>
+<td align="left">0.03125</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="left">fine silt</td>
+<td align="left">0.015625</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="left">very fine silt</td>
+<td align="left">0.007812</td>
+</tr>
+<tr class="odd">
+<td align="right">8</td>
+<td align="left">clay</td>
+<td align="left">0.003906</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="left">clay</td>
+<td align="left">0.001953</td>
+</tr>
+<tr class="odd">
+<td align="right">10</td>
+<td align="left">clay</td>
+<td align="left">0.000977</td>
+</tr>
+<tr class="even">
+<td align="right">11</td>
+<td align="left">clay</td>
+<td align="left">0.000488</td>
+</tr>
+<tr class="odd">
+<td align="right">12</td>
+<td align="left">clay</td>
+<td align="left">0.000244</td>
+</tr>
+<tr class="even">
+<td align="right">13</td>
+<td align="left">clay</td>
+<td align="left">0.000122</td>
+</tr>
+<tr class="odd">
+<td align="right">14</td>
+<td align="left">clay</td>
+<td align="left">0.000061</td>
+</tr>
+</tbody>
+</table>
+<p>The following logic was applied. Both criteria must be met for a
+particular reach to be included.</p>
+<ul>
+<li>
+<strong>bed mobilization</strong>: bankfull flows are sufficient to
+mobilize gravels/cobbles, but no so powerful as to be mobilizing
+boulders. Where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>B</mi></msub><annotation encoding="application/x-tex">\phi_B</annotation></semantics></math>
+is the size class of the maximum bed grain size mobilized,</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>8</mn><mo>≤</mo><msub><mi>ϕ</mi><mi>B</mi></msub><mo>≤</mo><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">-8 \leq \phi_B \leq -2</annotation></semantics></math></p>
+<ul>
+<li>
+<strong>suspended transport</strong>: bankfull flows are able to
+transport particles larger than silts and clays. Where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>S</mi></msub><annotation encoding="application/x-tex">\phi_S</annotation></semantics></math>
+is the size class of the maximum grain size suspended,</li>
+</ul>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mi>S</mi></msub><mo>≤</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\phi_S \leq 3</annotation></semantics></math>
+## Validation</p>
 <p><mark>TODO: Add here the validation based on redd surveys.</mark></p>
+</div>
+</div>
+</div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr>
