@@ -41,7 +41,7 @@
       <a href="../articles/statistical_model.html">Statistical Model Development, Training, and Prediction</a>
     </li>
     <li>
-      <a href="../articles/duration_analysis.html">Duration Analysis and Baseflow</a>
+      <a href="../articles/duration_analysis.html">Duration Analysis</a>
     </li>
     <li>
       <a href="../articles/watershed_aggregation.html">Watershed Delineation and Flow Aggregation</a>
@@ -54,7 +54,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="https://flowwest.shinyapps.io/swc-habistat-dev/" class="external-link">Interactive Map</a>
+  <a href="https://flowwest.shinyapps.io/habistat/" class="external-link">Interactive Map</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -86,18 +86,19 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">wua_predicted</span> <span class="op">|&gt;</span> <span class="fu">pillar</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 1,134,100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ comid             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 342455, 342455, 342455, 342455, 342455, 342455, 3424~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_name        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD"~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_idx          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 50, 56, 63, 70, 79, 89, 100, 112, 125, 141, 158, 177~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_cfs          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 50.11872, 56.23413, 63.09573, 70.79458, 79.43282, 89~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.02766613, 0.02902734, 0.02954483, 0.03133276, 0.03~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ river_group       <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ river_cvpia       <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, ~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ watershed_level_3 <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> Stanislaus River, Stanislaus River, Stanislaus River~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ reach_length_ft   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 291.9948, 291.9948, 291.9948, 291.9948, 291.9948, 29~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ habitat           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "rearing", "rearing", "rearing", "rearing", "rearing~</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 568,800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ comid              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 342455, 342455, 342455, 342455, 342455, 342455, 342…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_idx           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 50, 56, 63, 70, 79, 89, 100, 112, 125, 141, 158, 17…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_cfs           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 50.11872, 56.23413, 63.09573, 70.79458, 79.43282, 8…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ river_group        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ river_cvpia        <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ watershed_level_3  <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> Stanislaus River, Stanislaus River, Stanislaus Rive…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ reach_length_ft    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 291.9948, 291.9948, 291.9948, 291.9948, 291.9948, 2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ habitat            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "rearing", "rearing", "rearing", "rearing", "rearin…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred_SD <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.02362203, 0.02439776, 0.02512100, 0.02747708, 0.0…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred_SN <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.5698906, 0.5807675, 0.6158285, 0.6441989, 0.66992…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.2967563, 0.3025826, 0.3204747, 0.3358380, 0.35092…</span>
 </code></pre></div>
     </div>
   </div>

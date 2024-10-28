@@ -41,7 +41,7 @@
       <a href="../articles/statistical_model.html">Statistical Model Development, Training, and Prediction</a>
     </li>
     <li>
-      <a href="../articles/duration_analysis.html">Duration Analysis and Baseflow</a>
+      <a href="../articles/duration_analysis.html">Duration Analysis</a>
     </li>
     <li>
       <a href="../articles/watershed_aggregation.html">Watershed Delineation and Flow Aggregation</a>
@@ -54,7 +54,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="https://flowwest.shinyapps.io/swc-habistat-dev/" class="external-link">Interactive Map</a>
+  <a href="https://flowwest.shinyapps.io/habistat/" class="external-link">Interactive Map</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -86,15 +86,18 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">wua_predicted_cv_watersheds</span> <span class="op">|&gt;</span> <span class="fu">pillar</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 5,900</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ habitat           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "rearing", "rearing", "rearing", "rearing", "rearing~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ model_name        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD"~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ watershed_level_3 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "American River", "American River", "American River"~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_idx          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 50, 56, 63, 70, 79, 89, 100, 112, 125, 141, 158, 177~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.01223311, 0.01223916, 0.01225231, 0.01226168, 0.01~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_acres_pred    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.6848360, 0.6851744, 0.6859109, 0.6864354, 0.687267~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_cfs          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 50.11872, 56.23413, 63.09573, 70.79458, 79.43282, 89~</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 2,950</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ habitat            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "rearing", "rearing", "rearing", "rearing", "rearin…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ watershed_level_3  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "American River", "American River", "American River…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_idx           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 50, 56, 63, 70, 79, 89, 100, 112, 125, 141, 158, 17…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_cfs           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 50.11872, 56.23413, 63.09573, 70.79458, 79.43282, 8…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred_SD <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.007333726, 0.007362360, 0.007397907, 0.007428896,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred_SN <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.1805469, 0.1805469, 0.1805469, 0.1805469, 0.18054…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_acres_pred_SD  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.4105578, 0.4121608, 0.4141508, 0.4158856, 0.42062…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_acres_pred_SN  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 10.11302, 10.11302, 10.11302, 10.11302, 10.11302, 1…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf_pred    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.09394031, 0.09395463, 0.09397240, 0.09398789, 0.0…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_acres_pred     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 5.261789, 5.262591, 5.263586, 5.264453, 5.266823, 5…</span>
 </code></pre></div>
     </div>
   </div>

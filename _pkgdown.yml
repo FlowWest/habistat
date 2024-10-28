@@ -11,7 +11,7 @@ navbar:
     right: [search]
   components:
     maplink:
-      href: https://flowwest.shinyapps.io/swc-habistat-dev/
+      href: https://flowwest.shinyapps.io/habistat/
       text: "Interactive Map"
 articles:
 - title: Articles

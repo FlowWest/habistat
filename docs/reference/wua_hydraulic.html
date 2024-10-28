@@ -41,7 +41,7 @@
       <a href="../articles/statistical_model.html">Statistical Model Development, Training, and Prediction</a>
     </li>
     <li>
-      <a href="../articles/duration_analysis.html">Duration Analysis and Baseflow</a>
+      <a href="../articles/duration_analysis.html">Duration Analysis</a>
     </li>
     <li>
       <a href="../articles/watershed_aggregation.html">Watershed Delineation and Flow Aggregation</a>
@@ -54,7 +54,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
-  <a href="https://flowwest.shinyapps.io/swc-habistat-dev/" class="external-link">Interactive Map</a>
+  <a href="https://flowwest.shinyapps.io/habistat/" class="external-link">Interactive Map</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -88,16 +88,16 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">wua_hydraulic</span> <span class="op">|&gt;</span> <span class="fu">pillar</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 8,000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ dataset    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Lower Yuba River", "Lower Yuba River", "Lower Yuba River",~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ comid      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8061185, 8061185, 8061185, 8061185, 8061185, 8061185, 80611~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_cfs   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 700, 800, 880, 930, 1000, 1300, 1500, 1700, 2000, 2500, 300~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ area_tot   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 109796.5, 112570.5, 114628.9, 115865.6, 117605.4, 124359.6,~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ area_wua   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000000, 8.673892, 47.249076, 62.760336, 208.805351, 2453.~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ area_pct   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000000e+00, 7.705299e-05, 4.121917e-04, 5.416651e-04, 1.7~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ length_ft  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1181.961, 1181.961, 1181.961, 1181.961, 1181.961, 1181.961,~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ ind_per_lf <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 92.89354, 95.24047, 96.98199, 98.02828, 99.50026, 105.21469~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000000000, 0.007338563, 0.039975169, 0.053098500, 0.17666~</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ habitat    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> rearing, rearing, rearing, rearing, rearing, rearing, reari~</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ dataset    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Lower Yuba River", "Lower Yuba River", "Lower Yuba River",…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ comid      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 8061185, 8061185, 8061185, 8061185, 8061185, 8061185, 80611…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ flow_cfs   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 700, 800, 880, 930, 1000, 1300, 1500, 1700, 2000, 2500, 300…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ area_tot   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 109796.5, 112570.5, 114628.9, 115865.6, 117605.4, 124359.6,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ area_wua   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000000, 8.673892, 47.249076, 62.760336, 208.805351, 2453.…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ area_pct   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000000e+00, 7.705299e-05, 4.121917e-04, 5.416651e-04, 1.7…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ length_ft  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 1181.961, 1181.961, 1181.961, 1181.961, 1181.961, 1181.961,…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ ind_per_lf <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 92.89354, 95.24047, 96.98199, 98.02828, 99.50026, 105.21469…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ wua_per_lf <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.000000000, 0.007338563, 0.039975169, 0.053098500, 0.17666…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ habitat    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> rearing, rearing, rearing, rearing, rearing, rearing, reari…</span>
 </code></pre></div>
     </div>
   </div>
