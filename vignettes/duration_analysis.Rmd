@@ -37,7 +37,7 @@ To precisely apply suitability criteria for inundation duration, inundation dura
 For example, a series of depth raster grids at different flows, calculated using a hydraulic model, can be used to determine the first inundating flow for a given grid cell.
 (For raster models, this can be calculated using the [`raster_first_inundating_flow`](../reference/raster_first_inundating_flow.html) function in habistat.) This example is shown for the Deer Creek hydraulic model:
 
-![](figures/duration_1_first_inundating_flow.png)
+![](figures/duration_deer_fif.png)
 
 Given a hydrograph for a particular water year, a relationship can be derived between flow and the number of contiguous days in a water year at which that flow is exceeded.
 This method is implemented in the habistat function [`duration_calc_days_inundated`](../reference/duration_calc_days_inundated.html).
@@ -46,9 +46,7 @@ This method is implemented in the habistat function [`duration_calc_days_inundat
 
 Combining the previous two steps, a spatial map of inundation duration can be created for this particular water year.
 
-<mark>TODO: This map shows average length of contiguous inundation duration; update to show maximum contiguous inundation duration.</mark>
-
-![](figures/duration_2_inundation_duration.png)
+![](figures/duration_deer_max.png)
 
 These duration values can then be used, in the same manner as depth and velocity, to calculate a habitat suitability index at each model grid cell.
 
@@ -59,7 +57,6 @@ However, for training the statistical model in habistat, we need a single flow-t
 To solve this issue, habistat includes a simplified method of applying inundation duration criteria to an already generated flow-to-suitable-area curve, approximating a duration-weighted estimate:
 
 ![](figures/flowchart_duration.png)
-<mark>TODO: Add updated version of this chart incl. scaling</mark>
 
 #### Input flow-to-suitable-area curve
 
