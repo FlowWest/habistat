@@ -78,9 +78,11 @@ var_names <- c(
           vb_bf_w_ratio = "Valley Bottom:Channel Width Ratio",
           flow_idx = "Flow Identifier",
           flow_cfs = "Flow (cfs)",
+          wua_per_lf_pred = "Predicted Suitable Habitat (ft2/ft)",
           wua_per_lf_pred_SD = "Predicted Suitable Habitat (ft2/ft) (SD Model)",
           wua_per_lf_pred_SN = "Predicted Suitable Habitat (ft2/ft) (SN Model)",
           wua_per_lf_actual = "Actual Suitable Habitat (ft2/ft) ",
+          wua_acres_pred = "Predicted Suitable Habitat (acres)",
           wua_acres_pred_SD = "Predicted Suitable Habitat (acres) (SD Model)",
           wua_acres_pred_SN = "Predicted Suitable Habitat (acres) (SN Model)",
           wua_acres_actual = "Actual Suitable Habitat (acres)",
@@ -142,7 +144,7 @@ predictions_watershed <- get_data(wua_predicted_cv_watersheds, package = "habist
 
 predictions_mainstem <- get_data(wua_predicted_cv_mainstems, package = "habistat") |>
   ungroup() |>
-  select(river_cvpia, flow_idx, flow_cfs, habitat, model_id = model_name, starts_with("wua_per_lf_pred"), starts_with("wua_acres_pred"))
+  select(river_cvpia, flow_idx, flow_cfs, habitat, starts_with("wua_per_lf_pred"), starts_with("wua_acres_pred"))
 
 gc() # garbage collect after loading from habistat package
 
