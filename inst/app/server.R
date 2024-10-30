@@ -809,30 +809,29 @@ selected_watershed <- reactiveValues(object_id = NA,
   # for comid only
   streamgage_drc <- reactive({
 
+    active_streamgage_attr <-
+      streamgage_attr |>
+      filter(station_id == coalesce(selected_gage(), NA)) |>
+      as.list()
+
+    message(paste0("pulling streamgage_drc for ", selected_gage(),
+                   " ", input$selected_run,
+                   " ", input$habitat_type,
+                   " ", input$selected_wyt))
+
+    active_streamgage_data <-
+      get_data(streamgage_duration_rating_curves, package = "habistat") |>
+      filter((station_id == selected_gage()) &
+               (run == input$selected_run) &
+               (habitat == input$habitat_type) &
+               (wy_group == input$selected_wyt)) |>
+      unnest(data)
+
     if (most_recent_map_click$type == "comid") {
 
       active_reach_attr <- attr |>
         filter(comid == selected_point$comid) |>
         as.list()
-
-      active_streamgage_attr <-
-        streamgage_attr |>
-        filter(station_id == coalesce(selected_gage(), NA)) |>
-        as.list()
-
-      message(paste0("pulling streamgage_drc for ", selected_gage(),
-                     " ", input$selected_run,
-                     " ", input$habitat_type,
-                     " ", input$selected_wyt))
-
-      active_streamgage_data <-
-        get_data(streamgage_duration_rating_curves, package = "habistat") |>
-        filter((station_id == selected_gage()) &
-                 (run == input$selected_run) &
-                 (habitat == input$habitat_type) &
-                 (wy_group == input$selected_wyt)) |>
-        unnest(data)
-
 
       if (nrow(active_streamgage_data) > 0) {
 
@@ -856,6 +855,22 @@ selected_watershed <- reactiveValues(object_id = NA,
         tibble(q = list(), dhsi_selected = list(), avg_max_days_inundated = list())
 
       }
+    } else {
+
+      if (nrow(active_streamgage_data) > 0) {
+
+        active_streamgage_data <-
+          get_data(streamgage_duration_rating_curves, package = "habistat") |>
+          filter((station_id == selected_gage()) &
+                   (run == input$selected_run) &
+                   (habitat == input$habitat_type) &
+                   (wy_group == input$selected_wyt)) |>
+          unnest(data)
+
+        return(active_streamgage_data)
+
+      }
+
     }
 
   })
@@ -1040,13 +1055,14 @@ selected_watershed <- reactiveValues(object_id = NA,
         ggplot()
       }
     } else if (most_recent_map_click$type %in% c("mainstem", "watershed")) {
-      duration_curve() |>
+      plt_fsa_dur <-
+        duration_curve() |>
         ggplot() +
         geom_line(aes(x = q, y = wua, linetype="Original")) +
         geom_line(aes(x = q, y = durwua, linetype="Duration-Weighted")) +
         ylab(paste0("Suitable Habitat Area (", wua_suf(),")")) +
         xlab("Flow (cfs) at Outlet") +
-        scale_x_log10(breaks = scales::breaks_log(8), labels = scales::label_comma()) +
+        scale_x_log10(breaks = scales::breaks_log(8), labels = scales::label_comma(), limits=c(50,15000)) +
         scale_y_continuous(breaks = scales::breaks_extended(8), labels = scales::label_comma(), limits=c(0, NA)) +
         annotation_logticks(sides = "b") +
         theme(legend.position = "top",
@@ -1054,7 +1070,25 @@ selected_watershed <- reactiveValues(object_id = NA,
         scale_linetype_manual(name = "",
                               values = c("Original" = "solid",
                                          "Duration-Weighted" = "dashed")) +
-        labs(caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids (at cfs downscaled by drainage area and precipitation ratio).")
+        labs(subtitle = "Suitable Habitat Curve",
+             caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids (at cfs downscaled by drainage area and precipitation ratio).")
+
+      plt_gage_drc <-
+        streamgage_drc() |>
+        mutate(q = model_q) |>
+        ggplot() +
+        geom_line(aes(x = q, y = avg_max_days_inundated)) +
+        scale_x_log10(breaks = scales::breaks_log(8), labels = scales::label_comma(), limits=c(50,15000)) +
+        scale_y_continuous(breaks = scales::breaks_extended(8), labels = scales::label_comma(), limits=c(0, NA)) +
+        annotation_logticks(sides = "b") +
+        ylab("Number of Days") + xlab("Flow (cfs)") +
+        theme(legend.position = "none",
+              panel.grid.minor = element_blank()) +
+        labs(subtitle = str_glue("{str_to_upper(selected_gage())} Max Length of Period Exceeding Flow per WY-Season"),
+             caption = str_glue("Showing raw flow duration curve for streamgage, not scaled to {most_recent_map_click$type}."))
+
+      (plt_gage_drc / plt_fsa_dur) + plot_layout(axes = "collect_x")
+
     }
 
 #    plt_days <-
