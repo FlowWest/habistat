@@ -3,15 +3,15 @@
 \docType{data}
 \name{wua_predicted_cv_mainstems}
 \alias{wua_predicted_cv_mainstems}
-\title{WUA/LF by CV Mainstem by Flow (predicted by statistical model)}
+\title{Suitable Habitat Area per Linear Ft by CV Mainstem by Flow (predicted by statistical model)}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 13500 rows and 7 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 13800 rows and 7 columns.
 }
 \usage{
 wua_predicted_cv_mainstems
 }
 \description{
-WUA/LF by CV Mainstem by Flow (predicted by statistical model)
+Suitable Habitat Area per Linear Ft by CV Mainstem by Flow (predicted by statistical model)
 }
 \examples{
 wua_predicted_cv_mainstems |> pillar::glimpse()

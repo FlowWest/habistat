@@ -23,19 +23,19 @@
 "flowline_spawning_attr"
 
 #' @name wua_hydraulic
-#' @title WUA/LF by ComID by Flow (training dataset)
+#' @title Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset)
 #' @examples
 #' wua_hydraulic |> pillar::glimpse()
 "wua_hydraulic"
 
 #' @name wua_hydraulic_interp
-#' @title WUA/LF by ComID by Flow (training dataset, interpolated)
+#' @title Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset, interpolated)
 #' @examples
 #' wua_hydraulic_interp |> pillar::glimpse()
 "wua_hydraulic_interp"
 
 #' @name wua_predicted
-#' @title WUA/LF by ComID by Flow (predicted by statistical model)
+#' @title Suitable Habitat Area per Linear Ft by ComID by Flow (predicted by statistical model)
 #' @examples
 #' wua_predicted |> pillar::glimpse()
 "wua_predicted"
@@ -53,13 +53,13 @@
 "cv_watersheds"
 
 #' @name wua_predicted_cv_mainstems
-#' @title WUA/LF by CV Mainstem by Flow (predicted by statistical model)
+#' @title Suitable Habitat Area per Linear Ft by CV Mainstem by Flow (predicted by statistical model)
 #' @examples
 #' wua_predicted_cv_mainstems |> pillar::glimpse()
 "wua_predicted_cv_mainstems"
 
 #' @name wua_predicted_cv_watersheds
-#' @title WUA/LF by CV Watershed by Flow (predicted by statistical model)
+#' @title Suitable Habitat Area/LF by CV Watershed by Flow (predicted by statistical model)
 #' @examples
 #' wua_predicted_cv_watersheds |> pillar::glimpse()
 "wua_predicted_cv_watersheds"

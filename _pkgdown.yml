@@ -25,27 +25,31 @@ articles:
   - watershed_aggregation
   - spawning_extents
 reference:
+- title: "Suitable Habitat Functions"
+  desc: "Main functions for accessing habitat suitability estimates (model outputs) for a particular reach/mainstem/watershed"
+  contents:
+  - starts_with("habitat_")
 - title: "Datasets"
-  desc: "Packaged Datasets"
+  desc: "Packaged datasets including geometries, attributes, and habitat suitability estimates (model outputs) for all reaches/mainstems/watersheds"
   contents:
   - starts_with("flowline_")
   - starts_with("wua_")
   - starts_with("cv_")
   - hqt
   - starts_with("streamgage_")
-- title: "Suitability Functions"
-  desc: "Functions for assembling the training dataset and calculating depth/velocity suitability criteria"
+- title: "Suitability Criteria Functions"
+  desc: "Supporting functions for assembling the training dataset and calculating depth/velocity suitability criteria"
   contents:
   - starts_with("vector_")
   - starts_with("raster_")
   - starts_with("suitability_")
 - title: "Duration Time Series Functions"
-  desc: "Functions for processing time series data and calculating/applying duration suitability criteria"
+  desc: "Supporting functions for processing time series data and calculating/applying duration suitability criteria"
   contents:
   - starts_with("duration_")
   - starts_with("flow_threshold_")
 - title: "Utilities"
-  desc: "Assorted data and spatial data processing functions"
+  desc: "Supporting functions for data analysis and spatial processing"
   contents:
   - starts_with("seq_")
   - linterp
@@ -56,6 +60,6 @@ reference:
   - starts_with("st_")
   - starts_with("perpendicular_")
 - title: "Constants"
-  desc: "Used Internally"
+  desc: "Constants used across the package back-end"
   contents:
   - starts_with("const_")

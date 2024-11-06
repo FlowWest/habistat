@@ -3,15 +3,15 @@
 \docType{data}
 \name{wua_predicted}
 \alias{wua_predicted}
-\title{WUA/LF by ComID by Flow (predicted by statistical model)}
+\title{Suitable Habitat Area per Linear Ft by ComID by Flow (predicted by statistical model)}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1134100 rows and 10 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1135750 rows and 10 columns.
 }
 \usage{
 wua_predicted
 }
 \description{
-WUA/LF by ComID by Flow (predicted by statistical model)
+Suitable Habitat Area per Linear Ft by ComID by Flow (predicted by statistical model)
 }
 \examples{
 wua_predicted |> pillar::glimpse()

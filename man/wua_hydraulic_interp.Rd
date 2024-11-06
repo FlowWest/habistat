@@ -3,16 +3,15 @@
 \docType{data}
 \name{wua_hydraulic_interp}
 \alias{wua_hydraulic_interp}
-\alias{wua_hydraulic}
-\title{WUA/LF by ComID by Flow (training dataset, interpolated)}
+\title{Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset, interpolated)}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8000 rows and 10 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 12214 rows and 10 columns.
 }
 \usage{
-wua_hydraulic
+wua_hydraulic_interp
 }
 \description{
-WUA/LF by ComID by Flow (training dataset, interpolated)
+Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset, interpolated)
 }
 \examples{
 wua_hydraulic_interp |> pillar::glimpse()

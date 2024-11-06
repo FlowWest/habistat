@@ -3,7 +3,7 @@
 \docType{data}
 \name{wua_predicted_cv_watersheds}
 \alias{wua_predicted_cv_watersheds}
-\title{WUA/LF by CV Watershed by Flow (predicted by statistical model)}
+\title{Suitable Habitat Area/LF by CV Watershed by Flow (predicted by statistical model)}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5900 rows and 7 columns.
 }
@@ -11,7 +11,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 wua_predicted_cv_watersheds
 }
 \description{
-WUA/LF by CV Watershed by Flow (predicted by statistical model)
+Suitable Habitat Area/LF by CV Watershed by Flow (predicted by statistical model)
 }
 \examples{
 wua_predicted_cv_watersheds |> pillar::glimpse()

@@ -3,7 +3,7 @@
 \docType{data}
 \name{wua_hydraulic}
 \alias{wua_hydraulic}
-\title{WUA/LF by ComID by Flow (training dataset)}
+\title{Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset)}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8000 rows and 10 columns.
 }
@@ -11,7 +11,7 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 wua_hydraulic
 }
 \description{
-WUA/LF by ComID by Flow (training dataset)
+Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset)
 }
 \examples{
 wua_hydraulic |> pillar::glimpse()

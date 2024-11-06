@@ -69,8 +69,12 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
+          <h2 id="suitable-habitat-functions">Suitable Habitat Functions <a href="#suitable-habitat-functions" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Main functions for accessing habitat suitability estimates (model outputs) for a particular reach/mainstem/watershed</p>
+        </th>
+      </tr></tbody><tbody></tbody><tbody><tr><th colspan="2">
           <h2 id="datasets">Datasets <a href="#datasets" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Packaged Datasets</p>
+          <p class="section-desc"></p><p>Packaged datasets including geometries, attributes, and habitat suitability estimates (model outputs) for all reaches/mainstems/watersheds</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="flowline_attr.html">flowline_attr</a></code> </p>
@@ -91,23 +95,23 @@
       </tr><tr><td>
           <p><code><a href="wua_hydraulic.html">wua_hydraulic</a></code> </p>
         </td>
-        <td><p>WUA/LF by ComID by Flow (training dataset)</p></td>
+        <td><p>Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset)</p></td>
       </tr><tr><td>
-          <p><code><a href="wua_hydraulic_interp.html">wua_hydraulic</a></code> </p>
+          <p><code><a href="wua_hydraulic_interp.html">wua_hydraulic_interp</a></code> </p>
         </td>
-        <td><p>WUA/LF by ComID by Flow (training dataset, interpolated)</p></td>
+        <td><p>Suitable Habitat Area per Linear Ft by ComID by Flow (training dataset, interpolated)</p></td>
       </tr><tr><td>
           <p><code><a href="wua_predicted.html">wua_predicted</a></code> </p>
         </td>
-        <td><p>WUA/LF by ComID by Flow (predicted by statistical model)</p></td>
+        <td><p>Suitable Habitat Area per Linear Ft by ComID by Flow (predicted by statistical model)</p></td>
       </tr><tr><td>
           <p><code><a href="wua_predicted_cv_mainstems.html">wua_predicted_cv_mainstems</a></code> </p>
         </td>
-        <td><p>WUA/LF by CV Mainstem by Flow (predicted by statistical model)</p></td>
+        <td><p>Suitable Habitat Area per Linear Ft by CV Mainstem by Flow (predicted by statistical model)</p></td>
       </tr><tr><td>
           <p><code><a href="wua_predicted_cv_watersheds.html">wua_predicted_cv_watersheds</a></code> </p>
         </td>
-        <td><p>WUA/LF by CV Watershed by Flow (predicted by statistical model)</p></td>
+        <td><p>Suitable Habitat Area/LF by CV Watershed by Flow (predicted by statistical model)</p></td>
       </tr><tr><td>
           <p><code><a href="cv_mainstems.html">cv_mainstems</a></code> </p>
         </td>
@@ -145,8 +149,8 @@
         </td>
         <td><p>CDEC Mainstem Streamgage Point Geometries</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="suitability-functions">Suitability Functions <a href="#suitability-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions for assembling the training dataset and calculating depth/velocity suitability criteria</p>
+          <h2 id="suitability-criteria-functions">Suitability Criteria Functions <a href="#suitability-criteria-functions" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Supporting functions for assembling the training dataset and calculating depth/velocity suitability criteria</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="vector_calculate_hsi.html">vector_calculate_hsi()</a></code> </p>
@@ -214,7 +218,7 @@
         <td><p>Postprocessor for both SRH-2D and HEC-RAS results, applying linear ft normalization by group</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="duration-time-series-functions">Duration Time Series Functions <a href="#duration-time-series-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Functions for processing time series data and calculating/applying duration suitability criteria</p>
+          <p class="section-desc"></p><p>Supporting functions for processing time series data and calculating/applying duration suitability criteria</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="duration_apply_dhsi_to_fsa_curve.html">duration_apply_dhsi_to_fsa_curve()</a></code> </p>
@@ -254,7 +258,7 @@
         <td><p>Split Flow-to-Suitable-Area Curve at Flow Threshold</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="utilities">Utilities <a href="#utilities" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Assorted data and spatial data processing functions</p>
+          <p class="section-desc"></p><p>Supporting functions for data analysis and spatial processing</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="linterp.html">linterp()</a></code> </p>
@@ -306,7 +310,7 @@
         <td><p>Create Perpendicular Transects from Line</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="constants">Constants <a href="#constants" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p><p>Used Internally</p>
+          <p class="section-desc"></p><p>Constants used across the package back-end</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="const_proj_crs.html">const_proj_crs()</a></code> </p>
