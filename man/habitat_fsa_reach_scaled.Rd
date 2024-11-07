@@ -28,6 +28,6 @@ Create Flow-To-Suitable-Area Curve for Individual Reach (scaled by multiplier)
 }
 \examples{
 
-habitat_fsa_reach_scaled(reach = 7978069)
+habitat_fsa_reach_scaled(reach = 7978069, multiplier = 0.8)
 
 }

@@ -9,6 +9,8 @@
 #'
 #' @returns The path to the downloaded CDEC file in `csv.gz` (compressed CSV) format
 #' @md
+#' @import httr
+#' @importFrom readr read_csv
 #'
 #' @examples
 #' @export

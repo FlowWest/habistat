@@ -50,7 +50,7 @@ habitat_fsa_reach <- function(reach, habitat_type = "rearing", units = "ft") {
 #'
 #' @examples
 #'
-#' habitat_fsa_reach_scaled(reach = 7978069)
+#' habitat_fsa_reach_scaled(reach = 7978069, multiplier = 0.8)
 #'
 habitat_fsa_reach_scaled <- function(reach, multiplier, habitat_type = "rearing", units = "ft") {
 
