@@ -1,0 +1,614 @@
+---
+title: "Function Development"
+author: "[Skyler Lewis](mailto:slewis@flowwest.com)"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+    toc_depth: 3
+    number_sections: false
+    math_method:
+      engine: webtex
+      url: https://latex.codecogs.com/svg.image?
+---
+
+```{r}
+library(tidyverse)
+library(patchwork)
+```
+
+Function to pull flow-to-suitable-area curve for a particular comid/mainstem/watershed
+
+```{r eval=FALSE, include=FALSE}
+habitat_fsa <- function(reach, mainstem, watershed, 
+                        habitat_type = "rearing", units = "ft") {
+  
+  mode_geom <- 
+    if (!missing(reach)) "reach" else 
+    if (!missing(mainstem)) "mainstem" else
+    if (!missing(watershed)) "watershed"
+  
+  mode_unit <-
+    if (units %in% c("ft", "feet", "ft2/lf")) "ft" else 
+    if(units %in% c("ac", "acres")) "ac"
+
+    fsa <- 
+    switch(mode_geom,
+           "reach" = 
+             switch(mode_unit,
+                    "ft" = 
+                      habistat::wua_predicted |>
+                      filter(habitat == habitat_type) |>
+                      filter(comid == reach) |>
+                      select(flow_cfs, 
+                             habitat = wua_per_lf_pred),
+                    "ac" =
+                      habistat::wua_predicted |>
+                      filter(habitat == habitat_type) |>
+                      filter(comid == reach) |>
+                      transmute(flow_cfs, 
+                                habitat = wua_per_lf_pred * reach_length_ft / 43560)),
+           "mainstem" = 
+             switch(mode_unit,
+                    "ft" = 
+                      habistat::wua_predicted |>
+                      filter(habitat == habitat_type) |>
+                      filter(river_cvpia == mainstem) |>
+                      mutate(habitat_ft2 = wua_per_lf_pred * reach_length_ft) |>
+                      group_by(flow_cfs) |>
+                      summarize(habitat = sum(habitat_ft2, na.rm = T) / 43560, 
+                                .groups = "drop"),
+                    "ac" =
+                      habistat::wua_predicted |>
+                      filter(habitat == habitat_type) |>
+                      filter(river_cvpia == mainstem) |>
+                      mutate(habitat_ft2 = wua_per_lf_pred * reach_length_ft) |>
+                      group_by(flow_cfs) |>
+                      summarize(habitat = sum(habitat_ft2, na.rm = T) / sum(reach_length_ft), 
+                                .groups = "drop")),
+           "watershed" = 
+             switch(mode_unit,
+                    "ft" = 
+                      habistat::wua_predicted |>
+                      filter(habitat == habitat_type) |>
+                      filter(watershed_level_3 == watershed) |>
+                      mutate(habitat_ft2 = wua_per_lf_pred * reach_length_ft) |>
+                      group_by(flow_cfs) |>
+                      summarize(habitat = sum(habitat_ft2, na.rm = T) / 43560, 
+                                .groups = "drop"),
+                    "ac" =
+                      habistat::wua_predicted |>
+                      filter(habitat == habitat_type) |>
+                      filter(watershed_level_3 == watershed) |>
+                      mutate(habitat_ft2 = wua_per_lf_pred * reach_length_ft) |>
+                      group_by(flow_cfs) |>
+                      summarize(habitat = sum(habitat_ft2, na.rm = T) / sum(reach_length_ft), 
+                                .groups = "drop")))
+
+    return(fsa)
+    
+}
+
+# example mainstem
+habitat_fsa(mainstem = "Feather River")
+
+# example single comid
+habitat_fsa(reach = 7978069)
+```
+
+```{r}
+habitat_fsa_reach <- function(reach, habitat_type = "rearing", units = "ft") {
+  
+  mode_unit <-
+    if (units %in% c("ft", "feet", "ft2/lf")) "ft" else 
+    if(units %in% c("ac", "acres")) "ac"
+
+  fsa <- 
+    switch(mode_unit,
+          "ft" = 
+            habistat::wua_predicted |>
+            filter(habitat == habitat_type) |>
+            filter(comid == reach) |>
+            select(flow_cfs, 
+                   habitat = wua_per_lf_pred),
+          "ac" =
+            habistat::wua_predicted |>
+            filter(habitat == habitat_type) |>
+            filter(comid == reach) |>
+            transmute(flow_cfs, 
+                      habitat = wua_per_lf_pred * reach_length_ft / 43560))
+
+    return(fsa)
+    
+}
+
+habitat_fsa_reach(reach = 7978069) |>
+  ggplot() + 
+  geom_line(aes(x = flow_cfs, y = habitat)) +
+  scale_x_log10()
+```
+
+
+```{r}
+habitat_fsa_reach_scaled <- function(reach, multiplier, ...) {
+  
+  fsa <- habitat_fsa_reach(reach, ...)
+  
+  return(tibble(flow_cfs = fsa$flow_cfs,
+                habitat = approx(x = fsa$flow_cfs * multiplier,
+                                 y = fsa$habitat,
+                                 xout = fsa$flow_cfs,
+                                 rule = 2:2,
+                                 method = "linear",
+                                 na.rm = F)$y))
+    
+}
+
+habitat_fsa_reach_scaled(reach = 7978069, multiplier = 0.5) |>
+  ggplot() + 
+  geom_line(aes(x = flow_cfs, y = habitat)) +
+  scale_x_log10()
+```
+
+```{r}
+habitat_fsa <- function(reach, mainstem, watershed, 
+                        habitat_type = "rearing", units = "ft") {
+  
+  mode_geom <- 
+    if (!missing(reach)) "reach" else 
+    if (!missing(mainstem)) "mainstem" else
+    if (!missing(watershed)) "watershed"
+  
+  mode_unit <-
+    if (units %in% c("ft", "feet", "ft2/lf")) "ft" else 
+    if(units %in% c("ac", "acres")) "ac"
+  
+  if (mode_geom == "reach") {
+    
+    habitat_fsa_reach(reach = reach,
+                      habitat_type = habitat_type,
+                      units = units)
+    
+  } else if (mode_geom %in% c("mainstem", "watershed")) {
+    
+    group_var <- 
+      switch(mode_geom,
+             "mainstem" = "river_cvpia",
+             "watershed" = "watershed_level_3")
+        
+    flow_xw <- 
+      switch(mode_geom,
+             "mainstem" = habistat::cv_mainstems_flow_xw,
+             "watershed" = habistat::cv_watersheds_flow_xw)
+    
+    comids <-
+      switch(mode_geom,
+             "mainstem" = 
+               habistat::cv_mainstems |>
+               filter(river_cvpia == mainstem) |>
+               pull(comid),
+             "watershed" = 
+               habistat::cv_watersheds |>
+               filter(river_cvpia == mainstem) |>
+               pull(comid))
+    
+    scaled_predictions <-
+      flow_xw |>
+      filter(comid %in% comids) |>
+      mutate(fsa = map2(comid, multiplier, function(x, y) {
+        habitat_fsa_reach_scaled(reach = x,
+                                 multiplier = y,
+                                 habitat_type = habitat_type,
+                                 units = "ft")})) |> # output in units ft2/ft
+      inner_join(habistat::flowline_attr |> select(comid, reach_length_ft),
+                 by = join_by(comid)) |>
+      unnest(fsa) |>
+      mutate(habitat_ft2 = habitat * reach_length_ft)
+    
+    switch(mode_unit,
+           "ft" = 
+             scaled_predictions |>
+             group_by(flow_cfs) |>
+             summarize(habitat = sum(habitat_ft2, na.rm = T) / sum(reach_length_ft), 
+                       .groups = "drop"),
+           "ac" = 
+             scaled_predictions |>
+             group_by(flow_cfs) |>
+             summarize(habitat = sum(habitat_ft2, na.rm = T) / 43560, 
+                       .groups = "drop"))
+
+  }
+  
+}
+
+habitat_fsa(mainstem = "Feather River", units = "ac") |>
+  ggplot() + 
+  geom_line(aes(x = flow_cfs, y = habitat)) +
+  scale_x_log10()
+```
+
+
+Function to pull duration HSI by flow
+
+```{r}
+habitat_drc <- function(streamgage,
+                        habitat_type = "rearing",
+                        run = "fall",
+                        wy_group = "Dry",
+                        gradient = "Valley Foothill") {
+  
+  drc_filtered <-
+    habistat::streamgage_duration_rating_curves |>
+    filter((station_id == str_to_lower(streamgage)) &
+             (run == str_to_lower(run)) &
+             (habitat_type == str_to_lower(habitat_type)) &
+             (wy_group == str_to_title(wy_group)))
+  
+  varname <- case_when(
+    habitat_type == "spawning" ~ "durhsi_spawning",
+    str_to_title(gradient) == "Valley Lowland" ~ "durhsi_rearing_vl",
+    TRUE ~ "durhsi_rearing_vf")
+  
+  drc_selected <-
+    drc_filtered$data[[1]] |>
+    select(flow_cfs = model_q, 
+           durhsi = !!sym(varname))
+  
+  return(drc_selected)
+  
+}
+
+habitat_drc("fsb", habitat_type="rearing", gradient = "Valley Foothill") |>
+  ggplot() + geom_line(aes(x = flow_cfs, y = durhsi))
+```
+  
+
+Function to pull duration HSI by flow, weighted for a comid based on DA and MAP ratios
+
+```{r}
+habitat_drc_weighted <- function(streamgage,
+                                 reach,
+                                 scale = "durhsi",
+                                 ...) {
+  
+  gage_attr <-
+    habistat::streamgage_da_attr |>
+    filter(station_id == str_to_lower(streamgage)) |>
+    as.list()
+  
+  comid_attr <-
+    habistat::flowline_attr |>
+    filter(comid == reach) |>
+    select(comid, da_area_sq_km, da_ppt_mean_mm) |>
+    as.list()
+  
+  multiplier <-
+    (comid_attr$da_area_sq_km / gage_attr$da_gage) *
+    (comid_attr$da_ppt_mean_mm / gage_attr$pc_gage)
+  
+  drc_unweighted <-
+    habitat_drc(streamgage, ...)
+  
+  result <-
+    switch(scale,
+           "durhsi" = 
+             tibble(flow_cfs = drc_unweighted$flow_cfs,
+                    durhsi = approx(x = drc_unweighted$flow_cfs * multiplier, 
+                                    xout = drc_unweighted$flow_cfs, 
+                                    y = drc_unweighted$durhsi,
+                                    method = "linear",
+                                    rule = 2:2,
+                                    na.rm = FALSE)$y),
+           "flow" = 
+             drc_unweighted |>
+             mutate(flow_cfs = flow_cfs * multiplier))
+  return(result)
+  
+}
+
+habitat_drc_weighted("FSB", habitat_type="rearing", gradient = "Valley Foothill", reach = 7978069, scale="durhsi")  |>
+  ggplot() + geom_line(aes(x = flow_cfs, y = durhsi))
+```
+
+Function to pull FSA curve - weighted by duration - for single reach
+
+```{r}
+habitat_fsa_duration_reach <- function(reach,
+                                       streamgage,
+                                       habitat_type = "rearing", 
+                                       units = "ft",
+                                       run = "fall",
+                                       wy_group = "Dry",
+                                       gradient = "Valley Foothill") {
+  
+  fsa <- 
+    habitat_fsa(reach = reach,
+                habitat_type = habitat_type,
+                units = units) 
+  
+  drc <-
+    habitat_drc_weighted(streamgage = streamgage,
+                         reach = reach,
+                         habitat_type = habitat_type,
+                         run = run,
+                         wy_group = wy_group,
+                         gradient = gradient) 
+  
+  fsa_weighted <-
+    habistat::duration_apply_dhsi_to_fsa_curve(fsa = fsa,
+                                               drc = drc, 
+                                               # var names
+                                               fsa_q = flow_cfs,
+                                               fsa_wua = habitat,
+                                               drc_q = flow_cfs,
+                                               drc_dhsi = durhsi)
+  
+  return(tibble(flow_cfs = fsa$flow_cfs,
+                habitat = approx(x = fsa_weighted$q,
+                                 xout = fsa$flow_cfs,
+                                 y = fsa_weighted$durwua,
+                                 rule = 2:2, 
+                                 na.rm = F)$y))
+  
+}
+
+# example non-temporal
+habitat_fsa(reach = 7978069) 
+
+# example temporal
+habitat_fsa_duration_reach(reach = 7978069, streamgage = "FSB")
+```
+
+Function to pull FSA curve - weighted by duration - with watershed aggregation logic
+
+```{r}
+habitat_fsa_duration <- function(reach,
+                                 mainstem,
+                                 watershed,
+                                 streamgage,
+                                 habitat_type = "rearing", 
+                                 units = "ft",
+                                 run = "fall",
+                                 wy_group = "Dry",
+                                 gradient = "Valley Foothill") {
+  
+  mode_geom <- 
+    if (!missing(reach)) "reach" else 
+    if (!missing(mainstem)) "mainstem" else
+    if (!missing(watershed)) "watershed"
+  
+  if (mode_geom == "reach") {
+    
+    habitat_fsa_duration_reach(reach = reach,
+                               streamgage = streamgage,
+                               habitat_type = habitat_type, 
+                               units = units,
+                               run = run,
+                               wy_group = wy_group,
+                               gradient = gradient)
+    
+  } else if (mode_geom %in% c("mainstem", "watershed")) {
+    
+    group_var <- 
+      switch(mode_geom,
+             "mainstem" = "river_cvpia",
+             "watershed" = "watershed_level_3")
+        
+    flow_xw <- 
+      switch(mode_geom,
+             "mainstem" = habistat::cv_mainstems_flow_xw,
+             "watershed" = habistat::cv_watersheds_flow_xw)
+    
+    comids <-
+      switch(mode_geom,
+             "mainstem" = 
+               habistat::cv_mainstems |>
+               filter(river_cvpia == mainstem) |>
+               pull(comid),
+             "watershed" = 
+               habistat::cv_watersheds |>
+               filter(river_cvpia == mainstem) |>
+               pull(comid))
+    
+    scaled_predictions <-
+      flow_xw |>
+      filter(comid %in% comids) |>
+      mutate(fsa = map2(comid, multiplier, function(x, y) {
+        habitat_fsa_reach_scaled(reach = x,
+                                 multiplier = y,
+                                 habitat_type = habitat_type,
+                                 units = "ft")})) |> # output in units ft2/ft
+      mutate(drc = map2(comid, streamgage, function(x, y) {
+        habitat_drc_weighted(reach = x,
+                             streamgage = y,
+                             run = run,
+                             wy_group = wy_group,
+                             gradient = gradient,
+                             scale = "flow")})) |>
+      mutate(fsa_x_drc = map2(fsa, drc, function(f, d) {
+        fsa_weighted <- 
+          habistat::duration_apply_dhsi_to_fsa_curve(fsa = f,
+                                                     drc = d, 
+                                                     # var names
+                                                     fsa_q = flow_cfs,
+                                                     fsa_wua = habitat,
+                                                     drc_q = flow_cfs,
+                                                     drc_dhsi = durhsi)
+        return(tibble(flow_cfs = f$flow_cfs,
+                      habitat = approx(x = fsa_weighted$q,
+                                       xout = f$flow_cfs,
+                                       y = fsa_weighted$durwua,
+                                       rule = 2:2, 
+                                       na.rm = F)$y))
+        })) |>
+      inner_join(habistat::flowline_attr |> select(comid, reach_length_ft),
+                 by = join_by(comid)) |>
+      select(-fsa, -drc) |>
+      unnest(fsa_x_drc) |>
+      mutate(habitat_ft2 = habitat * reach_length_ft)
+    
+    switch(mode_unit,
+           "ft" = 
+             scaled_predictions |>
+             group_by(flow_cfs) |>
+             summarize(habitat = sum(habitat_ft2, na.rm = T) / sum(reach_length_ft), 
+                       .groups = "drop"),
+           "ac" = 
+             scaled_predictions |>
+             group_by(flow_cfs) |>
+             summarize(habitat = sum(habitat_ft2, na.rm = T) / 43560, 
+                       .groups = "drop"))
+
+  }
+  
+}
+
+habitat_fsa_duration(reach = 7978069, streamgage = "FSB")
+
+habitat_fsa(mainstem = "Feather River")
+habitat_fsa_duration(mainstem = "Feather River", streamgage = "FSB")
+```
+
+
+
+
+
+Function to interpolate a FSA curve TS weighted by duration
+
+Function to extract suitable area at a given flow or vector of flows
+
+```{r}
+habitat_predict <- function(x, 
+                            reach, mainstem, watershed, 
+                            streamgage,
+                            fsa_x,
+                            fsa_y,
+                            habitat_type = "rearing", 
+                            units = "ft",
+                            run = "fall",
+                            wy_group = "Dry",
+                            gradient = "Valley Foothill") {
+  
+  mode_geom <- 
+    if (!missing(reach)) "reach" else 
+    if (!missing(mainstem)) "mainstem" else
+    if (!missing(watershed)) "watershed"
+  
+  mode_unit <-
+    if (units %in% c("ft", "feet", "ft2/lf")) "ft" else 
+    if(units %in% c("ac", "acres")) "ac"
+  
+  if (!missing(streamgage)) {
+    
+    fsa <- habitat_fsa_duration(reach = reach,
+                                mainstem = mainstem,
+                                watershed = watershed,
+                                streamgage = streamgage,
+                                habitat_type = habitat_type,
+                                units = units,
+                                run = run,
+                                wy_group = wy_group,
+                                gradient = gradient)
+    
+  } else if (isTRUE((!missing(fsa_x) && (!missing(fsa_y))))) {
+    
+    fsa <- tibble(flow_cfs = fsa_x,
+                  habitat = fsa_y)
+    
+  } else {
+    
+    fsa <- habitat_fsa(reach = reach,
+                       mainstem = mainstem,
+                       watershed = watershed,
+                       habitat_type = habitat_type,
+                       units = units)
+    
+  }
+
+  result <- approx(x = if_else(fsa$flow_cfs > 0, log10(fsa$flow_cfs), 0), 
+                   y = fsa$habitat, 
+                   xout = if_else(x > 0, log10(x), 0),
+                   method = "linear",
+                   rule = 2:2)
+  
+  return(result$y)
+  
+}
+
+# example non-temporal prediction given comid
+habitat_predict(c(0, 10, 150, 300, 9999), reach = 7978069)
+
+# example temporal prediction given comid and streamgage
+habitat_predict(c(0, 10, 150, 300, 9999), reach = 7978069, streamgage = "FSB")
+
+# example non-temporal prediction given mainstem
+habitat_predict(c(0, 10, 150, 300, 9999), mainstem = "Feather River")
+
+# example temporal prediction given comid and streamgage
+habitat_predict(c(0, 10, 150, 300, 9999), mainstem = "Feather River", streamgage = "FSB")
+
+# example manual prediction given custom provided flow-to-suitable-area curve
+habitat_predict(c(0, 10, 150, 300, 9999), fsa_x = c(0, 100, 1000), fsa_y = c(47, 470, 4700))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example application
+
+```{r}
+# random sample time sweries
+tsdata <- 
+  tibble(index = seq(0, 364, 1)) |>
+  mutate(obs_date = ymd("2046-10-01") + index) |>
+  mutate(delta = rnorm(n(), 0, 100),
+         flow_cfs = 1000,
+         flow_cfs = lag(flow_cfs) + cumsum(delta))
+
+plt_ts <- 
+  tsdata |>
+  ggplot() + geom_line(aes(x = obs_date, y = flow_cfs)) +
+  scale_y_log10(limits = c(50, 15000))
+
+plt_fsa_transposed <-
+  habitat_fsa(mainstem = "Feather River") |>
+  ggplot() + geom_line(aes(x = flow_cfs, y = habitat))  +
+  scale_x_log10(limits = c(50, 15000)) +
+  scale_y_continuous(limits = c(0, 1000))
+
+plt_fsa <-
+  habitat_fsa(mainstem = "Feather River") |>
+  ggplot() + geom_line(aes(y = flow_cfs, x = habitat))  +
+  scale_y_log10(limits = c(50, 15000)) +
+  scale_x_continuous(limits = c(0, 1000))
+
+plt_hab <- 
+  tsdata |>
+  mutate(habitat = habitat_predict(flow_cfs, mainstem = "Feather River")) |>
+  ggplot() + geom_line(aes( x = obs_date, y = habitat))
+
+(plt_fsa / plt_fsa_transposed) | (plt_ts / plt_hab) + plot_layout(axes = "collect")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

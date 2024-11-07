@@ -129,7 +129,11 @@ duration_apply_dhsi_to_fsa_curve <- function(fsa, drc,
              durwua = pmin(pmax(cumsum(marginal_durwua), 0), wua))
   }
 
-  fun <- possibly(fun, otherwise=NA) # apply error handling
+  fun <- possibly(fun, otherwise=tibble(q = numeric(0),
+                                        dhsi = numeric(0),
+                                        wua = numeric(0),
+                                        durwua = numeric(0))) # apply error handling
+  # note: this error handling method masks error details that occur within this function
 
   return(fun(fsa, drc,
              fsa_q={{fsa_q}}, fsa_wua={{fsa_wua}},
