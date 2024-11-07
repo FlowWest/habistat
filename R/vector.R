@@ -96,7 +96,7 @@ vector_dvhsi_spawning <- function(d, v, run="max", strict=T) {
               TRUE ~            if_else(d>0 & d<=6.56, 1, 0))
 
   fct_vel <-
-    approx(x = habistat::suitability_hsi_vel_spawning[[run]]$velocity,
+    approx(x = habistat::suitability_hsi_vel_spawning[[run]]$vel_ft_s,
            y = habistat::suitability_hsi_vel_spawning[[run]]$hsi,
            xout = v, yleft = 0, yright = 0)$y
   if (strict) {

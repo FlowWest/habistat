@@ -193,6 +193,8 @@ cdec_filenames <-
       #function(sta,sen,dur,start,end) count_obs_by_wy(retrieve_cdec_csv(sta,sen,dur,start,end)))) |>
       function(sta,sen,dur,start,end) habistat::cdec_csv_retrieve(sta,sen,dur,start,end,dir=here::here("data-raw", "temp"))))
 
+cdec_filenames |> saveRDS(here::here("data-raw", "temp", "cdec_filenames.Rds"))
+
 # process_daily <- function(filename) {
 #   read_csv(filename) |>
 #     janitor::clean_names() |>

@@ -6,7 +6,7 @@
 \alias{wua_hydraulic}
 \title{WUA/LF by ComID by Flow (training dataset, interpolated)}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8000 rows and 11 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 8000 rows and 10 columns.
 }
 \usage{
 wua_hydraulic
