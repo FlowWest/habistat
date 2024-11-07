@@ -1,0 +1,389 @@
+﻿location,starting_elevation,year,redd_count,surveyed
+Above Hwy 36,5200,1997,0,TRUE
+Above Hwy 36,5200,1998,NA,FALSE
+Above Hwy 36,5200,1999,NA,FALSE
+Above Hwy 36,5200,2000,NA,FALSE
+Above Hwy 36,5200,2001,NA,FALSE
+Above Hwy 36,5200,2002,12,TRUE
+Above Hwy 36,5200,2003,0,TRUE
+Above Hwy 36,5200,2004,0,TRUE
+Above Hwy 36,5200,2005,7,TRUE
+Above Hwy 36,5200,2006,19,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,1997,1,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,1998,1,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,1999,0,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2000,0,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2001,3,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2002,13,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2003,6,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2004,1,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2005,10,TRUE
+Hwy 36 to Little Hole-in-Ground,4800,2006,28,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,1997,7,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,1998,2,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,1999,1,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2000,0,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2001,19,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2002,23,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2003,14,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2004,23,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2005,49,TRUE
+Litte Hole-in-Ground to Hole-in-Ground,NA,2006,18,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,1997,1,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,1998,1,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,1999,3,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2000,4,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2001,13,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2002,38,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2003,44,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2004,5,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2005,47,TRUE
+Hole-in-Ground to Ishi Trail Head,4200,2006,28,TRUE
+Ishi Trail Head to Big Bend,NA,1997,7,TRUE
+Ishi Trail Head to Big Bend,NA,1998,1,TRUE
+Ishi Trail Head to Big Bend,NA,1999,11,TRUE
+Ishi Trail Head to Big Bend,NA,2000,6,TRUE
+Ishi Trail Head to Big Bend,NA,2001,14,TRUE
+Ishi Trail Head to Big Bend,NA,2002,8,TRUE
+Ishi Trail Head to Big Bend,NA,2003,24,TRUE
+Ishi Trail Head to Big Bend,NA,2004,9,TRUE
+Ishi Trail Head to Big Bend,NA,2005,19,TRUE
+Ishi Trail Head to Big Bend,NA,2006,21,TRUE
+Big Bend to Canyon Camp,3800,1997,53,TRUE
+Big Bend to Canyon Camp,3800,1998,11,TRUE
+Big Bend to Canyon Camp,3800,1999,6,TRUE
+Big Bend to Canyon Camp,3800,2000,12,TRUE
+Big Bend to Canyon Camp,3800,2001,92,TRUE
+Big Bend to Canyon Camp,3800,2002,103,TRUE
+Big Bend to Canyon Camp,3800,2003,121,TRUE
+Big Bend to Canyon Camp,3800,2004,49,TRUE
+Big Bend to Canyon Camp,3800,2005,51,TRUE
+Big Bend to Canyon Camp,3800,2006,21,TRUE
+Canyon Camp to Sooner,NA,1997,NA,FALSE
+Canyon Camp to Sooner,NA,1998,NA,FALSE
+Canyon Camp to Sooner,NA,1999,NA,FALSE
+Canyon Camp to Sooner,NA,2000,NA,FALSE
+Canyon Camp to Sooner,NA,2001,NA,FALSE
+Canyon Camp to Sooner,NA,2002,NA,FALSE
+Canyon Camp to Sooner,NA,2003,NA,FALSE
+Canyon Camp to Sooner,NA,2004,NA,FALSE
+Canyon Camp to Sooner,NA,2005,NA,FALSE
+Canyon Camp to Sooner,NA,2006,NA,FALSE
+Sooner to McCarthy,2800,1997,19,TRUE
+Sooner to McCarthy,2800,1998,21,TRUE
+Sooner to McCarthy,2800,1999,22,TRUE
+Sooner to McCarthy,2800,2000,59,TRUE
+Sooner to McCarthy,2800,2001,129,TRUE
+Sooner to McCarthy,2800,2002,172,TRUE
+Sooner to McCarthy,2800,2003,133,TRUE
+Sooner to McCarthy,2800,2004,97,TRUE
+Sooner to McCarthy,2800,2005,70,TRUE
+Sooner to McCarthy,2800,2006,72,TRUE
+McCarthy to Savercool,NA,1997,1,TRUE
+McCarthy to Savercool,NA,1998,25,TRUE
+McCarthy to Savercool,NA,1999,75,TRUE
+McCarthy to Savercool,NA,2000,77,TRUE
+McCarthy to Savercool,NA,2001,153,TRUE
+McCarthy to Savercool,NA,2002,119,TRUE
+McCarthy to Savercool,NA,2003,137,TRUE
+McCarthy to Savercool,NA,2004,95,TRUE
+McCarthy to Savercool,NA,2005,107,TRUE
+McCarthy to Savercool,NA,2006,105,TRUE
+Savercool to Black Rock,NA,1997,NA,NA
+Savercool to Black Rock,NA,1998,NA,NA
+Savercool to Black Rock,NA,1999,NA,NA
+Savercool to Black Rock,NA,2000,NA,NA
+Savercool to Black Rock,NA,2001,NA,NA
+Savercool to Black Rock,NA,2002,NA,NA
+Savercool to Black Rock,NA,2003,NA,NA
+Savercool to Black Rock,NA,2004,NA,NA
+Savercool to Black Rock,NA,2005,NA,NA
+Savercool to Black Rock,NA,2006,NA,NA
+Black Rock to below Ranch House,2100,1997,5,TRUE
+Black Rock to below Ranch House,2100,1998,19,TRUE
+Black Rock to below Ranch House,2100,1999,58,TRUE
+Black Rock to below Ranch House,2100,2000,34,TRUE
+Black Rock to below Ranch House,2100,2001,71,TRUE
+Black Rock to below Ranch House,2100,2002,127,TRUE
+Black Rock to below Ranch House,2100,2003,39,TRUE
+Black Rock to below Ranch House,2100,2004,38,TRUE
+Black Rock to below Ranch House,2100,2005,79,TRUE
+Black Rock to below Ranch House,2100,2006,46,TRUE
+Below Ranch House to above Avery,NA,1997,7,TRUE
+Below Ranch House to above Avery,NA,1998,33,TRUE
+Below Ranch House to above Avery,NA,1999,52,TRUE
+Below Ranch House to above Avery,NA,2000,53,TRUE
+Below Ranch House to above Avery,NA,2001,44,TRUE
+Below Ranch House to above Avery,NA,2002,83,TRUE
+Below Ranch House to above Avery,NA,2003,67,TRUE
+Below Ranch House to above Avery,NA,2004,146,TRUE
+Below Ranch House to above Avery,NA,2005,78,TRUE
+Below Ranch House to above Avery,NA,2006,38,TRUE
+Above Avery to Pape,1600,1997,NA,FALSE
+Above Avery to Pape,1600,1998,39,TRUE
+Above Avery to Pape,1600,1999,0,TRUE
+Above Avery to Pape,1600,2000,15,TRUE
+Above Avery to Pape,1600,2001,12,TRUE
+Above Avery to Pape,1600,2002,27,TRUE
+Above Avery to Pape,1600,2003,58,TRUE
+Above Avery to Pape,1600,2004,8,TRUE
+Above Avery to Pape,1600,2005,36,TRUE
+Above Avery to Pape,1600,2006,34,TRUE
+Pape to Buckhorn Gulch,NA,1997,NA,FALSE
+Pape to Buckhorn Gulch,NA,1998,13,TRUE
+Pape to Buckhorn Gulch,NA,1999,12,TRUE
+Pape to Buckhorn Gulch,NA,2000,3,TRUE
+Pape to Buckhorn Gulch,NA,2001,0,TRUE
+Pape to Buckhorn Gulch,NA,2002,63,TRUE
+Pape to Buckhorn Gulch,NA,2003,64,TRUE
+Pape to Buckhorn Gulch,NA,2004,18,TRUE
+Pape to Buckhorn Gulch,NA,2005,22,TRUE
+Pape to Buckhorn Gulch,NA,2006,37,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,1997,NA,FALSE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,1998,46,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,1999,40,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2000,9,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2001,0,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2002,9,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2003,6,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2004,10,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2005,0,TRUE
+Buckhorn Gulch to Upper Dam (aerial survey),NA,2006,34,TRUE
+Above Hwy 36,NA,2007,3,NA
+Above Hwy 36,NA,2008,1,NA
+Above Hwy 36,NA,2009,0,NA
+Above Hwy 36,NA,2010,17,NA
+Above Hwy 36,NA,2011,3,NA
+Above Hwy 36,NA,2012,0,NA
+Above Hwy 36,NA,2013,0,NA
+Above Hwy 36,NA,2014,0,NA
+Above Hwy 36,NA,2015,0,NA
+Above Hwy 36,NA,2016,0,NA
+Above Hwy 36,NA,2017,0,NA
+Above Hwy 36,NA,2018,0,NA
+Above Hwy 36,NA,2019,0,NA
+Above Hwy 36,NA,2020,0,NA
+Above Hwy 36,NA,2021,0,NA
+Above Hwy 36,NA,2022,0,NA
+Above Hwy 36,NA,2023,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2007,17,NA
+Hwy 36 to Little Hole-in-Ground,NA,2008,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2009,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2010,6,NA
+Hwy 36 to Little Hole-in-Ground,NA,2011,3,NA
+Hwy 36 to Little Hole-in-Ground,NA,2012,8,NA
+Hwy 36 to Little Hole-in-Ground,NA,2013,3,NA
+Hwy 36 to Little Hole-in-Ground,NA,2014,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2015,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2016,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2017,3,NA
+Hwy 36 to Little Hole-in-Ground,NA,2018,1,NA
+Hwy 36 to Little Hole-in-Ground,NA,2019,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2020,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2021,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2022,0,NA
+Hwy 36 to Little Hole-in-Ground,NA,2023,0,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2007,14,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2008,5,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2009,5,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2010,4,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2011,10,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2012,10,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2013,16,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2014,2,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2015,0,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2016,1,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2017,3,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2018,15,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2019,6,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2020,0,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2021,0,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2022,0,NA
+Litte Hole-in-Ground to Hole-in-Ground,NA,2023,0,NA
+Hole-in-Ground to Ishi Trail Head,NA,2007,18,NA
+Hole-in-Ground to Ishi Trail Head,NA,2008,4,NA
+Hole-in-Ground to Ishi Trail Head,NA,2009,5,NA
+Hole-in-Ground to Ishi Trail Head,NA,2010,17,NA
+Hole-in-Ground to Ishi Trail Head,NA,2011,17,NA
+Hole-in-Ground to Ishi Trail Head,NA,2012,16,NA
+Hole-in-Ground to Ishi Trail Head,NA,2013,27,NA
+Hole-in-Ground to Ishi Trail Head,NA,2014,3,NA
+Hole-in-Ground to Ishi Trail Head,NA,2015,3,NA
+Hole-in-Ground to Ishi Trail Head,NA,2016,2,NA
+Hole-in-Ground to Ishi Trail Head,NA,2017,12,NA
+Hole-in-Ground to Ishi Trail Head,NA,2018,12,NA
+Hole-in-Ground to Ishi Trail Head,NA,2019,5,NA
+Hole-in-Ground to Ishi Trail Head,NA,2020,1,NA
+Hole-in-Ground to Ishi Trail Head,NA,2021,0,NA
+Hole-in-Ground to Ishi Trail Head,NA,2022,0,NA
+Hole-in-Ground to Ishi Trail Head,NA,2023,0,NA
+Ishi Trail Head to Big Bend,NA,2007,11,NA
+Ishi Trail Head to Big Bend,NA,2008,3,NA
+Ishi Trail Head to Big Bend,NA,2009,2,NA
+Ishi Trail Head to Big Bend,NA,2010,10,NA
+Ishi Trail Head to Big Bend,NA,2011,11,NA
+Ishi Trail Head to Big Bend,NA,2012,16,NA
+Ishi Trail Head to Big Bend,NA,2013,13,NA
+Ishi Trail Head to Big Bend,NA,2014,0,NA
+Ishi Trail Head to Big Bend,NA,2015,2,NA
+Ishi Trail Head to Big Bend,NA,2016,0,NA
+Ishi Trail Head to Big Bend,NA,2017,0,NA
+Ishi Trail Head to Big Bend,NA,2018,1,NA
+Ishi Trail Head to Big Bend,NA,2019,2,NA
+Ishi Trail Head to Big Bend,NA,2020,0,NA
+Ishi Trail Head to Big Bend,NA,2021,0,NA
+Ishi Trail Head to Big Bend,NA,2022,0,NA
+Ishi Trail Head to Big Bend,NA,2023,0,NA
+Big Bend to Canyon Camp,NA,2007,29,NA
+Big Bend to Canyon Camp,NA,2008,18,NA
+Big Bend to Canyon Camp,NA,2009,12,NA
+Big Bend to Canyon Camp,NA,2010,27,NA
+Big Bend to Canyon Camp,NA,2011,19,NA
+Big Bend to Canyon Camp,NA,2012,33,NA
+Big Bend to Canyon Camp,NA,2013,59,NA
+Big Bend to Canyon Camp,NA,2014,16,NA
+Big Bend to Canyon Camp,NA,2015,16,NA
+Big Bend to Canyon Camp,NA,2016,4,NA
+Big Bend to Canyon Camp,NA,2017,28,NA
+Big Bend to Canyon Camp,NA,2018,0,NA
+Big Bend to Canyon Camp,NA,2019,3,NA
+Big Bend to Canyon Camp,NA,2020,0,NA
+Big Bend to Canyon Camp,NA,2021,1,NA
+Big Bend to Canyon Camp,NA,2022,0,NA
+Big Bend to Canyon Camp,NA,2023,2,NA
+Canyon Camp to Sooner,NA,2007,70,NA
+Canyon Camp to Sooner,NA,2008,32,NA
+Canyon Camp to Sooner,NA,2009,12,NA
+Canyon Camp to Sooner,NA,2010,26,NA
+Canyon Camp to Sooner,NA,2011,17,NA
+Canyon Camp to Sooner,NA,2012,47,NA
+Canyon Camp to Sooner,NA,2013,109,NA
+Canyon Camp to Sooner,NA,2014,40,NA
+Canyon Camp to Sooner,NA,2015,11,NA
+Canyon Camp to Sooner,NA,2016,5,NA
+Canyon Camp to Sooner,NA,2017,35,NA
+Canyon Camp to Sooner,NA,2018,13,NA
+Canyon Camp to Sooner,NA,2019,15,NA
+Canyon Camp to Sooner,NA,2020,10,NA
+Canyon Camp to Sooner,NA,2021,59,NA
+Canyon Camp to Sooner,NA,2022,66,NA
+Canyon Camp to Sooner,NA,2023,1,NA
+Sooner to McCarthy,NA,2007,78,NA
+Sooner to McCarthy,NA,2008,46,NA
+Sooner to McCarthy,NA,2009,13,NA
+Sooner to McCarthy,NA,2010,24,NA
+Sooner to McCarthy,NA,2011,31,NA
+Sooner to McCarthy,NA,2012,34,NA
+Sooner to McCarthy,NA,2013,78,NA
+Sooner to McCarthy,NA,2014,41,NA
+Sooner to McCarthy,NA,2015,11,NA
+Sooner to McCarthy,NA,2016,24,NA
+Sooner to McCarthy,NA,2017,18,NA
+Sooner to McCarthy,NA,2018,11,NA
+Sooner to McCarthy,NA,2019,9,NA
+Sooner to McCarthy,NA,2020,7,NA
+Sooner to McCarthy,NA,2021,101,NA
+Sooner to McCarthy,NA,2022,20,NA
+Sooner to McCarthy,NA,2023,1,NA
+McCarthy to Savercool,NA,2007,38,NA
+McCarthy to Savercool,NA,2008,15,NA
+McCarthy to Savercool,NA,2009,6,NA
+McCarthy to Savercool,NA,2010,17,NA
+McCarthy to Savercool,NA,2011,9,NA
+McCarthy to Savercool,NA,2012,21,NA
+McCarthy to Savercool,NA,2013,47,NA
+McCarthy to Savercool,NA,2014,29,NA
+McCarthy to Savercool,NA,2015,7,NA
+McCarthy to Savercool,NA,2016,2,NA
+McCarthy to Savercool,NA,2017,12,NA
+McCarthy to Savercool,NA,2018,8,NA
+McCarthy to Savercool,NA,2019,1,NA
+McCarthy to Savercool,NA,2020,0,NA
+McCarthy to Savercool,NA,2021,43,NA
+McCarthy to Savercool,NA,2022,7,NA
+McCarthy to Savercool,NA,2023,1,NA
+Savercool to Black Rock,NA,2007,35,NA
+Savercool to Black Rock,NA,2008,4,NA
+Savercool to Black Rock,NA,2009,3,NA
+Savercool to Black Rock,NA,2010,4,NA
+Savercool to Black Rock,NA,2011,4,NA
+Savercool to Black Rock,NA,2012,12,NA
+Savercool to Black Rock,NA,2013,10,NA
+Savercool to Black Rock,NA,2014,15,NA
+Savercool to Black Rock,NA,2015,4,NA
+Savercool to Black Rock,NA,2016,1,NA
+Savercool to Black Rock,NA,2017,3,NA
+Savercool to Black Rock,NA,2018,1,NA
+Savercool to Black Rock,NA,2019,1,NA
+Savercool to Black Rock,NA,2020,5,NA
+Savercool to Black Rock,NA,2021,15,NA
+Savercool to Black Rock,NA,2022,0,NA
+Savercool to Black Rock,NA,2023,1,NA
+Black Rock to below Ranch House,NA,2007,65,NA
+Black Rock to below Ranch House,NA,2008,14,NA
+Black Rock to below Ranch House,NA,2009,12,NA
+Black Rock to below Ranch House,NA,2010,28,NA
+Black Rock to below Ranch House,NA,2011,14,NA
+Black Rock to below Ranch House,NA,2012,21,NA
+Black Rock to below Ranch House,NA,2013,63,NA
+Black Rock to below Ranch House,NA,2014,15,NA
+Black Rock to below Ranch House,NA,2015,3,NA
+Black Rock to below Ranch House,NA,2016,4,NA
+Black Rock to below Ranch House,NA,2017,5,NA
+Black Rock to below Ranch House,NA,2018,9,NA
+Black Rock to below Ranch House,NA,2019,1,NA
+Black Rock to below Ranch House,NA,2020,2,NA
+Black Rock to below Ranch House,NA,2021,29,NA
+Black Rock to below Ranch House,NA,2022,19,NA
+Black Rock to below Ranch House,NA,2023,2,NA
+Ranch House to above Avery,NA,2007,23,NA
+Ranch House to above Avery,NA,2008,21,NA
+Ranch House to above Avery,NA,2009,17,NA
+Ranch House to above Avery,NA,2010,33,NA
+Ranch House to above Avery,NA,2011,8,NA
+Ranch House to above Avery,NA,2012,25,NA
+Ranch House to above Avery,NA,2013,105,NA
+Ranch House to above Avery,NA,2014,28,NA
+Ranch House to above Avery,NA,2015,1,NA
+Ranch House to above Avery,NA,2016,2,NA
+Ranch House to above Avery,NA,2017,7,NA
+Ranch House to above Avery,NA,2018,4,NA
+Ranch House to above Avery,NA,2019,12,NA
+Ranch House to above Avery,NA,2020,10,NA
+Ranch House to above Avery,NA,2021,56,NA
+Ranch House to above Avery,NA,2022,8,NA
+Ranch House to above Avery,NA,2023,6,NA
+Above Avery to Pape,NA,2007,51,NA
+Above Avery to Pape,NA,2008,12,NA
+Above Avery to Pape,NA,2009,14,NA
+Above Avery to Pape,NA,2010,19,NA
+Above Avery to Pape,NA,2011,15,NA
+Above Avery to Pape,NA,2012,12,NA
+Above Avery to Pape,NA,2013,41,NA
+Above Avery to Pape,NA,2014,23,NA
+Above Avery to Pape,NA,2015,0,NA
+Above Avery to Pape,NA,2016,2,NA
+Above Avery to Pape,NA,2017,2,NA
+Above Avery to Pape,NA,2018,0,NA
+Above Avery to Pape,NA,2019,11,NA
+Above Avery to Pape,NA,2020,3,NA
+Above Avery to Pape,NA,2021,1,NA
+Above Avery to Pape,NA,2022,5,NA
+Above Avery to Pape,NA,2023,0,NA
+Pape to Buckhorn Gulch,NA,2007,8,NA
+Pape to Buckhorn Gulch,NA,2008,6,NA
+Pape to Buckhorn Gulch,NA,2009,9,NA
+Pape to Buckhorn Gulch,NA,2010,9,NA
+Pape to Buckhorn Gulch,NA,2011,22,NA
+Pape to Buckhorn Gulch,NA,2012,16,NA
+Pape to Buckhorn Gulch,NA,2013,29,NA
+Pape to Buckhorn Gulch,NA,2014,8,NA
+Pape to Buckhorn Gulch,NA,2015,0,NA
+Pape to Buckhorn Gulch,NA,2016,0,NA
+Pape to Buckhorn Gulch,NA,2017,1,NA
+Pape to Buckhorn Gulch,NA,2018,1,NA
+Pape to Buckhorn Gulch,NA,2019,21,NA
+Pape to Buckhorn Gulch,NA,2020,0,NA
+Pape to Buckhorn Gulch,NA,2021,5,NA
+Pape to Buckhorn Gulch,NA,2022,0,NA
+Pape to Buckhorn Gulch,NA,2023,3,NA

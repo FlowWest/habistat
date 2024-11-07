@@ -24,6 +24,10 @@ div[role=main] {
   mix-blend-mode: multiply;
   opacity: 0.33;
 }
+.leaflet-ValleyLowland-pane {
+  mix-blend-mode: multiply;
+  opacity: 0.33;
+}
 
 #invmassControlPanel {
   background: white;

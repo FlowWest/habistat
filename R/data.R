@@ -16,6 +16,12 @@
 #' flowline_attr |> pillar::glimpse()
 "flowline_attr"
 
+#' @name flowline_spawning_attr
+#' @title NHD Flowline (ComID) Spawning Suitability Flags
+#' @examples
+#' flowline_spawning_attr |> pillar::glimpse()
+"flowline_spawning_attr"
+
 #' @name wua_hydraulic
 #' @title WUA/LF by ComID by Flow (training dataset)
 #' @examples
@@ -46,6 +52,26 @@
 #' cv_watersheds |> ggplot2::ggplot() + ggplot2::geom_sf()
 "cv_watersheds"
 
+#' @name wua_predicted_cv_mainstems
+#' @title WUA/LF by CV Mainstem by Flow (predicted by statistical model)
+#' @examples
+#' wua_predicted_cv_mainstems |> pillar::glimpse()
+"wua_predicted_cv_mainstems"
+
+#' @name wua_predicted_cv_watersheds
+#' @title WUA/LF by CV Watershed by Flow (predicted by statistical model)
+#' @examples
+#' wua_predicted_cv_watersheds |> pillar::glimpse()
+"wua_predicted_cv_watersheds"
+
+#' @name cv_mainstems_flow_xw
+#' @title Flow Area Crosswalk for CV Mainstems
+"cv_mainstems_flow_xw"
+
+#' @name cv_watersheds_flow_xw
+#' @title Flow Area Crosswalk for CV Watersheds
+"cv_watersheds_flow_xw"
+
 #' @name streamgage_attr
 #' @title CDEC Mainstem Streamgage Attributes
 "streamgage_attr"
@@ -58,6 +84,14 @@
 #' @title CDEC Mainstem Streamgage Duration Rating Curves
 "streamgage_duration_rating_curves"
 
+#' @name streamgage_da_attr
+#' @title CDEC Mainstem Streamgage Drainage Area Attributes
+"streamgage_da_attr"
+
 #' @name suitability_hsi_vel_spawning
 #' @title Velocity suitability criteria for spawning by run
 "suitability_hsi_vel_spawning"
+
+#' @name hqt
+#' @title HQT Valley Lowland Polygon
+"hqt"

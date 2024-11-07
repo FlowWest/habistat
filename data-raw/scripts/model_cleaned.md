@@ -1,7 +1,7 @@
 Statistical Modeling to Predict Flow-to-Suitable-Area Curves
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-09-20
+2024-10-23
 
 - [Import Training Data](#import-training-data)
 - [Preprocess Training Data](#preprocess-training-data)
@@ -24,7 +24,6 @@ Statistical Modeling to Predict Flow-to-Suitable-Area Curves
   - [Flow range filter](#flow-range-filter)
   - [Rearing](#rearing)
   - [Spawning](#spawning)
-  - [DSMHabitat comparison](#dsmhabitat-comparison)
   - [Combine the outputs](#combine-the-outputs)
 
 ``` r
@@ -510,7 +509,7 @@ selected_pred_vars <-
     ## $ model_hab           <fct> rearing, rearing, rearing, rearing, spawning, spaw…
     ## $ model_type          <fct> LM, LM, RF, RF, LM, LM, RF, RF
     ## $ model_name          <chr> "SD", "SN", "SD", "SN", "SD", "SN", "SD", "SN"
-    ## $ selected_predictors <list> <"bf_depth_m", "bf_w_d_ratio", "da_avg_slope", "da…
+    ## $ selected_predictors <list> <"bf_w_d_ratio", "da_area_sq_km", "da_k_erodibilit…
 
 ``` r
 model_rmse_loo_summary |>
@@ -522,94 +521,98 @@ model_rmse_loo_summary |>
 
 | model_hab | model_type | model_name | predictor                | delta_rmse_test |
 |:----------|:-----------|:-----------|:-------------------------|----------------:|
-| rearing   | LM         | SD         | da_k_erodibility         |       4.6537640 |
-| rearing   | LM         | SD         | vb_width_transect        |       2.1600269 |
-| rearing   | LM         | SD         | loc_bfi                  |       2.1432339 |
-| rearing   | LM         | SD         | da_avg_slope             |       2.0248599 |
-| rearing   | LM         | SD         | da_elev_mean             |       1.9341717 |
-| rearing   | LM         | SD         | da_ppt_mean_mm           |       1.6236430 |
-| rearing   | LM         | SD         | sinuosity                |       1.4632545 |
-| rearing   | LM         | SD         | vb_bf_w_ratio            |       1.2629988 |
-| rearing   | LM         | SD         | bf_w_d_ratio             |       0.9471129 |
-| rearing   | LM         | SD         | loc_permeability         |       0.8276365 |
-| rearing   | LM         | SD         | frac_leveed_longitudinal |       0.6604713 |
-| rearing   | LM         | SD         | bf_depth_m               |       0.5398008 |
-| rearing   | LM         | SD         | mean_ndvi                |       0.2822588 |
-| rearing   | LM         | SD         | loc_ppt_mean_mm          |       0.2065531 |
-| rearing   | LM         | SD         | loc_pct_clay             |       0.0927878 |
-| rearing   | LM         | SD         | slope_x_da_area_sq_km    |       0.0419569 |
-| rearing   | LM         | SD         | slope                    |       0.0418958 |
-| rearing   | LM         | SN         | loc_bedrock_depth        |      16.9358893 |
-| rearing   | LM         | SN         | da_k_erodibility         |      16.7508721 |
-| rearing   | LM         | SN         | bf_w_d_ratio             |      16.5923099 |
-| rearing   | LM         | SN         | da_avg_slope             |       5.5540003 |
-| rearing   | LM         | SN         | loc_bfi                  |       5.5008998 |
-| rearing   | LM         | SN         | divergence_ratio         |       3.2562095 |
-| rearing   | LM         | SN         | loc_permeability         |       1.4671699 |
-| rearing   | LM         | SN         | loc_pct_sand             |       1.1022735 |
-| rearing   | LM         | SN         | sinuosity                |       0.2721850 |
-| rearing   | LM         | SN         | vb_bf_w_ratio            |       0.1786087 |
-| rearing   | LM         | SN         | mean_ndvi                |       0.0699276 |
-| rearing   | RF         | SD         | loc_pct_sand             |       0.3479403 |
-| rearing   | RF         | SD         | sinuosity                |       0.2407984 |
-| rearing   | RF         | SD         | slope                    |       0.2370899 |
-| rearing   | RF         | SD         | vb_width_transect        |       0.2274072 |
-| rearing   | RF         | SD         | loc_ppt_mean_mm          |       0.2111965 |
-| rearing   | RF         | SD         | loc_pct_clay             |       0.2025557 |
-| rearing   | RF         | SD         | loc_bedrock_depth        |       0.1835900 |
-| rearing   | RF         | SD         | loc_permeability         |       0.1801713 |
-| rearing   | RF         | SD         | divergence_ratio         |       0.1797034 |
-| rearing   | RF         | SD         | bf_w_d_ratio             |       0.1712588 |
-| rearing   | RF         | SD         | da_elev_mean             |       0.1528414 |
-| rearing   | RF         | SD         | bf_depth_m               |       0.1440695 |
-| rearing   | RF         | SD         | da_ppt_mean_mm           |       0.1436123 |
-| rearing   | RF         | SD         | slope_x_da_area_sq_km    |       0.1423177 |
-| rearing   | RF         | SD         | da_avg_slope             |       0.0911647 |
-| rearing   | RF         | SD         | mean_ndvi                |       0.0801064 |
-| rearing   | RF         | SD         | da_area_sq_km            |       0.0413925 |
-| rearing   | RF         | SN         | slope                    |       0.1420263 |
-| rearing   | RF         | SN         | mtpi30_min               |       0.0237571 |
-| rearing   | RF         | SN         | bf_w_d_ratio             |       0.0069228 |
-| rearing   | RF         | SN         | loc_pct_sand             |       0.0043893 |
-| spawning  | LM         | SD         | loc_bfi                  |       2.3149221 |
-| spawning  | LM         | SD         | mean_ndvi                |       1.7993011 |
-| spawning  | LM         | SD         | vb_width_transect        |       1.6665895 |
-| spawning  | LM         | SD         | loc_bedrock_depth        |       1.0853822 |
-| spawning  | LM         | SD         | loc_ppt_mean_mm          |       0.8435605 |
-| spawning  | LM         | SD         | da_ppt_mean_mm           |       0.7875103 |
-| spawning  | LM         | SD         | frac_leveed_longitudinal |       0.7261941 |
-| spawning  | LM         | SD         | sinuosity                |       0.4324383 |
-| spawning  | LM         | SD         | da_avg_slope             |       0.3229267 |
-| spawning  | LM         | SD         | bf_w_d_ratio             |       0.2571238 |
-| spawning  | LM         | SD         | loc_pct_clay             |       0.1791906 |
-| spawning  | LM         | SD         | vb_bf_w_ratio            |       0.1325084 |
-| spawning  | LM         | SD         | loc_permeability         |       0.0239013 |
-| spawning  | LM         | SD         | da_area_sq_km            |       0.0118833 |
-| spawning  | LM         | SN         | loc_bfi                  |     277.7652121 |
-| spawning  | LM         | SN         | loc_permeability         |      17.8907933 |
-| spawning  | LM         | SN         | loc_ppt_mean_mm          |      10.0199319 |
-| spawning  | LM         | SN         | loc_pct_sand             |       6.1076752 |
-| spawning  | LM         | SN         | loc_pct_clay             |       6.0287923 |
-| spawning  | LM         | SN         | mean_ndvi                |       2.9133206 |
-| spawning  | LM         | SN         | loc_bedrock_depth        |       2.3921638 |
-| spawning  | LM         | SN         | divergence_ratio         |       2.0331672 |
-| spawning  | RF         | SD         | bf_depth_m               |       0.5813427 |
-| spawning  | RF         | SD         | vb_width_transect        |       0.4993656 |
-| spawning  | RF         | SD         | da_avg_slope             |       0.4679448 |
-| spawning  | RF         | SD         | loc_permeability         |       0.1447586 |
-| spawning  | RF         | SD         | da_area_sq_km            |       0.1306005 |
-| spawning  | RF         | SD         | vb_bf_w_ratio            |       0.0854993 |
-| spawning  | RF         | SD         | mtpi30_min               |       0.0832960 |
-| spawning  | RF         | SD         | bf_w_d_ratio             |       0.0084830 |
-| spawning  | RF         | SN         | loc_ppt_mean_mm          |       0.6935477 |
-| spawning  | RF         | SN         | mtpi30_min               |       0.6401733 |
-| spawning  | RF         | SN         | da_k_erodibility         |       0.6039322 |
-| spawning  | RF         | SN         | bf_w_d_ratio             |       0.5499524 |
-| spawning  | RF         | SN         | loc_pct_clay             |       0.4183990 |
-| spawning  | RF         | SN         | da_avg_slope             |       0.3969810 |
-| spawning  | RF         | SN         | divergence_ratio         |       0.3423105 |
-| spawning  | RF         | SN         | frac_leveed_longitudinal |       0.1778825 |
-| spawning  | RF         | SN         | loc_permeability         |       0.0295270 |
+| rearing   | LM         | SD         | da_ppt_mean_mm           |    4.175734e+09 |
+| rearing   | LM         | SD         | sinuosity                |    2.887824e+09 |
+| rearing   | LM         | SD         | vb_bf_w_ratio            |    2.093905e+08 |
+| rearing   | LM         | SD         | da_area_sq_km            |    2.604537e+07 |
+| rearing   | LM         | SD         | bf_w_d_ratio             |    1.565397e+07 |
+| rearing   | LM         | SD         | loc_ppt_mean_mm          |    4.060770e+06 |
+| rearing   | LM         | SD         | loc_bfi                  |    3.029693e+06 |
+| rearing   | LM         | SD         | mean_ndvi                |    2.851311e+06 |
+| rearing   | LM         | SD         | loc_bedrock_depth        |    2.516258e+06 |
+| rearing   | LM         | SD         | frac_leveed_longitudinal |    1.700815e+06 |
+| rearing   | LM         | SD         | slope_x_da_area_sq_km    |    1.441056e+06 |
+| rearing   | LM         | SD         | vb_width_transect        |    7.892387e+05 |
+| rearing   | LM         | SD         | da_k_erodibility         |    6.942022e+05 |
+| rearing   | LM         | SD         | loc_pct_sand             |    5.540631e+05 |
+| rearing   | LM         | SN         | da_k_erodibility         |    5.129044e+03 |
+| rearing   | LM         | SN         | vb_bf_w_ratio            |    6.978174e+02 |
+| rearing   | LM         | SN         | bf_w_d_ratio             |    6.285136e+02 |
+| rearing   | LM         | SN         | slope                    |    2.423237e+02 |
+| rearing   | LM         | SN         | loc_pct_sand             |    2.143764e+02 |
+| rearing   | LM         | SN         | loc_bfi                  |    1.937674e+02 |
+| rearing   | LM         | SN         | loc_bedrock_depth        |    1.649773e+02 |
+| rearing   | LM         | SN         | mean_ndvi                |    1.237980e+02 |
+| rearing   | LM         | SN         | sinuosity                |    1.230847e+02 |
+| rearing   | RF         | SD         | da_k_erodibility         |    1.472693e+00 |
+| rearing   | RF         | SD         | da_avg_slope             |    6.446581e-01 |
+| rearing   | RF         | SD         | da_ppt_mean_mm           |    5.875080e-01 |
+| rearing   | RF         | SD         | loc_permeability         |    5.595447e-01 |
+| rearing   | RF         | SD         | da_area_sq_km            |    5.470812e-01 |
+| rearing   | RF         | SD         | frac_leveed_longitudinal |    4.426633e-01 |
+| rearing   | RF         | SD         | bf_depth_m               |    4.305389e-01 |
+| rearing   | RF         | SD         | loc_ppt_mean_mm          |    4.203067e-01 |
+| rearing   | RF         | SD         | loc_bfi                  |    3.874077e-01 |
+| rearing   | RF         | SD         | vb_width_transect        |    3.806124e-01 |
+| rearing   | RF         | SD         | da_elev_mean             |    3.660215e-01 |
+| rearing   | RF         | SD         | sinuosity                |    3.481545e-01 |
+| rearing   | RF         | SD         | loc_pct_clay             |    3.125123e-01 |
+| rearing   | RF         | SD         | mean_ndvi                |    3.061162e-01 |
+| rearing   | RF         | SD         | mtpi30_min               |    3.048064e-01 |
+| rearing   | RF         | SD         | slope_x_da_area_sq_km    |    2.701113e-01 |
+| rearing   | RF         | SD         | divergence_ratio         |    2.396793e-01 |
+| rearing   | RF         | SD         | loc_bedrock_depth        |    2.214278e-01 |
+| rearing   | RF         | SD         | slope                    |    1.627235e-01 |
+| rearing   | RF         | SD         | bf_w_d_ratio             |    1.056416e-01 |
+| rearing   | RF         | SD         | vb_bf_w_ratio            |    7.082090e-02 |
+| rearing   | RF         | SD         | loc_pct_sand             |    5.913250e-02 |
+| rearing   | RF         | SN         | da_k_erodibility         |    1.467100e+00 |
+| rearing   | RF         | SN         | loc_ppt_mean_mm          |    3.837690e-02 |
+| spawning  | LM         | SD         | slope_x_da_area_sq_km    |    1.113230e+04 |
+| spawning  | LM         | SD         | da_k_erodibility         |    7.801012e+03 |
+| spawning  | LM         | SD         | vb_bf_w_ratio            |    4.749193e+03 |
+| spawning  | LM         | SD         | loc_permeability         |    4.396283e+03 |
+| spawning  | LM         | SD         | loc_pct_sand             |    1.771310e+03 |
+| spawning  | LM         | SD         | sinuosity                |    1.316126e+03 |
+| spawning  | LM         | SD         | loc_bedrock_depth        |    1.284428e+03 |
+| spawning  | LM         | SD         | loc_pct_clay             |    4.739298e+02 |
+| spawning  | LM         | SD         | loc_bfi                  |    3.230529e+02 |
+| spawning  | LM         | SD         | bf_w_d_ratio             |    2.455844e+02 |
+| spawning  | LM         | SN         | loc_bfi                  |    3.261237e+03 |
+| spawning  | LM         | SN         | loc_permeability         |    5.912962e+02 |
+| spawning  | LM         | SN         | loc_ppt_mean_mm          |    2.342807e+02 |
+| spawning  | LM         | SN         | da_avg_slope             |    9.879403e+01 |
+| spawning  | LM         | SN         | divergence_ratio         |    1.565441e+01 |
+| spawning  | RF         | SD         | da_ppt_mean_mm           |    1.590029e+00 |
+| spawning  | RF         | SD         | loc_pct_clay             |    1.450471e+00 |
+| spawning  | RF         | SD         | frac_leveed_longitudinal |    1.386367e+00 |
+| spawning  | RF         | SD         | loc_pct_sand             |    1.278747e+00 |
+| spawning  | RF         | SD         | da_area_sq_km            |    1.256102e+00 |
+| spawning  | RF         | SD         | da_elev_mean             |    1.224093e+00 |
+| spawning  | RF         | SD         | slope                    |    1.172870e+00 |
+| spawning  | RF         | SD         | loc_bfi                  |    8.738351e-01 |
+| spawning  | RF         | SD         | vb_width_transect        |    7.212403e-01 |
+| spawning  | RF         | SD         | da_avg_slope             |    7.101819e-01 |
+| spawning  | RF         | SD         | loc_ppt_mean_mm          |    6.964172e-01 |
+| spawning  | RF         | SD         | da_k_erodibility         |    5.737912e-01 |
+| spawning  | RF         | SD         | bf_depth_m               |    5.686921e-01 |
+| spawning  | RF         | SD         | loc_bedrock_depth        |    4.816583e-01 |
+| spawning  | RF         | SD         | sinuosity                |    4.567491e-01 |
+| spawning  | RF         | SD         | loc_permeability         |    1.490910e-01 |
+| spawning  | RF         | SD         | mean_ndvi                |    1.451770e-01 |
+| spawning  | RF         | SN         | da_k_erodibility         |    2.819945e+00 |
+| spawning  | RF         | SN         | frac_leveed_longitudinal |    2.291473e+00 |
+| spawning  | RF         | SN         | loc_ppt_mean_mm          |    1.904236e+00 |
+| spawning  | RF         | SN         | mtpi30_min               |    1.902758e+00 |
+| spawning  | RF         | SN         | loc_bedrock_depth        |    1.298145e+00 |
+| spawning  | RF         | SN         | loc_pct_clay             |    6.896503e-01 |
+| spawning  | RF         | SN         | sinuosity                |    6.074836e-01 |
+| spawning  | RF         | SN         | loc_pct_sand             |    5.515914e-01 |
+| spawning  | RF         | SN         | mean_ndvi                |    4.827644e-01 |
+| spawning  | RF         | SN         | bf_w_d_ratio             |    4.468033e-01 |
+| spawning  | RF         | SN         | loc_permeability         |    3.146561e-01 |
+| spawning  | RF         | SN         | da_avg_slope             |    2.078518e-01 |
+| spawning  | RF         | SN         | loc_bfi                  |    2.859000e-04 |
 
 ## Model Fit with Cross-Validation (old)
 
@@ -627,7 +630,7 @@ selected_pred_vars |>
     ## $ model_hab           <fct> rearing, rearing, rearing, rearing, spawning, spaw…
     ## $ model_type          <fct> LM, LM, RF, RF, LM, LM, RF, RF
     ## $ model_name          <chr> "SD", "SN", "SD", "SN", "SD", "SN", "SD", "SN"
-    ## $ selected_predictors <list> <"bf_depth_m", "bf_w_d_ratio", "da_avg_slope", "da…
+    ## $ selected_predictors <list> <"bf_w_d_ratio", "da_area_sq_km", "da_k_erodibilit…
     ## $ model_vars_roles    <list> <"identifier", "identifier", "outcome", "case_weig…
 
 ``` r
@@ -829,10 +832,10 @@ model_val_rmse |>
 
 | model_hab | model_name | model_type | rmse_test | rmse_train | rmse_infl |
 |:----------|:-----------|:-----------|----------:|-----------:|----------:|
-| rearing   | SD         | RF         |  15.21788 |   15.90375 | 0.9568741 |
-| rearing   | SN         | RF         |  16.46141 |   17.08808 | 0.9633273 |
-| spawning  | SD         | RF         |  33.30836 |   22.46797 | 1.4824820 |
-| spawning  | SN         | RF         |  34.84396 |   23.08658 | 1.5092732 |
+| rearing   | SD         | RF         |  22.99884 |   16.27885 |  1.412805 |
+| rearing   | SN         | RF         |  21.10432 |   16.80546 |  1.255801 |
+| spawning  | SD         | RF         |  65.23948 |   31.61728 |  2.063412 |
+| spawning  | SN         | RF         |  64.67793 |   34.73217 |  1.862191 |
 
 ## Predictions
 
@@ -1166,13 +1169,13 @@ model_predicted_filtered <-
   glimpse()
 ```
 
-    ## Rows: 857,400
+    ## Rows: 859,050
     ## Columns: 9
     ## $ comid             <dbl> 342455, 342455, 342455, 342455, 342455, 342455, 3424…
     ## $ model_name        <chr> "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD"…
     ## $ flow_idx          <int> 50, 56, 63, 70, 79, 89, 100, 112, 125, 141, 158, 177…
     ## $ flow_cfs          <dbl> 50.11872, 56.23413, 63.09573, 70.79458, 79.43282, 89…
-    ## $ wua_per_lf_pred   <dbl> 0.02766613, 0.02902734, 0.02954483, 0.03133276, 0.03…
+    ## $ wua_per_lf_pred   <dbl> 0.02362203, 0.02439776, 0.02512100, 0.02747708, 0.03…
     ## $ river_group       <fct> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
     ## $ river_cvpia       <fct> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
     ## $ watershed_level_3 <fct> Stanislaus River, Stanislaus River, Stanislaus River…
@@ -1231,7 +1234,7 @@ model_predicted_spawning <-
     ## $ model_name        <chr> "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD", "SD"…
     ## $ flow_idx          <int> 50, 56, 63, 70, 79, 89, 100, 112, 125, 141, 158, 177…
     ## $ flow_cfs          <dbl> 50.11872, 56.23413, 63.09573, 70.79458, 79.43282, 89…
-    ## $ wua_per_lf_pred   <dbl> 41.07026, 41.05419, 41.19025, 40.86327, 40.73626, 40…
+    ## $ wua_per_lf_pred   <dbl> 39.60205, 40.06685, 40.56866, 41.36186, 42.08368, 43…
     ## $ river_group       <fct> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
     ## $ river_cvpia       <fct> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
     ## $ watershed_level_3 <fct> Stanislaus River, Stanislaus River, Stanislaus River…
@@ -1239,171 +1242,6 @@ model_predicted_spawning <-
 
 ``` r
 model_predicted_spawning |> saveRDS(here::here("data-raw", "results", "model_predicted_spawning.Rds"))
-```
-
-### DSMHabitat comparison
-
-``` r
-mainstems_comid <- 
-  read_sf(file.path("/vsizip", here::here("data-raw", "source", "rearing_spatial_data", "nhdplusv2_comid_habitat_xw.shp.zip"))) |>
-  janitor::clean_names() |>
-  st_zm() |>
-  st_transform(st_crs(habistat::flowline_geom_proj)) |>
-  mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units()) |>
-  filter(str_detect(habitat, "rearing")) |>
-  left_join(habistat::flowline_attr |> select(comid, hqt_gradient_class), by=join_by(comid)) |>
-  filter(!(watershed %in% c("Sacramento River", "San Joaquin River")))
-
-mainstems <-
-  mainstems_comid |>
-  group_by(watershed, river, hqt_gradient_class) |>
-  summarize() 
-```
-
-    ## `summarise()` has grouped output by 'watershed', 'river'. You can override
-    ## using the `.groups` argument.
-
-``` r
-mainstems_comid |> 
-  ggplot() + 
-  geom_sf(aes(group=river, color=hqt_gradient_class)) + 
-  theme(legend.key.height = unit(12, "point"))
-```
-
-![](model_cleaned_files/figure-gfm/dsmhabitat-prep-1.png)<!-- -->
-
-``` r
-#remotes::install_github("CVPIA-OSC/DSMhabitat")
-watersheds <- mainstems |> pull(watershed) |> unique()
-watershed_name <- tolower(gsub(pattern = "-| ", replacement = "_", x = watersheds))
-watershed_rda_name <- paste(watershed_name, "floodplain", sep = "_")
-
-dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
-  df <- as.data.frame(do.call(`::`, list(pkg = "DSMhabitat", name = watershed)))
-}) |> 
-  transmute(river_group = watershed,
-            flow_cfs,
-            FR_floodplain_m2 = FR_floodplain_acres * 4046.86,
-            FR_floodplain_m2_suitable = DSMhabitat::apply_suitability(FR_floodplain_m2),
-            FR_floodplain_acres_suitable = FR_floodplain_m2_suitable / 4046.86)
-
-dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"), 
-                               possibly(function(watershed) {
-                                 df <- as.data.frame(do.call(`::`, list(pkg = "DSMhabitat", name = watershed)))
-                                 }, otherwise = NULL)) |> 
-  transmute(river_group = watershed,
-            flow_cfs,
-            FR_juv_wua) 
-
-dsm_flows <- bind_rows(dsm_habitat_floodplain, dsm_habitat_instream) |>
-  group_by(river_group, flow_cfs) |>
-  summarize() |>
-  ungroup() |>
-  arrange(river_group, flow_cfs)
-```
-
-    ## `summarise()` has grouped output by 'river_group'. You can override using the
-    ## `.groups` argument.
-
-``` r
-dsm_flow_ranges <- 
-  dsm_flows |> 
-  group_by(river_group) |> 
-  summarize(min_flow_cfs = min(flow_cfs), max_flow_cfs = max(flow_cfs))
-
-mainstems_comid |> 
-  st_zm() |> 
-  filter(comid %in% mainstems_comid$comid) |>
-  ggplot() + 
-  geom_sf(aes(color=watershed)) + 
-  theme(legend.key.height = unit(12, "point"))
-```
-
-![](model_cleaned_files/figure-gfm/dsmhabitat-join-1.png)<!-- -->
-
-``` r
-# combining both floodplain and instream rearing acreages/WUAs for comparison
-dsm_habitat_combined <- mainstems |> 
-  mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units()) |>
-  group_by(watershed) |> 
-  summarize(length_ft = sum(length_ft)) |>
-  st_drop_geometry() |>
-  inner_join(full_join(dsm_habitat_instream, dsm_habitat_floodplain, by=join_by(river_group, flow_cfs)), by=join_by(watershed==river_group)) |>
-  group_by(watershed) |>
-  arrange(watershed, flow_cfs) |>
-  mutate(FR_juv_wua = zoo::na.approx(FR_juv_wua, flow_cfs, na.rm=F),
-         FR_floodplain_acres_suitable = zoo::na.approx(FR_floodplain_acres_suitable, flow_cfs, na.rm=F)) |>
-  transmute(watershed, flow_cfs, 
-            instream_wua_per_lf = coalesce(FR_juv_wua/1000,0),
-            instream_suitable_ac = coalesce(FR_juv_wua/1000,0)*length_ft/43560,
-            floodplain_wua_per_lf = coalesce(FR_floodplain_acres_suitable,0)*43560/length_ft,
-            floodplain_suitable_ac = coalesce(FR_floodplain_acres_suitable,0),
-            combined_wua_per_lf = instream_wua_per_lf + floodplain_wua_per_lf,
-            combined_suitable_ac =  instream_suitable_ac + floodplain_suitable_ac) |>
-  ungroup()
-```
-
-    ## Warning: There was 1 warning in `mutate()`.
-    ## ℹ In argument: `FR_floodplain_acres_suitable =
-    ##   zoo::na.approx(FR_floodplain_acres_suitable, flow_cfs, na.rm = F)`.
-    ## ℹ In group 20: `watershed = "Stanislaus River"`.
-    ## Caused by warning in `regularize.values()`:
-    ## ! collapsing to unique 'x' values
-
-``` r
-dsm_habitat_wua_per_lf <- dsm_habitat_combined |>
-  select(watershed, flow_cfs, instream_wua_per_lf, floodplain_wua_per_lf) |>
-#  mutate(combined_wua_per_lf = pmax(instream_wua_per_lf, floodplain_wua_per_lf)) |>
-  pivot_longer(cols=c(instream_wua_per_lf, floodplain_wua_per_lf)) |>
-  mutate(name = paste("DSMhabitat", str_replace(name, "_wua_per_lf", "")),
-         value = if_else(value>0, value, NA))
-
-dsm_habitat_suitable_ac <- dsm_habitat_combined |>
-  select(watershed, flow_cfs, instream_suitable_ac, floodplain_suitable_ac) |>
-#  mutate(combined_suitable_ac = pmax(instream_suitable_ac, floodplain_suitable_ac)) |>
-  pivot_longer(cols=c(instream_suitable_ac, floodplain_suitable_ac)) |>
-  mutate(value = if_else(value>0, value, NA)) |>
-  mutate(name = paste("DSMhabitat", str_replace(name, "_suitable_ac", "")),
-         value = if_else(value>0, value, NA))
-```
-
-``` r
-model_predicted_filtered |>
-  filter(!is.na(river_cvpia)) |>
-  filter(flow_cfs <= 15000) |>
-  #filter(model_type == "RF") |>
-  #group_by(model_bfc, model_variant, river_cvpia, flow_cfs) |>
-  group_by(model_name, river_group, flow_cfs) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft)) |>
-  ggplot(aes(x = flow_cfs)) + 
-  geom_line(aes(y = wua_per_lf_pred, 
-                color = case_when(model_name=="SD" ~ "Scale-Dependent", 
-                                  model_name=="SN" ~ "Scale-Normalized"), 
-                #linetype = if_else(model_bfc, "Post-Model BFC Removal", "Prior BFC Removal")
-                )) +
-  geom_line(data=dsm_habitat_wua_per_lf |> 
-              rename(river_group = watershed) |>
-              filter(flow_cfs <= 15000), 
-            aes(x = flow_cfs, y = value, color = name)) +
-  facet_wrap(~river_group, scales = "free_y") +
-  scale_x_continuous(limits = c(0,15000)) +
-  #scale_y_log10() + scale_x_log10()  +
-  scale_color_brewer(name = "Model Type", palette ="Paired") + 
-  #scale_linetype_discrete(name = "Baseflow Method") + 
-  theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", axis.text.x = element_text(angle=90)) +
-  guides(color = guide_legend(nrow = 2))
-```
-
-    ## `summarise()` has grouped output by 'model_name', 'river_group'. You can
-    ## override using the `.groups` argument.
-
-    ## Warning: Removed 20 rows containing missing values or values outside the scale range
-    ## (`geom_line()`).
-
-![](model_cleaned_files/figure-gfm/dsmhabitat-filtered-1.png)<!-- -->
-
-``` r
-# ggsave(here::here("vignettes", "figures", "model_comparison_raw.png"))
 ```
 
 ### Combine the outputs
@@ -1445,60 +1283,6 @@ usethis::use_data(wua_predicted, overwrite = TRUE)
     ## ✔ Saving "wua_predicted" to "data/wua_predicted.rda".
 
     ## ☐ Document your data (see <https://r-pkgs.org/data.html>).
-
-``` r
-wua_predicted_cv_watersheds <- 
-  wua_predicted |>
-  filter(!is.na(watershed_level_3)) |>
-  group_by(habitat, model_name, watershed_level_3, flow_idx, flow_cfs) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
-            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560) |>
-  ungroup()
-```
-
-    ## `summarise()` has grouped output by 'habitat', 'model_name',
-    ## 'watershed_level_3', 'flow_idx'. You can override using the `.groups` argument.
-
-``` r
-usethis::use_data(wua_predicted_cv_watersheds, overwrite = TRUE) 
-```
-
-    ## ✔ Saving "wua_predicted_cv_watersheds" to
-    ##   "data/wua_predicted_cv_watersheds.rda".
-    ## ☐ Document your data (see <https://r-pkgs.org/data.html>).
-
-``` r
-wua_predicted_cv_mainstems <- 
-  wua_predicted |>
-  filter(!is.na(river_cvpia)) |>
-  group_by(habitat, model_name, river_group, river_cvpia, flow_idx, flow_cfs) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
-            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560) |>
-  ungroup()
-```
-
-    ## `summarise()` has grouped output by 'habitat', 'model_name', 'river_group',
-    ## 'river_cvpia', 'flow_idx'. You can override using the `.groups` argument.
-
-``` r
-usethis::use_data(wua_predicted_cv_mainstems, overwrite = TRUE)
-```
-
-    ## ✔ Saving "wua_predicted_cv_mainstems" to "data/wua_predicted_cv_mainstems.rda".
-    ## ☐ Document your data (see <https://r-pkgs.org/data.html>).
-
-``` r
-wua_predicted_cv_mainstems_grouped <- 
-  wua_predicted |>
-  filter(!is.na(river_group)) |>
-  group_by(habitat, model_name, river_group, flow_idx, flow_cfs) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
-            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560) |>
-  ungroup()
-```
-
-    ## `summarise()` has grouped output by 'habitat', 'model_name', 'river_group',
-    ## 'flow_idx'. You can override using the `.groups` argument.
 
 ``` r
 wua_predicted_cv_mainstems |>
