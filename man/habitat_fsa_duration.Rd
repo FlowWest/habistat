@@ -42,6 +42,7 @@ A \code{tibble} with columns for flow (\code{flow_cfs}) and suitable habitat (\c
 Create Flow-To-Suitable-Area Curve (with Duration HSI applied) for Reach, Mainstem, or Watershed
 }
 \examples{
+
 habitat_fsa_duration(reach = 7978069, streamgage = "FSB")
 
 habitat_fsa_duration(mainstem = "Feather River", streamgage = "FSB")

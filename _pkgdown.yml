@@ -28,7 +28,14 @@ reference:
 - title: "Suitable Habitat Functions"
   desc: "Main functions for accessing habitat suitability estimates (model outputs) for a particular reach/mainstem/watershed"
   contents:
-  - starts_with("habitat_")
+  - habitat_predict
+  - habitat_fsa
+  - habitat_fsa_reach
+  - habitat_fsa_reach_scaled
+  - habitat_drc
+  - habitat_drc_weighted
+  - habitat_fsa_duration
+  - habitat_fsa_duration_reach
 - title: "Datasets"
   desc: "Packaged datasets including geometries, attributes, and habitat suitability estimates (model outputs) for all reaches/mainstems/watersheds"
   contents:

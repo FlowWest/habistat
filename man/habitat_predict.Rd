@@ -51,6 +51,7 @@ A vector of the same length as \code{x} containing predicted suitable habitat va
 Predict Habitat Area using a Flow-to-Suitable-Area Curve
 }
 \examples{
+
 # example non-temporal prediction given comid
 habitat_predict(c(0, 10, 150, 300, 9999), reach = 7978069)
 
