@@ -5,7 +5,7 @@
 \alias{wua_predicted_cv_watersheds}
 \title{Suitable Habitat Area/LF by CV Watershed by Flow (predicted by statistical model)}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 5900 rows and 7 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 2950 rows and 10 columns.
 }
 \usage{
 wua_predicted_cv_watersheds

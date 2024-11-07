@@ -19,6 +19,7 @@ function(input, output, session){
   # WUA VARIABLE UNITS ---------------------------------------------------------
   wua_var <- reactive({
     switch(input$wua_var,
+           "wua_per_lf_pred" = paste0(input$wua_units,"_pred"),
            "wua_per_lf_pred_SD" = paste0(input$wua_units,"_pred_SD"),
            "wua_per_lf_pred_SN" = paste0(input$wua_units,"_pred_SN"),
            "wua_per_lf_actual" = paste0(input$wua_units,"_actual"))
@@ -224,18 +225,24 @@ function(input, output, session){
                            "Duration Scaled" = "dashed")
     palette_colors <- c("Scale-Dependent" = "#6388b4",
                         "Scale-Normalized" = "#8cc2ca",
+                        "Predicted" = "#78A5BF",
                         "Actual" = "#ffae34")
     if (most_recent_map_click$type == "comid") { #& (length(selected_point$comid)>0)) {
     predictions |>
       filter(comid == selected_point$comid) |>
       filter(habitat == input$habitat_type) |>
       ggplot(aes(x = flow_cfs)) + #|> add_color_scale(type = input$habitat_type) +
+      geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
+                      ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
+                      fill = "Predicted"), alpha = 0.33) +
+      geom_line(aes(y = !!sym(wua_var()), color="Predicted", linetype = "Unscaled")) +
       geom_line(aes(y = !!sym(paste0(input$wua_units,"_actual")), color="Actual", linetype = "Unscaled")) +
-      geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype = "Unscaled")) +
-      geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype = "Unscaled")) +
+      #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype = "Unscaled")) +
+      #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype = "Unscaled")) +
       geom_line(data=duration_curve(), aes(x = q, y = durwua, linetype="Duration Scaled", color = case_when(
         input$wua_var == "wua_per_lf_pred_SD" ~ "Scale-Dependent",
         input$wua_var == "wua_per_lf_pred_SN" ~ "Scale-Normalized",
+        input$wua_var == "wua_per_lf_pred" ~ "Predicted",
         input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
       #geom_line(aes(y = !!sym(var_not_selected), linetype = "Unscaled"), color = "gray") +
       #geom_line(aes(y = !!sym(input$wua_var), linetype = "Unscaled"), linewidth=1) +
@@ -248,7 +255,8 @@ function(input, output, session){
       #scale_y_continuous(trans = ihs, labels = scales::label_comma(), limits = c(0, NA)) +
       theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
       xlab("Flow (cfs)") + ylab(wua_lab()) +
-      scale_color_manual(name = "Model Type",
+      scale_color_manual(aesthetics = c("fill", "color"),
+                         name = "Model Type",
                          values = palette_colors) +
       scale_linetype_manual(name = paste("Duration Analysis", coalesce(paste0("(",str_to_upper(selected_gage()), ")"), "")),
                             values = palette_linetypes)
@@ -257,20 +265,26 @@ function(input, output, session){
         filter(watershed_level_3 == selected_watershed$watershed_name) |>
         filter(habitat == input$habitat_type) |>
         ggplot(aes(x = flow_cfs)) +
-        geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype = "Unscaled")) + #, linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
+        geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
+                        ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
+                        fill = "Predicted"), alpha = 0.33) +
+        geom_line(aes(y = !!sym(wua_var()), color="Predicted", linetype = "Unscaled")) +
+        #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype = "Unscaled")) + #, linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
         #geom_line(aes(y = wua_per_lf_pred_SD_ph_bfc_rm, color="Scale-Dependent", linetype="Post-Model BFC Removal")) +
-        geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype = "Unscaled")) + #, linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
+        #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype = "Unscaled")) + #, linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
         #geom_line(aes(y = wua_per_lf_pred_SN_ph_bfc_rm, color="Scale-Normalized", linetype="Post-Model BFC Removal")) +
         #geom_line(data=duration_curve(), aes(x = q, y = durwua, linetype="Duration Analysis")) +
         geom_line(data=duration_curve(), aes(x = q, y = durwua, linetype="Duration Scaled", color = case_when(
           input$wua_var == "wua_per_lf_pred_SD" ~ "Scale-Dependent",
           input$wua_var == "wua_per_lf_pred_SN" ~ "Scale-Normalized",
+          input$wua_var == "wua_per_lf_pred" ~ "Predicted",
           input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
         scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
         scale_y_continuous(limits = c(0, NA)) +
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
         xlab("Flow (cfs)") + ylab(wua_lab()) +
-        scale_color_manual(name = "Model Type",
+        scale_color_manual(aesthetics = c("fill", "color"),
+                           name = "Model Type",
                            values = palette_colors) +
         scale_linetype_manual(name = paste("Duration Analysis", coalesce(paste0("(",str_to_upper(selected_gage()), ")"), "")),
                               values = palette_linetypes)
@@ -279,19 +293,25 @@ function(input, output, session){
         filter(river_cvpia == selected_mainstem$river_name) |>
         filter(habitat == input$habitat_type) |>
         ggplot(aes(x = flow_cfs)) +
-        geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype="Unscaled")) + # linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
+        geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
+                        ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
+                        fill = "Predicted"), alpha = 0.33) +
+        geom_line(aes(y = !!sym(wua_var()), color="Predicted", linetype = "Unscaled")) +
+        #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SD")), color="Scale-Dependent", linetype="Unscaled")) + # linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
        # geom_line(aes(y = wua_per_lf_pred_SD_ph_bfc_rm, color="Scale-Dependent", linetype="Post-Model BFC Removal")) +
-        geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype="Unscaled")) + # linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
+        #geom_line(aes(y = !!sym(paste0(input$wua_units,"_pred_SN")), color="Scale-Normalized", linetype="Unscaled")) + # linetype=if_else(habitat=="rearing","Prior BFC Removal", "No BFC Removal"))) +
         #geom_line(aes(y = wua_per_lf_pred_SN_ph_bfc_rm, color="Scale-Normalized", linetype="Post-Model BFC Removal")) +
         geom_line(data=duration_curve(), aes(x = q, y = durwua, linetype="Duration Scaled", color = case_when(
           input$wua_var == "wua_per_lf_pred_SD" ~ "Scale-Dependent",
           input$wua_var == "wua_per_lf_pred_SN" ~ "Scale-Normalized",
+          input$wua_var == "wua_per_lf_pred" ~ "Predicted",
           input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
         scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
         scale_y_continuous(limits = c(0, NA)) +
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
         xlab("Flow (cfs)") + ylab(wua_lab()) +
-        scale_color_manual(name = "Model Type",
+        scale_color_manual(aesthetics = c("fill", "color"),
+                           name = "Model Type",
                            values = palette_colors) +
         scale_linetype_manual(name = paste("Duration Analysis", coalesce(paste0("(",str_to_upper(selected_gage()), ")"), "")),
                               values = palette_linetypes)
@@ -789,30 +809,29 @@ selected_watershed <- reactiveValues(object_id = NA,
   # for comid only
   streamgage_drc <- reactive({
 
+    active_streamgage_attr <-
+      streamgage_attr |>
+      filter(station_id == coalesce(selected_gage(), NA)) |>
+      as.list()
+
+    message(paste0("pulling streamgage_drc for ", selected_gage(),
+                   " ", input$selected_run,
+                   " ", input$habitat_type,
+                   " ", input$selected_wyt))
+
+    active_streamgage_data <-
+      get_data(streamgage_duration_rating_curves, package = "habistat") |>
+      filter((station_id == selected_gage()) &
+               (run == input$selected_run) &
+               (habitat == input$habitat_type) &
+               (wy_group == input$selected_wyt)) |>
+      unnest(data)
+
     if (most_recent_map_click$type == "comid") {
 
       active_reach_attr <- attr |>
         filter(comid == selected_point$comid) |>
         as.list()
-
-      active_streamgage_attr <-
-        streamgage_attr |>
-        filter(station_id == coalesce(selected_gage(), NA)) |>
-        as.list()
-
-      message(paste0("pulling streamgage_drc for ", selected_gage(),
-                     " ", input$selected_run,
-                     " ", input$habitat_type,
-                     " ", input$selected_wyt))
-
-      active_streamgage_data <-
-        get_data(streamgage_duration_rating_curves, package = "habistat") |>
-        filter((station_id == selected_gage()) &
-                 (run == input$selected_run) &
-                 (habitat == input$habitat_type) &
-                 (wy_group == input$selected_wyt)) |>
-        unnest(data)
-
 
       if (nrow(active_streamgage_data) > 0) {
 
@@ -836,6 +855,22 @@ selected_watershed <- reactiveValues(object_id = NA,
         tibble(q = list(), dhsi_selected = list(), avg_max_days_inundated = list())
 
       }
+    } else {
+
+      if (nrow(active_streamgage_data) > 0) {
+
+        active_streamgage_data <-
+          get_data(streamgage_duration_rating_curves, package = "habistat") |>
+          filter((station_id == selected_gage()) &
+                   (run == input$selected_run) &
+                   (habitat == input$habitat_type) &
+                   (wy_group == input$selected_wyt)) |>
+          unnest(data)
+
+        return(active_streamgage_data)
+
+      }
+
     }
 
   })
@@ -1020,13 +1055,14 @@ selected_watershed <- reactiveValues(object_id = NA,
         ggplot()
       }
     } else if (most_recent_map_click$type %in% c("mainstem", "watershed")) {
-      duration_curve() |>
+      plt_fsa_dur <-
+        duration_curve() |>
         ggplot() +
         geom_line(aes(x = q, y = wua, linetype="Original")) +
         geom_line(aes(x = q, y = durwua, linetype="Duration-Weighted")) +
         ylab(paste0("Suitable Habitat Area (", wua_suf(),")")) +
         xlab("Flow (cfs) at Outlet") +
-        scale_x_log10(breaks = scales::breaks_log(8), labels = scales::label_comma()) +
+        scale_x_log10(breaks = scales::breaks_log(8), labels = scales::label_comma(), limits=c(50,15000)) +
         scale_y_continuous(breaks = scales::breaks_extended(8), labels = scales::label_comma(), limits=c(0, NA)) +
         annotation_logticks(sides = "b") +
         theme(legend.position = "top",
@@ -1034,7 +1070,25 @@ selected_watershed <- reactiveValues(object_id = NA,
         scale_linetype_manual(name = "",
                               values = c("Original" = "solid",
                                          "Duration-Weighted" = "dashed")) +
-        labs(caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids (at cfs downscaled by drainage area and precipitation ratio).")
+        labs(subtitle = "Suitable Habitat Curve",
+             caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids (at cfs downscaled by drainage area and precipitation ratio).")
+
+      plt_gage_drc <-
+        streamgage_drc() |>
+        mutate(q = model_q) |>
+        ggplot() +
+        geom_line(aes(x = q, y = avg_max_days_inundated)) +
+        scale_x_log10(breaks = scales::breaks_log(8), labels = scales::label_comma(), limits=c(50,15000)) +
+        scale_y_continuous(breaks = scales::breaks_extended(8), labels = scales::label_comma(), limits=c(0, NA)) +
+        annotation_logticks(sides = "b") +
+        ylab("Number of Days") + xlab("Flow (cfs)") +
+        theme(legend.position = "none",
+              panel.grid.minor = element_blank()) +
+        labs(subtitle = str_glue("{str_to_upper(selected_gage())} Max Length of Period Exceeding Flow per WY-Season"),
+             caption = str_glue("Showing raw flow duration curve for streamgage, not scaled to {most_recent_map_click$type}."))
+
+      (plt_gage_drc / plt_fsa_dur) + plot_layout(axes = "collect_x")
+
     }
 
 #    plt_days <-
