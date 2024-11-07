@@ -5,7 +5,7 @@
 \alias{wua_predicted}
 \title{Suitable Habitat Area per Linear Ft by ComID by Flow (predicted by statistical model)}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 1135750 rows and 10 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 568800 rows and 11 columns.
 }
 \usage{
 wua_predicted
