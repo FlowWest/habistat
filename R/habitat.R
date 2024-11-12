@@ -33,7 +33,7 @@ habitat_fsa_reach <- function(reach, habitat_type = "rearing", units = "ft") {
              transmute(flow_cfs,
                        habitat = wua_per_lf_pred * reach_length_ft / 43560))
 
-  return(fsa)
+  return(drop_na(fsa))
 
 }
 
@@ -59,13 +59,22 @@ habitat_fsa_reach_scaled <- function(reach, multiplier, habitat_type = "rearing"
                                 habitat_type = habitat_type,
                                 units = units)
 
-  return(tibble(flow_cfs = fsa$flow_cfs,
-                habitat = approx(x = fsa$flow_cfs * multiplier,
-                                 y = fsa$habitat,
-                                 xout = fsa$flow_cfs,
-                                 rule = 2:2,
-                                 method = "linear",
-                                 na.rm = F)$y))
+  if (nrow(fsa) > 0) {
+
+    return(tibble(flow_cfs = fsa$flow_cfs,
+                  habitat = approx(x = fsa$flow_cfs * multiplier,
+                                   y = fsa$habitat,
+                                   xout = fsa$flow_cfs,
+                                   rule = 2:2,
+                                   method = "linear",
+                                   na.rm = F)$y))
+
+  } else {
+
+    return(tibble(flow_cfs = numeric(0),
+                  habitat = numeric(0)))
+
+  }
 
 }
 
