@@ -283,7 +283,6 @@ habitat_drc_weighted <- function(streamgage,
 #' @param units Desired units for output, either "ft" for square ft per linear ft, or "ac" for total acres
 #' @param run One of "fall" (default), "late fall", "winter", "spring", or "steelhead"
 #' @param wy_group Either "Dry" or "Wet" for water year type scenario
-#' @param gradient For rearing, either "Valley Foothill" (default) or "Valley Lowland"
 #'
 #' @returns A `tibble` with columns for flow (`flow_cfs`) and suitable habitat (`habitat`)
 #' @md
@@ -298,13 +297,16 @@ habitat_fsa_duration_reach <- function(reach,
                                        habitat_type = "rearing",
                                        units = "ft",
                                        run = "fall",
-                                       wy_group = "Dry",
-                                       gradient = "Valley Foothill") {
+                                       wy_group = "Dry") {
 
   fsa <-
     habistat::habitat_fsa(reach = reach,
                           habitat_type = habitat_type,
                           units = units)
+
+  grad <- if (habistat::flowline_attr$hqt_gradient_class
+              [[which(habistat::flowline_attr$comid == reach)]]
+              == "Valley Lowland") "Valley Lowland" else "Valley Foothill"
 
   drc <-
     habistat::habitat_drc_weighted(streamgage = streamgage,
@@ -312,7 +314,7 @@ habitat_fsa_duration_reach <- function(reach,
                                    habitat_type = habitat_type,
                                    run = run,
                                    wy_group = wy_group,
-                                   gradient = gradient)
+                                   gradient = grad)
 
   fsa_weighted <-
     habistat::duration_apply_dhsi_to_fsa_curve(fsa = fsa,
@@ -343,7 +345,6 @@ habitat_fsa_duration_reach <- function(reach,
 #' @param units Desired units for output, either "ft" for square ft per linear ft, or "ac" for total acres
 #' @param run One of "fall" (default), "late fall", "winter", "spring", or "steelhead"
 #' @param wy_group Either "Dry" or "Wet" for water year type scenario
-#' @param gradient For rearing, either "Valley Foothill" (default) or "Valley Lowland"
 #'
 #' @returns A `tibble` with columns for flow (`flow_cfs`) and suitable habitat (`habitat`)
 #' @md
@@ -362,13 +363,16 @@ habitat_fsa_duration <- function(reach,
                                  habitat_type = "rearing",
                                  units = "ft",
                                  run = "fall",
-                                 wy_group = "Dry",
-                                 gradient = "Valley Foothill") {
+                                 wy_group = "Dry") {
 
   mode_geom <-
     if (!missing(reach)) "reach" else
       if (!missing(mainstem)) "mainstem" else
         if (!missing(watershed)) "watershed"
+
+  mode_unit <-
+    if (units %in% c("ft", "feet", "ft2/lf")) "ft" else
+      if(units %in% c("ac", "acres")) "ac"
 
   if (mode_geom == "reach") {
 
@@ -377,8 +381,7 @@ habitat_fsa_duration <- function(reach,
                                habitat_type = habitat_type,
                                units = units,
                                run = run,
-                               wy_group = wy_group,
-                               gradient = gradient)
+                               wy_group = wy_group)
 
   } else if (mode_geom %in% c("mainstem", "watershed")) {
 
@@ -406,17 +409,24 @@ habitat_fsa_duration <- function(reach,
     scaled_predictions <-
       flow_xw |>
       filter(comid %in% comids) |>
+      inner_join(habistat::flowline_attr |>
+                   select(comid, hqt_gradient_class),
+                 by = join_by(comid)) |>
+      mutate(grad = if_else(hqt_gradient_class == "Valley Lowland",
+                            "Valley Lowland",
+                            "Valley Foothill"),
+             .keep = "unused") |>
       mutate(fsa = map2(comid, multiplier, function(x, y) {
         habistat::habitat_fsa_reach_scaled(reach = x,
                                            multiplier = y,
                                            habitat_type = habitat_type,
                                            units = "ft")})) |> # output in units ft2/ft
-      mutate(drc = map2(comid, streamgage, function(x, y) {
+      mutate(drc = pmap(list(comid, streamgage, grad), function(x, y, z) {
         habistat::habitat_drc_weighted(reach = x,
                                        streamgage = y,
                                        run = run,
                                        wy_group = wy_group,
-                                       gradient = gradient,
+                                       gradient = z,
                                        scale = "flow")})) |>
       mutate(fsa_x_drc = map2(fsa, drc, function(f, d) {
         fsa_weighted <-
@@ -427,12 +437,17 @@ habitat_fsa_duration <- function(reach,
                                                      fsa_wua = habitat,
                                                      drc_q = flow_cfs,
                                                      drc_dhsi = durhsi)
-        return(tibble(flow_cfs = f$flow_cfs,
-                      habitat = approx(x = fsa_weighted$q,
-                                       xout = f$flow_cfs,
-                                       y = fsa_weighted$durwua,
-                                       rule = 2:2,
-                                       na.rm = F)$y))
+        if(nrow(fsa_weighted) > 0) {
+          return(tibble(flow_cfs = f$flow_cfs,
+                        habitat = approx(x = fsa_weighted$q,
+                                         xout = f$flow_cfs,
+                                         y = fsa_weighted$durwua,
+                                         rule = 2:2,
+                                         na.rm = F)$y))
+        } else {
+          return(tibble(flow_cfs = numeric(0),
+                        habitat = numeric(0)))
+        }
       })) |>
       inner_join(habistat::flowline_attr |>
                    select(comid, reach_length_ft),
@@ -468,7 +483,6 @@ habitat_fsa_duration <- function(reach,
 #' @param units Desired units for output, either "ft" for square ft per linear ft, or "ac" for total acres
 #' @param run (required if streamgage is provided) One of "fall" (default), "late fall", "winter", "spring", or "steelhead"
 #' @param wy_group (required if streamgage is provided) Either "Dry" or "Wet" for water year type scenario
-#' @param gradient (required if streamgage is provided) For rearing, either "Valley Foothill" (default) or "Valley Lowland"
 #' @param fsa_x (optional) Vector of flows for manually defined flow-to-suitable-area curve. If provided, overrides reach, mainstem, or watershed lookup.
 #' @param fsa_y (optional) Vector of habitat values for manually defined flow-to-suitable-area curve, of same length as `fsa_x`
 #'
@@ -501,8 +515,7 @@ habitat_predict <- function(x,
                             habitat_type = "rearing",
                             units = "ft",
                             run = "fall",
-                            wy_group = "Dry",
-                            gradient = "Valley Foothill") {
+                            wy_group = "Dry") {
 
   mode_geom <-
     if (!missing(reach)) "reach" else
@@ -527,8 +540,7 @@ habitat_predict <- function(x,
                                           habitat_type = habitat_type,
                                           units = units,
                                           run = run,
-                                          wy_group = wy_group,
-                                          gradient = gradient)
+                                          wy_group = wy_group)
 
   } else {
 
