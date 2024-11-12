@@ -46,14 +46,14 @@ Load the package:
 library(habistat)
 ```
 
-Pull a flow-to-suitable-area curve:
+Pull a flow-to-suitable-area curve (predicted by the statistical model trained on depth/velocity data)
 ``` r
 habitat_fsa(mainstem = "American River", 
             habitat_type = "rearing",
             units = "ac")
 ```
 
-Predict suitable habitat area, using statistical model trained on depth/velocity data, for a particular stream:
+Predict suitable habitat area (predicted by the statistical model trained on depth/velocity data) for a given series of flows:
 
 ``` r
 flows <- c(100, 300, 1000, 3000)
@@ -72,15 +72,15 @@ habitat_drc(streamgage = "AFO",
             wy_group = "Dry")
 ```
 
-Pull a flow-to-suitable-area curve that incorporates this inundation duration criteria:
+Calculate a flow-to-suitable-area curve that incorporates this inundation duration criteria:
 
 ``` r
-habitat_fsa(mainstem = "American River", 
-            habitat_type = "rearing",
-            units = "ac",
-            streamgage = "AFO",
-            run = "fall",
-            wy_group = "Dry")
+habitat_fsa_duration(mainstem = "American River", 
+                     habitat_type = "rearing",
+                     units = "ac",
+                     streamgage = "AFO",
+                     run = "fall",
+                     wy_group = "Dry")
 ```
 
 Predict suitable habitat area, applying the inundation duration criteria:
@@ -97,13 +97,14 @@ flows |> habitat_predict(mainstem = "American River",
 View all mainstem options
 
 ``` r
-pillar::glimpse(cv_mainstems)
+unique(cv_mainstems$river_cvpia)
 ```
 
-View all streamgage options
+View all CDEC streamgage options
 
 ``` r
-pillar::glimpse(streamgage_attr)
+unique(streamgage_attr$station_id)
+
 ```
 
 Access the raw predictor variables dataset
