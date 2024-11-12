@@ -173,6 +173,7 @@ habitat_fsa <- function(reach, mainstem, watershed,
 #' @param run One of "fall" (default), "late fall", "winter", "spring", or "steelhead"
 #' @param wy_group Either "Dry" or "Wet" for water year type scenario
 #' @param gradient For rearing, either "Valley Foothill" (default) or "Valley Lowland"
+#' @param .n_days If TRUE, adds a third column to the output with the number of days inundated (`n_days`) value that was used to generate the duration suitability score. Defaults to FALSE.
 #'
 #' @returns A `tibble` with columns for flow (`flow_cfs`) and duration habitat suitability index (`durhsi`)
 #' @md
@@ -186,7 +187,8 @@ habitat_drc <- function(streamgage,
                         habitat_type = "rearing",
                         run = "fall",
                         wy_group = "Dry",
-                        gradient = "Valley Foothill") {
+                        gradient = "Valley Foothill",
+                        .n_days = FALSE) {
 
   drc_filtered <-
     habistat::streamgage_duration_rating_curves |>
@@ -200,10 +202,18 @@ habitat_drc <- function(streamgage,
     str_to_title(gradient) == "Valley Lowland" ~ "durhsi_rearing_vl",
     TRUE ~ "durhsi_rearing_vf")
 
-  drc_selected <-
-    drc_filtered$data[[1]] |>
-    select(flow_cfs = model_q,
-           durhsi = !!sym(varname))
+  if (.n_days) {
+    drc_selected <-
+      drc_filtered$data[[1]] |>
+      select(flow_cfs = model_q,
+             durhsi = !!sym(varname),
+             n_days = avg_max_days_inundated)
+  } else {
+    drc_selected <-
+      drc_filtered$data[[1]] |>
+      select(flow_cfs = model_q,
+             durhsi = !!sym(varname))
+  }
 
   return(drc_selected)
 
