@@ -29,6 +29,10 @@ Habistat documentation is located at [flowwest.github.io/habistat](https://floww
 
 Use the **[Interactive Map](https://flowwest.shinyapps.io/habistat)** published at [flowwest.shinyapps.io/habistat](https://flowwest.shinyapps.io/habistat) to explore results by reach, mainstem, and watershed.
 
+***Tools, methods, results, and documentation are currently incomplete and under active development.***
+
+## Getting Started with the R Package
+
 You can install the development version of habistat from [GitHub](https://github.com/) with:
 
 ``` r
@@ -36,7 +40,83 @@ You can install the development version of habistat from [GitHub](https://github
 devtools::install_github("FlowWest/habistat")
 ```
 
-***Tools, methods, results, and documentation are currently incomplete and under active development.***
+Load the package:
+
+``` r
+library(habistat)
+```
+
+Pull a flow-to-suitable-area curve:
+``` r
+habitat_fsa(mainstem = "American River", 
+            habitat_type = "rearing",
+            units = "ac")
+```
+
+Predict suitable habitat area, using statistical model trained on depth/velocity data, for a particular stream:
+
+``` r
+flows <- c(100, 300, 1000, 3000)
+
+flows |> habitat_predict(mainstem = "American River", 
+                         habitat_type = "rearing",
+                         units = "ac")
+```
+
+Pull an inundation duration curve from a selection of CDEC streamgages:
+
+``` r
+habitat_drc(streamgage = "AFO",
+            habitat_type = "rearing",
+            run = "fall",
+            wy_group = "Dry")
+```
+
+Pull a flow-to-suitable-area curve that incorporates this inundation duration criteria:
+
+``` r
+habitat_fsa(mainstem = "American River", 
+            habitat_type = "rearing",
+            units = "ac",
+            streamgage = "AFO",
+            run = "fall",
+            wy_group = "Dry")
+```
+
+Predict suitable habitat area, applying the inundation duration criteria:
+
+``` r
+flows |> habitat_predict(mainstem = "American River", 
+                         habitat_type = "rearing",
+                         units = "ac",
+                         streamgage = "AFO",
+                         run = "fall",
+                         wy_group = "Dry")
+```
+
+View all mainstem options
+
+``` r
+pillar::glimpse(cv_mainstems)
+```
+
+View all streamgage options
+
+``` r
+pillar::glimpse(streamgage_attr)
+```
+
+Access the raw predictor variables dataset
+
+``` r
+pillar::glimpse(flowline_attr)
+```
+
+Access the raw prediction outputs
+
+``` r
+pillar::glimpse(wua_predicted)
+```
 
 ## Partners
 
