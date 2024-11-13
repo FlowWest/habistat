@@ -27,7 +27,7 @@ Datasets publicly available by ComID reach:
 
 * [USGS NHDPlusV2](https://nhdplus.com/NHDPlus/NHDPlusV2_home.php) [EPA Distribution](https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data) including Value Added Attribute tables
 * NHDPlusV2 [WSC Supplements](https://www.sciencebase.gov/catalog/item/57976a0ce4b021cadec97890)^[Wieczorek, M.E., Jackson, S.E., and Schwarz, G.E., 2018, Select Attributes for NHDPlus Version 2.1 Reach Catchments and Modified Network Routed Upstream Watersheds for the Conterminous United States (ver. 4.0, August 2023): U.S. Geological Survey data release, https://doi.org/10.5066/F7765D7V.]
-* [US EPA StreamCat Dataset](https://www.epa.gov/national-aquatic-resource-surveys/streamcat-dataset)
+* [US EPA StreamCat Dataset](https://www.epa.gov/national-aquatic-resource-surveys/streamcat-dataset) - metrics defined [here](https://19january2021snapshot.epa.gov/national-aquatic-resource-surveys/streamcat-metrics-and-definitions_.html); bankfull width supplement from Doyle et al. (2)^[Doyle, J., R. Hill, S. Leibowitz, AND J. Ebersole. Random forest models to estimate bankfull and low flow channel widths and depths across the conterminous United States. American Water Resources Association, Middleburg, VA, 59(5):1099-1114, (2023). DOI: [10.1111/1752-1688.13116](https://doi.org/10.1111/1752-1688.13116)]
 * [Natural Flows Database](https://rivers.codefornature.org/)^[California Environmental Flows Working Group (CEFWG). California Natural Flows Database: Functional flow metrics v1.2.1, May 2021. https://rivers.codefornature.org/]
 
 Transformation and calculation required to map onto ComID reach:
@@ -42,30 +42,99 @@ Transformation and calculation required to map onto ComID reach:
 
 ### Local Reach Characteristics
 
-* ...
+- **Reach Slope (ft/ft)** (`slope`) Slope of flowline (rise / run) based on smoothed
+elevations. *Source: NHDPlusV2 (NHDPlusAttributes/ElevSlope/Slope)*
+
+- **Reach Sinuosity** (`sinuosity`) Flowline sinuosity calculated by dividing the NHDPlusV2 flowline reach length by its straight line length. Straight line length is measured from the beginning node of a reach to the end node of the reach. *Source: Weiczorek et al. (2018): SINUOSITY_CONUS.txt/Sinuosity*
+
+- **Reach Mean Annual Precip. (mm)** (`loc_ppt_mean_mm`) Mean annual precipitation (mm) averaged over the area of the reach's local catchment. *Source: NHDPlusV2 VPU Attribute Extension (NHDPlusAttributeExtension/IncrPrecipMA/PrecipV), divided by 100*
+
+- **Reach Baseflow Index (BFI)** (`loc_bfi`) The ratio of baseflow (the component of streamflow that can be attributed to ground-water discharge into streams) to total flow, expressed as a percentage, within the reach's local catchment. *Source: StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/BFI_Region18.csv/BFICat)*
+
+- **Reach Soil Pct. Clay** (`loc_pct_clay`) Mean percent clay content of soils within the reach's local catchment. *Source: STATSGO via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/ClayCat)*
+
+- **Reach Soil Pct. Sand** (`loc_pct_sand`) Mean percent sand content of soils within the reach's local catchment. *Source: STATSGO via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/SandCat)*
+
+- **Reach Soil Permeability** (`loc_permeability`) Mean permeability (cm/hour) of soils within the reach's local catchment. *Source: STATSGO via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/PermCat)*
+
+- **Reach Depth to Bedrock** (`loc_bedrock_depth`) Mean depth (cm) to bedrock of soils within the reach's local catchment. *Source: STATSGO via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/RckDepCat)*
+  
+- **Bankfull Width (m)** (`bf_width_m`) An estimate of the bankfull width in ft derived from multiple sources based on availability. In order of preference:
+
+  1. Predicted width of bankfull channel via random forest model. *Source: Doyle et al. (2023) via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/Bankfull_Region18.csv/BANKFULL_WIDTH_M)*
+  
+  2. Estimated based on the upstream drainage area (`da_area_sq_km`) using the Bieger model: $2.76 \cdot DA^{0.399}$
+
+- **Bankfull Depth (m)** (`bf_depth_m`) An estimate of the bankfull depth in ft derived from multiple sources based on availability. In order of preference:
+
+  1. Predicted depth of bankfull channel via random forest model. *Source: Doyle et al. (2023) via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/Bankfull_Region18.csv/BANKFULL_DEPTH_M)*
+  
+  2. Estimated based on the upstream drainage area (`da_area_sq_km`) using the Bieger model: $0.23 \cdot DA^{0.294}$
+  
+- **Bankfull Width:Depth Ratio** (`bf_w_d_ratio`): The unitless ratio of bankfull width (`bf_width_m`) to bankfull depth (`bf_depth_m`), using the variables as defined above. 
+
+- **Channel Width (ft)** (`chan_width_ft`) An estimate of the channel width in ft derived from multiple sources based on availability. In order of preference:
+
+  1. Channel width (m) of major rivers as calculated in the [MERIT Hydro global hydrography dataset](https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/), spatially joined to NHDPlusV2 COMID flowline geometries. *Source: MERIT Hydro channel width rasters.*
+  
+  2. Bankfull width (m) as defined above (`bf_width_m`), converted to ft.
 
 ### Drainage Area Characteristics
 
-* ...
+- **DA Area (sq km)** (`da_area_sq_km_div`) Divergence-routed upstream drainage area. *Source: NHDPlusV2 (/NHDPlusAttributes/PlusFlowlineVAA/DivDASqKm)*
 
-### Flow Characteristics
+- **DA Area (sq km)** (`da_area_sq_km_tot`) Total upstream drainage area without accounting for divergence. *Source: NHDPlusV2 (/NHDPlusAttributes/PlusFlowlineVAA/TotDASqKm)*
 
-* ...
+- **DA Area (sq km)** (`da_area_sq_km`) Synonym for `da_area_sq_km_tot` such that the total non-divergence-routed upstream drainage area is used as the default unless otherwise specified.
+
+- **Divergence Fraction** (`divergence_ratio`): The divergence-routed drainage area (`da_area_sq_km_div`) divided by the total upstream drainage area (`da_area_sq_km_tot`), quantifying the proportion of drainage area that flows through the reach rather than being diverted into other flow paths.
+
+- **DA Erodibility** (`da_k_erodibility`) Mean soil erodibility (Kf) factor (unitless) of soils within the reach's upstream contributing watershed. The Kf factor is used in the Universal Soil Loss Equation (USLE) and represents a relative index of susceptibility of bare, cultivated soil to particle detachment and transport by rainfall. *Source: STATSGO via StreamCat (NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/KffactWs)*
+
+- **DA Avg. Slope (ft/ft)** (`da_avg_slope`) Average slope in percent of all upstream (based on divergence routing) NHDPlusV2 flowline catchments. *Source: Weiczorek et al. (2018): BASIN_CHAR_ACC_CONUS.TXT/ACC_BASIN_SLOPE*
+
+- **DA Mean Elevation** (`da_elev_mean`) Mean elevation in meters of all upstream (based on divergence routing) NHDPlusV2 flowline catchments *Source: Weiczorek et al. (2018): BASIN_CHAR_ACC_CONUS.TXT/ACC_ELEV_MEAN*
+
+- **DA Mean Annual Precip. (mm)** (`da_ppt_mean_mm`) Mean annual precipitation in area upstream (based on total, non-divergence routing) of the bottom of flowline. *Source: NHDPlusV2 VPU Attribute Extension (NHDPlusAttributeExtension/CumTotPrecipMA/PrecipVC), divided by 100*
+
+- **DA Mean NDVI** (`mean_ndvi`)
 
 ### Topographic and Spatial Confinement Indicators
 
-* ...
+- **Reach Topographic Position Index (mTPI)** (`mtpi30_min`)
 
-### Aquatic Habitat Quality
+- **Valley Bottom Width** (`vb_width_transect`)
 
-* ...
+- **Valley Bottom:Channel Width Ratio** (`vb_bf_w_ratio`)
+
+- **Reach Levee Confinement Fraction** (`frac_leveed_longitudinal`)
 
 ### Categorical
 
-* ...
+- **HQT Gradient Class** (`hqt_gradient_class`)
+
+- **UCD Hydrologic Class** (`hyd_cls`)
+
+### Identifiers
+
+- **NHDPlusV2 ComID** (`comid`)
+
+- **GNIS Name** (`gnis_name`)
+
+- **Habitat Mainstem Name** (`river_cvpia`)
+
+- **Habitat Mainstem Group Name** (`river_group`)
+
+- **Watershed Level 1** (`watershed_level_1`)
+
+- **Watershed Level 2** (`watershed_level_2`)
+
+- **Watershed Level 3** (`watershed_level_3`)
+
+- **Reach Length (linear ft)** (`reach_length_ft`)
+
+- **Hydrologic Sequence Number** (`hydroseq`)
 
 ## Inventory Table
 
 <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQAb8qg7jJkOE-zxzCZ6NpO3ot1JZhGxkdQdZA9gFJj3Iy5TGkgPijE2109EWMXWBm2rMrqBBB0IdUh/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" style="width:100%; border:0; height:100vh; overflow:scroll;"></iframe>
-
-> NEEDS TO BE UPDATED
