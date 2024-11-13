@@ -5,7 +5,13 @@ shinyUI(
       #tags$style("body > .container-fluid {margin: 0px; padding: 0px;}")
     ),
     navbarPage(
-      title = "HabiStat",
+      title = tagList(
+        tags$div(
+          style = "display: flex; align-items: center;",
+          tags$img(src = "apple-touch-icon.png", height = "40px", style = "margin-right: 10px;"),
+          tags$span("HabiStat")
+        )
+      ),
       id = "tabs",
       collapsible = TRUE,
       tabPanel("Interactive Map",
