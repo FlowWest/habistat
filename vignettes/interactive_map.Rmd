@@ -1,0 +1,78 @@
+---
+title: "Interactive Map User Guide"
+author: "[Skyler Lewis](slewis@flowwest.com)"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    default
+vignette: >
+  %\VignetteIndexEntry{Interactive Map User Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The habistat [interactive map](https://flowwest.shinyapps.io/habistat) is the quickest way to explore suitable habitat model results without needing to install and load the habistat R package. 
+
+## Navigation
+
+On the home screen, you'll find the following general areas:
+
+- **(1) General Settings** (upper left): Options that impact both the map view and the results view.
+
+  - *Select Habitat Type*: ***rearing*** or ***spawning***
+
+  - *Select Flowline Type*: ***comid*** for individual NHD reach segments, ***mainstem*** for results aggregated across an entire mainstem stream, or ***watershed*** for results totalled for the entire watershed including the mainstem and its tributaries.
+  
+  - *Select Calculation Method*
+  
+  - *Select Flow (cfs) to show on map*
+
+- **(2) Map View** (right): Zoom and pan on the map, then click a flowline or watershed to view suitable habitat model results and other information.
+
+- **(3) Results for Selected Item** (lower left): This section changes dynamically based on the flowline or watershed that has been most recently clicked on the map. There are three tabs:
+
+  - *Suitable Habitat Area by Flow* shows the main plot of modeled suitable habitat area (y axis) versus flow (x axis). Suitable habitat area can be shown in units of square ft per linear ft (average effective habitat width) or total acres (totaled across the entire reach, mainstem, or watershed).
+  
+  - *Inundation Duration Analysis* dives into the scaling of suitable habitat area based on inundation data, for streams that have streamgage data available. The map will highlight the streamgage being used for the calculation.
+  
+  - *Flowline Attributes* shows the detailed attributes for the flowline, including those used in the habistat model prediction. (comid reach mode only)
+  
+<mark>Screenshot: Home Screen</mark>
+
+## General Settings
+
+<mark>Screenshot: Home Screen</mark>
+
+## Map View
+
+### Selecting a Flowline
+
+<mark>Screenshot: Map with comids</mark>
+
+<mark>Screenshot: Map with mainstems</mark>
+
+### Selecting a Watershed
+
+<mark>Screenshot: Map with watersheds and overlay mainstems</mark>
+
+### Basemap and View Settings
+
+<mark>Screenshot: Layer panel</mark>
+
+## Results for Selected Item
+
+<mark>Screenshot: Results for Selected Item</mark>
+
+### Suitable Habitat Area by Flow
+
+<mark>Screenshot: Main Results Panel</mark>
+
+### Inundation Duration Analysis
+
+<mark>Screenshot: Inundation Duration Analysis Panel</mark>
+
+<mark>Screenshot: Streamgage Selection on Map</mark>
+
+### Flowline Attributes
+
+<mark>Screenshot: Flowline Attributes Panel</mark>

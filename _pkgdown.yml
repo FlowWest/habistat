@@ -24,6 +24,7 @@ articles:
   - duration_analysis
   - watershed_aggregation
   - spawning_extents
+  - interactive_map
 reference:
 - title: "Suitable Habitat Functions"
   desc: "Main functions for accessing habitat suitability estimates (model outputs) for a particular reach/mainstem/watershed"
