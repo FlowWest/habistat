@@ -259,10 +259,13 @@ function(input, output, session){
       scale_y_continuous(limits = c(0, NA)) +
       labs(title = str_glue("Suitable Habitat Area vs Flow for {clicked_item_label()}"),
            subtitle = NULL,
-           caption = if_else(!is.na(selected_gage()),
-                              paste("Duration Analysis using CDEC Streamgage",
-                                    streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]]),
-                              "No Duration Data Available")) +
+           caption =
+             if (selected_gage() %in% streamgage_attr$station_id) {
+               paste("Duration Analysis using CDEC Streamgage",
+                     streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]])
+             } else {
+               "No Duration Data Available"
+             }) +
       xlab("Flow (cfs)") + ylab(wua_lab()) +
       scale_color_manual(aesthetics = c("fill", "color"),
                          name = "Model Type",
@@ -297,10 +300,13 @@ function(input, output, session){
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
         labs(title = str_glue("Suitable Habitat Area vs Flow for {clicked_item_label()}"),
              subtitle = NULL,
-             caption = if_else(!is.na(selected_gage()),
-                               paste("Duration Analysis using CDEC Streamgage",
-                                     streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]]),
-                               "No Duration Data Available")) +
+             caption =
+               if (selected_gage() %in% streamgage_attr$station_id) {
+                 paste("Duration Analysis using CDEC Streamgage",
+                       streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]])
+               } else {
+                 "No Duration Data Available"
+               }) +
         xlab("Flow (cfs)") + ylab(wua_lab()) +
         scale_color_manual(aesthetics = c("fill", "color"),
                            name = "Model Type",
@@ -334,10 +340,13 @@ function(input, output, session){
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
         labs(title = str_glue("Suitable Habitat Area vs Flow for {clicked_item_label()}"),
              subtitle = NULL,
-             caption = if_else(!is.na(selected_gage()),
-                               paste("Duration Analysis using CDEC Streamgage",
-                                     streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]]),
-                               "No Duration Data Available")) +
+             caption =
+               if (selected_gage() %in% streamgage_attr$station_id) {
+                 paste("Duration Analysis using CDEC Streamgage",
+                       streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]])
+               } else {
+                 "No Duration Data Available"
+               }) +
         xlab("Flow (cfs)") + ylab(wua_lab()) +
         scale_color_manual(aesthetics = c("fill", "color"),
                            name = "Model Type",
@@ -425,6 +434,7 @@ function(input, output, session){
       leaflet::addMapPane("Basemap", zIndex = 400) |>
       leaflet::addMapPane("ValleyLowland", zIndex = 440) |>
       leaflet::addMapPane("Watersheds", zIndex = 445) |>
+      leaflet::addMapPane("Underlays", zIndex = 465) |>
       leaflet::addMapPane("Flowlines", zIndex = 470) |>
       leaflet::addMapPane("Overlays", zIndex = 475) |>
       leaflet::addMapPane("AOI", zIndex = 480) |>
@@ -481,6 +491,19 @@ function(input, output, session){
                            fillColor = "grey",
                            fillOpacity = 0.33,
                            options = leaflet::pathOptions(pane = "ValleyLowland")) |>
+      leaflet::addCircleMarkers(data = streamgage_pts,
+                                group = "streamgages",
+                                label = ~lapply(paste0(station_label,
+                                                       "<br />",
+                                                       "<em>Select a nearby flowline or watershed to calculate duration suitability.</em>"),
+                                                htmltools::HTML),
+                                color = "black",
+                                opacity = 0.33,
+                                fillColor = NA,
+                                fillOpacity = 0,
+                                radius = 6,
+                                weight = 1,
+                                options = leaflet::pathOptions(pane = "Underlays"))|>
       addLayersControl(
         baseGroups = c("Terrain (default)", "Aerial Imagery"),
         overlayGroups = c("flowlines", "watersheds", "streamgages", "HQT - Valley Lowland"),
@@ -775,10 +798,16 @@ selected_watershed <- reactiveValues(object_id = NA,
       proxy |>
         leaflet::addCircleMarkers(data = streamgage_options_geom_labelled(),
                                   layerId = ~paste0("streamgage_", station_id),
-                                  group = "streamgages",
-                                  label = ~station_label,
+                                  group = "streamgages_active",
+                                  label = ~lapply(paste0(station_label,
+                                                         "<br />",
+                                                         if_else(selected,
+                                                                 "<em>Active streamgage for duration suitability calculation</em>",
+                                                                 "<em>Click to use this streamgage to calculate duration suitability</em>")),
+                                                  htmltools::HTML),
                                   color = ~if_else(selected, "#00A2E8", "#000000"),
                                   radius = 6,
+                                  weight = 2,
                                   options = leaflet::markerOptions(pane = "Overlays"))
     }
     message("/// Observe streamgage_options_geom_labelled: Update streamgage leaflet map layer")
