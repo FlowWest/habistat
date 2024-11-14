@@ -28,6 +28,12 @@ div[role=main] {
   mix-blend-mode: multiply;
   opacity: 0.33;
 }
+.leaflet-Watersheds-pane {
+  mix-blend-mode: multiply;
+}
+.leaflet-FlowlinesContext-pane {
+  mix-blend-mode: multiply;
+}
 
 #invmassControlPanel {
   background: white;

@@ -135,6 +135,19 @@ function(input, output, session){
                                    round(wua_per_lf_pred_SN,2), " ft2/ft", "<br />"))
   })
 
+  active_geom_watershed <- reactive({
+    watersheds |>
+      inner_join(active_predictions_watershed(),
+                 by = join_by(watershed_level_3)) |>
+      mutate(wua_per_lf = !!sym(input$wua_var)) |>
+      filter(!is.na(wua_per_lf)) |>
+      mutate(object_label = paste0("<strong>", watershed_level_3, "</strong>", "<br />",
+                                   "Scale-Dependent Model: ",
+                                   round(wua_per_lf_pred_SD,2), " ft2/ft", "<br />",
+                                   "Scale-Normalized Model: ",
+                                   round(wua_per_lf_pred_SN,2), " ft2/ft", "<br />"))
+  })
+
   # SELECTED COMID OBSERVER ----------------------------------------------------
 
   selected_point <- reactiveValues(object_id = NULL,
@@ -363,7 +376,8 @@ function(input, output, session){
 
     # first remove any existing flowlines
     m |> leaflet::removeShape(geom$object_id)
-    m |> leaflet::removeShape(mainstems$object_id)
+    m |> leaflet::removeShape(mainstems$mainstem_id)
+    m |> leaflet::removeShape(watersheds$watershed_id)
 
     if(type == "comid") {
     if(show) {
@@ -419,6 +433,48 @@ function(input, output, session){
     } else {
         m |> leaflet::removeShape(active_geom_mainstem()$object_id) |> leaflet::removeControl("clegend")
       }
+    } else if (type == "watershed") {
+      if(show) {
+        message("plotting ", nrow(active_geom_watershed()), " watersheds")
+        m |>  leaflet::addPolygons(data = active_geom_watershed(),
+                                   stroke = T,
+                                   weight = 3,
+                                   color = "#FFFFFF",
+                                   opacity = 0.5,
+                                   fill = T,
+                                   fillColor = ~pal(wua_per_lf, type=input$habitat_type),
+                                   fillOpacity = 0.33,
+                                   layerId = ~watershed_id,
+                                   group = "watersheds",
+                                   label = ~lapply(watershed_label, htmltools::HTML),
+                                   highlightOptions = highlightOptions(stroke = T,
+                                                                       weight = 3,
+                                                                       color = "#8B0000",
+                                                                       opacity = 1,
+                                                                       fill = T,
+                                                                       fillColor = "#8B0000",
+                                                                       fillOpacity = 0.33,
+                                                                       bringToFront = T),
+                                   options = leaflet::pathOptions(pane = "Watersheds")) |>
+          leaflet::addPolylines(data = geom,
+                                layerId = ~object_id,
+                                label = ~str_glue("{comid} - {gnis_name}"),
+                                color = "darkgray",
+                                opacity = 1,
+                                weight = ~if_else(comid %in% attr$comid[which(!is.na(attr$river_cvpia))], 2, 1),
+                                options = leaflet::pathOptions(pane = "FlowlinesContext"),
+                                group = "flowlines") |>
+          leaflet::addLegend(position = "bottomright",
+                             colors = rev(flow_scale_colors[[input$habitat_type]]),
+                             labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                             title = "Suitable Habitat Area (ft2) per linear ft",
+                             layerId = "clegend")
+      } else {
+        m |>
+          leaflet::removeShape(geom$object_id) |>
+          leaflet::removeShape(active_geom_watersheds()$watershed_id) |>
+          leaflet::removeControl("clegend")
+      }
     }
   }
 
@@ -433,8 +489,10 @@ function(input, output, session){
     leaflet::leaflet() |>
       leaflet::addMapPane("Basemap", zIndex = 400) |>
       leaflet::addMapPane("ValleyLowland", zIndex = 440) |>
+      leaflet::addMapPane("FlowlinesContext", zIndex = 444) |>
       leaflet::addMapPane("Watersheds", zIndex = 445) |>
       leaflet::addMapPane("Underlays", zIndex = 465) |>
+      leaflet::addMapPane("ActiveGeom", zIndex = 466) |>
       leaflet::addMapPane("Flowlines", zIndex = 470) |>
       leaflet::addMapPane("Overlays", zIndex = 475) |>
       leaflet::addMapPane("AOI", zIndex = 480) |>
@@ -464,26 +522,26 @@ function(input, output, session){
                          lat1 = bbox[["ymin"]],
                          lng2 = bbox[["xmax"]],
                          lat2 = bbox[["ymax"]]) |>
-      leaflet::addPolygons(data = watersheds,
-                           stroke = T,
-                           weight = 1,
-                           color = "#31a1b3",
-                           opacity = 0.5,
-                           fill = T,
-                           fillColor = "#FFFFFF",
-                           fillOpacity = 0,
-                           layerId = ~watershed_id,
-                           group = "watersheds",
-                           label = ~lapply(watershed_label, htmltools::HTML),
-                           highlightOptions = highlightOptions(stroke = T,
-                                                               weight = 1,
-                                                               color = "white",
-                                                               opacity = 1,
-                                                               fill = T,
-                                                               fillColor = "#31a1b3",
-                                                               fillOpacity = 0.5,
-                                                               bringToFront = F)
-      ) |>
+    #  leaflet::addPolygons(data = watersheds,
+    #                       stroke = T,
+    #                       weight = 1,
+    #                       color = "#31a1b3",
+    #                       opacity = 0.5,
+    #                       fill = T,
+    #                       fillColor = "#FFFFFF",
+    #                       fillOpacity = 0,
+    #                       layerId = ~watershed_id,
+    #                       group = "watersheds",
+    #                       label = ~lapply(watershed_label, htmltools::HTML),
+    #                       highlightOptions = highlightOptions(stroke = T,
+    #                                                           weight = 1,
+    #                                                           color = "white",
+    #                                                           opacity = 1,
+    #                                                           fill = T,
+    #                                                           fillColor = "#31a1b3",
+    #                                                           fillOpacity = 0.5,
+    #                                                           bringToFront = F)
+    #  ) |>
       leaflet::addPolygons(data = hqt, group = "HQT - Valley Lowland",
                            popup = "Habitat Quantification Tool Boundary",
                            color = "darkgrey",
@@ -600,12 +658,10 @@ selected_watershed <- reactiveValues(object_id = NA,
                              weight = 6,
                              color = "#f6b911",
                              opacity = 1,
-                             fill = T,
-                             fillColor = "#f6b911",
-                             fillOpacity = 0.33,
-                             group = "watersheds", # this will make the active watershed also show/hide with the layer toggle
+                             fill = F,
                              layerId = "active_watershed",
-                             label = ~lapply(watershed_label, htmltools::HTML)) |>
+                             label = ~lapply(watershed_label, htmltools::HTML),
+                             options = leaflet::pathOptions(pane = "ActiveGeom")) |>
         leaflet::fitBounds(lng1 = selected_watershed_bbox()$xmin,
                            lat1 = selected_watershed_bbox()$ymin,
                            lng2 = selected_watershed_bbox()$xmax,
@@ -635,11 +691,12 @@ selected_watershed <- reactiveValues(object_id = NA,
       proxy |>
         leaflet::removeShape("active_flowline") |>
         leaflet::addPolylines(data = clicked_polyline,
-                              weight = 20,
+                              weight = 9,
                               color = "#f6b911",
                               opacity = 1,
                               layerId = "active_flowline",
-                              label = ~lapply(object_label, htmltools::HTML)) #|>
+                              label = ~lapply(object_label, htmltools::HTML),
+                              options = leaflet::pathOptions(pane = "ActiveGeom")) #|>
       #fitBounds(bbox$ymin, bbox$xmin, bbox$ymax, bbox$xmax)
 
     } else {
