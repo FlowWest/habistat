@@ -1161,7 +1161,10 @@ selected_watershed <- reactiveValues(object_id = NA,
         annotation_logticks(sides = "b") +
         ylab("") + xlab("Flow (cfs)") +
         theme(legend.position = "none",
-              panel.grid.minor = element_blank()) +
+              panel.grid.minor = element_blank(),
+              axis.title = element_text(size = 12, face = "bold"),
+              axis.text = element_text(size = 10, face = "bold"),
+              strip.text = element_text(size = 15, face = "bold")) +
         scale_linetype_manual(name = "",
                               values = c("None" = "solid",
                                          "ref" = "dashed",
@@ -1182,12 +1185,16 @@ selected_watershed <- reactiveValues(object_id = NA,
         scale_y_continuous(breaks = scales::breaks_extended(8), labels = scales::label_comma(), limits=c(0, NA)) +
         annotation_logticks(sides = "b") +
         theme(legend.position = "top",
-              panel.grid.minor = element_blank()) +
+              panel.grid.minor = element_blank(),
+              axis.title = element_text(size = 12),
+              axis.text = element_text(size = 10, face = "bold"),
+              title = element_text(size = 15, face = "bold"),
+              plot.caption = element_text(face = "italic")) +
         scale_linetype_manual(name = "",
                               values = c("Original" = "solid",
                                          "Duration-Weighted" = "dashed")) +
         labs(subtitle = "Suitable Habitat Curve",
-             caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids (at cfs downscaled by drainage area and precipitation ratio).")
+             caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids \n(at cfs downscaled by drainage area and precipitation ratio).")
 
       plt_gage_drc <-
         streamgage_drc() |>
@@ -1199,9 +1206,13 @@ selected_watershed <- reactiveValues(object_id = NA,
         annotation_logticks(sides = "b") +
         ylab("Number of Days") + xlab("Flow (cfs)") +
         theme(legend.position = "none",
-              panel.grid.minor = element_blank()) +
+              panel.grid.minor = element_blank(),
+              axis.title = element_text(size = 12),
+              axis.text = element_text(size = 10, face = "bold"),
+              title = element_text(size = 15, face = "bold"),
+              plot.caption = element_text(face = "italic")) +
         labs(subtitle = str_glue("{str_to_upper(selected_gage())} Max Length of Period Exceeding Flow per WY-Season"),
-             caption = str_glue("Showing raw flow duration curve for streamgage, not scaled to {most_recent_map_click$type}."))
+             caption = str_glue("Showing raw flow duration curve for streamgage,\nnot scaled to {most_recent_map_click$type}."))
 
       (plt_gage_drc / plt_fsa_dur) + plot_layout(axes = "collect_x")
 
