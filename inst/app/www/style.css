@@ -79,4 +79,18 @@ div[role=main] {
   max-width: calc(75vw - 200px);
 }
 
+/* navbar header area */
 
+.navbar-brand {
+  padding: 5px 15px !important;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+}
+
+.title-image {
+  height: 40px;
+  margin-right: 10px;
+}

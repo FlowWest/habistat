@@ -7,9 +7,9 @@ shinyUI(
     navbarPage(
       title = tagList(
         tags$div(
-          style = "display: flex; align-items: center;",
-          tags$img(src = "apple-touch-icon.png", height = "40px", style = "margin-right: 10px;"),
-          tags$span("HabiStat")
+          class = "title-container",
+          tags$img(src = "apple-touch-icon.png", class = "title-image"),
+          tags$span("HabiStat", class = "title-text")
         )
       ),
       id = "tabs",
