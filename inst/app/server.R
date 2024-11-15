@@ -398,9 +398,10 @@ function(input, output, session){
       ) |>
         leaflet::addLegend(position = "bottomright",
                            colors = rev(flow_scale_colors[[input$habitat_type]]),
-#                           colors = rev(pal(seq(pal_limits[[1]], pal_limits[[2]], (pal_limits[[2]]-pal_limits[[1]])/5))),
-                           labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
-#                           labels = c(round(pal_limits[[2]],2), rep("", 5-1), round(pal_limits[[1]],2)),
+                           # # discrete version
+                           # labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                           # continuous version
+                           labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
                            title = "Suitable Habitat Area (ft2) per linear ft",
                            layerId = "clegend")
       } else {
@@ -425,9 +426,10 @@ function(input, output, session){
       ) |>
         leaflet::addLegend(position = "bottomright",
                            colors = rev(flow_scale_colors[[input$habitat_type]]),
-                           #                           colors = rev(pal(seq(pal_limits[[1]], pal_limits[[2]], (pal_limits[[2]]-pal_limits[[1]])/5))),
-                           labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
-                           #                           labels = c(round(pal_limits[[2]],2), rep("", 5-1), round(pal_limits[[1]],2)),
+                           # # discrete version
+                           # labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                           # continuous version
+                           labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
                            title = "Suitable Habitat Area (ft2) per linear ft",
                            layerId = "clegend")
     } else {
@@ -466,7 +468,10 @@ function(input, output, session){
                                 group = "flowlines") |>
           leaflet::addLegend(position = "bottomright",
                              colors = rev(flow_scale_colors[[input$habitat_type]]),
-                             labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                             # # discrete version
+                             # labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                             # continuous version
+                             labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
                              title = "Suitable Habitat Area (ft2) per linear ft",
                              layerId = "clegend")
       } else {

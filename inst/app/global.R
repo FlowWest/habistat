@@ -197,12 +197,32 @@ ihs <- scales::trans_new("ihs",
                          format = scales::label_comma())
 
 # flow_scale_colors <- c("darkblue", "turquoise", "gold", "darkorange", "darkred", "violetred4", "mediumvioletred"),
-flow_scale_colors <- list(rearing = c("#00008B", "#40E0D0", "#FFD700", "#FF8C00", "#8B0000", "#8B2252", "#C71585"),
-                          spawning = c("#00008B", "#40E0D0", "#FFD700", "#FF8C00", "#8B0000", "#8B2252", "#C71585"))
+# flow_scale_colors <- list(rearing = c("#00008B", "#40E0D0", "#FFD700", "#FF8C00", "#8B0000", "#8B2252", "#C71585"),
+#                           spawning = c("#00008B", "#40E0D0", "#FFD700", "#FF8C00", "#8B0000", "#8B2252", "#C71585"))
+flow_scale_colors <- list(rearing =  c("#00008B", "#33d6c6", "#7cc437", "#FFD700", "#FF8C00", "#8B0000", "#C71585"),
+                          spawning = c("#00008B", "#33d6c6", "#7cc437", "#FFD700", "#FF8C00", "#8B0000", "#C71585"))
 flow_scale_breaks <- list(rearing = c(0, 1, 3, 10, 30, 100, 300),
                           spawning = c(0, 20, 40, 60, 80, 100, 120))
 
-pal <- function(x, type = "rearing") {
+interpolate_hex_colors <- function(x, breaks, palette) {
+
+  lst <-
+    list(R = substr(palette, 2, 3),
+         G = substr(palette, 4, 5),
+         B = substr(palette, 6, 7)) |>
+    lapply(function(z) {
+      dec <- strtoi(z, base = 16)
+      itx <- as.integer(approx(x = breaks, y = dec, xout = x, rule = 2:2)$y)
+      hex <- sapply(itx, \(a) sprintf("%02x", a))
+      return(hex)})
+
+  do.call(Map, c(f = c, lst)) |>
+    sapply(\(z) paste0("#", z[["R"]], z[["G"]], z[["B"]])) |>
+    as.vector()
+
+}
+
+pal <- function(x, type = "rearing", mode = "continuous") {
   if(type == "rearing") {
     breaks_scaled <- scales::rescale(habistat::semiIHS(flow_scale_breaks$rearing))
     values_scaled <- scales::rescale(habistat::semiIHS(x), from = range(habistat::semiIHS(flow_scale_breaks$rearing)))
@@ -210,11 +230,16 @@ pal <- function(x, type = "rearing") {
     breaks_scaled <- scales::rescale(flow_scale_breaks$spawning)
     values_scaled <- scales::rescale(x, from = range(flow_scale_breaks$spawning))
   }
-  cut(x = values_scaled,
-      breaks = c(-Inf, breaks_scaled[2:length(breaks_scaled)], Inf),
-      labels = flow_scale_colors[[type]]) |> as.character()
+  if(mode == "discrete") {
+    cut(x = values_scaled,
+        breaks = c(-Inf, breaks_scaled[2:length(breaks_scaled)], Inf),
+        labels = flow_scale_colors[[type]]) |> as.character()
+  } else if(mode == "continuous") {
+    interpolate_hex_colors(x = values_scaled,
+                           breaks = breaks_scaled,
+                           palette = flow_scale_colors[[type]])
+  }
 }
-
 
 add_color_scale <- function(g, type="rearing", ...) {
   g + scale_color_gradientn(name = "WUA per LF",

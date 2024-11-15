@@ -17,7 +17,8 @@ div[role=main] {
 }
 .leaflet-Basemap-pane {
   opacity: 0.75;
-  filter: saturate(0.75);
+  /*filter: saturate(0.75);*/
+  filter: saturate(0.25);
 }
 .leaflet-Reference-pane {
   filter: saturate(0);
