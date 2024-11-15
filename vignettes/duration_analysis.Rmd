@@ -70,16 +70,16 @@ One inundation duration curve is calculated per salmonid run, per water year typ
 
 ##### Salmonid Runs
 
-To capture only ecologically relevant time windows, we filter the hydrographs by relevant months for the salmonid run of interest: <mark>CITE?</mark>
+To capture only ecologically relevant time windows, we filter the hydrographs by relevant months for the salmonid run of interest:^[Source: CH2M Hill for the California Rice Promotion Board, via Fig. 3 in Herbold, B., Carlson, S. M., Heneray, R., Johnson, R. C., Mantua, N. McClure, M., Moyle, P. B., & Sommer, T. (2018). Managing for Salmon Resilience in California’s Variable and Changing Climate. <em>San Francisco Estuary and Watershed Science</em> 16(2): https://doi.org/10.15447/sfews.2018v16iss2art3 ]
 
 +------------+-----------+-----------+
 | Run        | Rearing   | Spawning  |
 +============+===========+===========+
-| Fall       | Jan - Jun | Aug - Oct |
+| Fall       | Jan - Jun | Oct - Dec |
 +------------+-----------+-----------+
 | Late Fall  | Apr - Dec | Jan - Apr |
 +------------+-----------+-----------+
-| Winter     | Jul - Mar | May - Aug |
+| Winter     | Jul - Mar | Apr - Aug |
 +------------+-----------+-----------+
 | Spring     | Nov - May | Aug - Oct |
 +------------+-----------+-----------+
@@ -109,7 +109,7 @@ These inundation duration values calculated in the previous step are next mapped
 
 We apply inundation duration suitability factors for the relevant habitat type corresponding to fish usage of the river. 
 
-For rearing, the duration factors are defined in the Habitat Quantification Tool based on the gradient class of the river. For spawning, we assume a minimum of 12 weeks of continuous inundation is required for spawning and incubation. <mark>CITE?</mark>
+For rearing, the duration factors are defined in the Habitat Quantification Tool based on the gradient class of the river. For spawning, we assume a minimum of 12 weeks of continuous inundation is required for spawning and incubation.^[USFWS Columbia River FWCO Information and Education (2022) *Life Stage Cheat Sheet for Pacific Salmon*: "Chinook eggs hatch around 12 weeks after fertilization." https://www.fws.gov/sites/default/files/documents/06_Life%20Stage%20Cheat%20Sheet.pdf]
 
 +---------------------------+---------------------------+--------------------+
 | Rearing - Valley Lowland  | Rearing - Valley Foothill | Spawning           |
