@@ -389,7 +389,7 @@ function(input, output, session){
                                  label = ~lapply(object_label, htmltools::HTML),
                                  color = ~pal(wua_per_lf, type=input$habitat_type), #pal(wua_per_lf),
                                  opacity = 1,
-                                 weight = 2,
+                                 weight = ~if_else(comid %in% attr$comid[which(!is.na(attr$river_cvpia))], 2, 1),
                                  options = leaflet::pathOptions(pane = "Flowlines"),
                                  group = "flowlines",
                                  highlightOptions = leaflet::highlightOptions(color = "#8B0000",
@@ -1109,8 +1109,8 @@ selected_watershed <- reactiveValues(object_id = NA,
         group_by(habitat, run, wy_group,
                  !!sym(group_var), q = flow_idx) |> # better to use the float version
         summarize(across(c(wua, durwua), switch(input$wua_units,
-                                                wua_per_lf = function(y) sum(y * reach_length_ft) / sum(reach_length_ft),
-                                                wua_acres = function(y) sum(y * reach_length_ft) / 43560)),
+                                                wua_per_lf = function(y) sum(y * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+                                                wua_acres = function(y) sum(y * reach_length_ft, na.rm=T) / 43560)),
                   .groups="drop")
       } else {
 
