@@ -338,9 +338,9 @@ wy_start <- 1997
 # https://www.researchgate.net/figure/Central-Valley-salmon-with-multiple-life-stages-of-all-four-runs-of-salmon-and-steelhead_fig2_327275373
 month_selector <- 
   tribble(~run,        ~spawning,         ~rearing,
-        "fall",        c(8, 9, 10),      c(1, 2, 3, 4, 5, 6),
+        "fall",        c(10, 11, 12),    c(1, 2, 3, 4, 5, 6),
         "late fall",   c(1, 2, 3, 4),    c(4, 5, 6, 7, 8, 9, 10, 11, 12),
-        "winter",      c(5, 6, 7, 8),    c(7, 8, 9, 10, 11, 12, 1, 2, 3),
+        "winter",      c(4, 5, 6, 7, 8), c(7, 8, 9, 10, 11, 12, 1, 2, 3),
         "spring",      c(8, 9, 10),      c(11, 12, 1, 2, 3, 4, 5),
         "steelhead",   c(1, 2, 3),       c(6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5)) %>%
   split(.$run) |> 
