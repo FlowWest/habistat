@@ -72,6 +72,9 @@
     <li>
       <a href="../articles/spawning_extents.html">Spawning Extents</a>
     </li>
+    <li>
+      <a href="../articles/interactive_map.html">Interactive Map User Guide</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -97,7 +100,7 @@
       <h1 data-toc-skip>Spawning Extents</h1>
                         <h4 data-toc-skip class="author"><a href="slewis@flowwest.com">Skyler Lewis</a></h4>
             
-            <h4 data-toc-skip class="date">2024-11-07</h4>
+            <h4 data-toc-skip class="date">2024-11-15</h4>
       
 
       <div class="hidden name"><code>spawning_extents.Rmd</code></div>
@@ -131,7 +134,9 @@ in the spawning dataset with a zeroed out suitability rating.</p></li>
 <em>all</em> of the following criteria. Essentially, this analysis takes
 the current and historical spawning reaches delineated in the <a href="../reference/cv_mainstems.html"><code>cv_mainstems</code></a>
 dataset, as described in the <a href="watershed_aggregation.html">Watershed Aggregation</a> article, and
-adds in some additional major tributaries.</p>
+adds in some additional major tributaries. <strong>The geographic scope
+represents maximum potential spawning habitat and does <em>not</em> take
+into account artificial barriers such as dams.</strong></p>
 <ul>
 <li>elevation &gt; minimum known spawning elevation for the
 watershed</li>
@@ -148,12 +153,15 @@ at least 50 km²</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="spawning-gravels">Spawning Gravels<a class="anchor" aria-label="anchor" href="#spawning-gravels"></a>
+<h3 id="spawning-gravel-likelihood">Spawning Gravel Likelihood<a class="anchor" aria-label="anchor" href="#spawning-gravel-likelihood"></a>
 </h3>
 <p>Reach-by-reach identification of spawning gravels is experimental. We
 tested two methods. Currently, reaches are included as likely spawning
 gravel reaches if they pass the spawning gravel likelihood criteria
-under <em>either</em> method.</p>
+under <em>either</em> method. <strong>The spawning gravel likelihood
+represents potential spawning gravel availability based on geomorphic
+channel attributes and does <em>not</em> take into account gravel
+starvation from upstream dams nor gravel augmentation.</strong></p>
 <div class="section level4">
 <h4 id="geomorphic-classification">Geomorphic Classification<a class="anchor" aria-label="anchor" href="#geomorphic-classification"></a>
 </h4>
@@ -280,8 +288,7 @@ of dimensionless grain size,</p>
 <p>Output
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>D</mi><mn>50</mn></msub><annotation encoding="application/x-tex">D_{50}</annotation></semantics></math>
 values for bed mobilization and suspended transport thresholds were
-reclassified into the Wentworth (<mark>CITE</mark>) size classes. The
-size class phi
+reclassified into the Wentworth size classes.<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> The size class phi
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>)
 is defined as the negative base 2 logarithm of the median grain size
 diameter (on the intermediate axis) in millimeters.</p>
@@ -397,36 +404,6 @@ diameter (on the intermediate axis) in millimeters.</p>
 <td align="left">clay</td>
 <td align="left">0.003906</td>
 </tr>
-<tr class="even">
-<td align="right">9</td>
-<td align="left">clay</td>
-<td align="left">0.001953</td>
-</tr>
-<tr class="odd">
-<td align="right">10</td>
-<td align="left">clay</td>
-<td align="left">0.000977</td>
-</tr>
-<tr class="even">
-<td align="right">11</td>
-<td align="left">clay</td>
-<td align="left">0.000488</td>
-</tr>
-<tr class="odd">
-<td align="right">12</td>
-<td align="left">clay</td>
-<td align="left">0.000244</td>
-</tr>
-<tr class="even">
-<td align="right">13</td>
-<td align="left">clay</td>
-<td align="left">0.000122</td>
-</tr>
-<tr class="odd">
-<td align="right">14</td>
-<td align="left">clay</td>
-<td align="left">0.000061</td>
-</tr>
 </tbody>
 </table>
 <p>The following logic was applied. Both criteria must be met for a
@@ -465,6 +442,9 @@ for the Sacramento River basin [Dataset]. Dryad. <a href="https://doi.org/10.253
 S., and Pasternack G.B. (2020). Machine Learning Predicts Reach-Scale
 Channel Types from Coarse-Scale Geospatial Data in a Large River Basin.
 J. of Water Resources Research. <a href="https://doi.org/10.1029/2019WR026691" class="external-link uri">https://doi.org/10.1029/2019WR026691</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Wentworth, C. K. (1922). A Scale of Grade and Class
+Terms for Clastic Sediments. <em>The Journal of Geology</em> 30(5):
+377-392. <a href="https://www.jstor.org/stable/30063207" class="external-link uri">https://www.jstor.org/stable/30063207</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>

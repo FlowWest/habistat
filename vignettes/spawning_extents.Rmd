@@ -32,7 +32,7 @@ A core component of the spawning model is delineating the geographic extent of s
 
 ### Geographic Scope
 
-The spawning geographic scope consists of reaches meeting *all* of the following criteria. Essentially, this analysis takes the current and historical spawning reaches delineated in the [`cv_mainstems`](../reference/cv_mainstems.html) dataset, as described in the [Watershed Aggregation](watershed_aggregation.html) article, and adds in some additional major tributaries. 
+The spawning geographic scope consists of reaches meeting *all* of the following criteria. Essentially, this analysis takes the current and historical spawning reaches delineated in the [`cv_mainstems`](../reference/cv_mainstems.html) dataset, as described in the [Watershed Aggregation](watershed_aggregation.html) article, and adds in some additional major tributaries. **The geographic scope represents maximum potential spawning habitat and does *not* take into account artificial barriers such as dams.**
 
 - elevation > minimum known spawning elevation for the watershed
 - elevation < maximum historical habitat elevation for the watershed
@@ -41,9 +41,9 @@ The spawning geographic scope consists of reaches meeting *all* of the following
 - outside of the valley lowland area (i.e. in valley foothill or bedrock)
 - stream size: stream order ≥4, or stream order ≥3 with drainage area at least 50 km²
 
-### Spawning Gravels
+### Spawning Gravel Likelihood
 
-Reach-by-reach identification of spawning gravels is experimental. We tested two methods. Currently, reaches are included as likely spawning gravel reaches if they pass the spawning gravel likelihood criteria under *either* method. 
+Reach-by-reach identification of spawning gravels is experimental. We tested two methods. Currently, reaches are included as likely spawning gravel reaches if they pass the spawning gravel likelihood criteria under *either* method. **The spawning gravel likelihood represents potential spawning gravel availability based on geomorphic channel attributes and does *not* take into account gravel starvation from upstream dams nor gravel augmentation.**
 
 #### Geomorphic Classification
 
@@ -116,7 +116,7 @@ $$D^* [\mathrm{1}]= \frac{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/
 
 ##### Classification
 
-Output $D_{50}$ values for bed mobilization and suspended transport thresholds were reclassified into the Wentworth (<mark>CITE</mark>) size classes. The size class phi ($\phi$) is defined as the negative base 2 logarithm of the median grain size diameter (on the intermediate axis) in millimeters. 
+Output $D_{50}$ values for bed mobilization and suspended transport thresholds were reclassified into the Wentworth size classes.^[Wentworth, C. K. (1922). A Scale of Grade and Class Terms for Clastic Sediments. *The Journal of Geology* 30(5): 377-392. https://www.jstor.org/stable/30063207] The size class phi ($\phi$) is defined as the negative base 2 logarithm of the median grain size diameter (on the intermediate axis) in millimeters. 
 
 ```{r step-2-sed-transport-classes, echo=FALSE}
 # DEFINE WENTWORTH SIZE CLASSES
@@ -131,6 +131,7 @@ phi_labels <- c("very large boulder", "large boulder", "medium boulder", "small 
 tibble(phi = phi_levels, label = phi_labels) |> 
   mutate(max_diam_mm = 2^-phi) |>
   mutate(max_diam_mm = format(max_diam_mm, digits=3, scientific=F, drop0trailing=T)) |>
+  group_by(label) |> filter(max_diam_mm == max(max_diam_mm)) |>
   knitr::kable()
 ```
 
