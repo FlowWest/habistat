@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Spawning Extents</h1>
                         <h4 data-toc-skip class="author"><a href="slewis@flowwest.com">Skyler Lewis</a></h4>
             
-            <h4 data-toc-skip class="date">2024-11-15</h4>
+            <h4 data-toc-skip class="date">2024-11-18</h4>
       
 
       <div class="hidden name"><code>spawning_extents.Rmd</code></div>
@@ -128,7 +128,7 @@ transport factors. Reaches determined unlikely to contain gravels remain
 in the spawning dataset with a zeroed out suitability rating.</p></li>
 </ul>
 <div class="section level3">
-<h3 id="geographic-scope">Geographic Scope<a class="anchor" aria-label="anchor" href="#geographic-scope"></a>
+<h3 id="spawning-geographic-scope">Spawning Geographic Scope<a class="anchor" aria-label="anchor" href="#spawning-geographic-scope"></a>
 </h3>
 <p>The spawning geographic scope consists of reaches meeting
 <em>all</em> of the following criteria. Essentially, this analysis takes
@@ -151,6 +151,7 @@ bedrock)</li>
 <li>stream size: stream order ≥4, or stream order ≥3 with drainage area
 at least 50 km²</li>
 </ul>
+<p><img src="figures/spawning-extents-geographic-scope-1.png" width="1950"></p>
 </div>
 <div class="section level3">
 <h3 id="spawning-gravel-likelihood">Spawning Gravel Likelihood<a class="anchor" aria-label="anchor" href="#spawning-gravel-likelihood"></a>
@@ -161,7 +162,8 @@ gravel reaches if they pass the spawning gravel likelihood criteria
 under <em>either</em> method. <strong>The spawning gravel likelihood
 represents potential spawning gravel availability based on geomorphic
 channel attributes and does <em>not</em> take into account gravel
-starvation from upstream dams nor gravel augmentation.</strong></p>
+starvation nor gravel augmentation below dams.</strong></p>
+<p><img src="figures/spawning-extents-gravel-likelihood-1.png" width="1950"></p>
 <div class="section level4">
 <h4 id="geomorphic-classification">Geomorphic Classification<a class="anchor" aria-label="anchor" href="#geomorphic-classification"></a>
 </h4>
@@ -277,7 +279,7 @@ the kinematic viscosity of water, is assumed to be 0.01 cm2/s.</p>
 …then related to dimensionless particle size
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>D</mi><mo>*</mo></msup><annotation encoding="application/x-tex">D^*</annotation></semantics></math>
 via Dietrich (1982) eq. 8:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>w</mi><mo>*</mo></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.71</mn><mo>⋅</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>4</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>D</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">w^* = (1.71 \cdot 10^{-4}) \cdot (D^*)^2</annotation></semantics></math>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>w</mi><mo>*</mo></msup><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>1.71</mn><mo>⋅</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>4</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>D</mi><mo>*</mo></msup><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">w^* = (1.71 \cdot 10^{-4}) \cdot (D^*)^2</annotation></semantics></math>
 …then converted back to grain size units by rearranging the definition
 of dimensionless grain size,</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>D</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">[</mo><mn mathvariant="normal">1</mn><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mfrac><mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>ρ</mi><mi>s</mi></msub><mo>−</mo><mi>ρ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>g</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">/</mi><msup><mi mathvariant="normal">s</mi><mn mathvariant="normal">2</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>D</mi><mn>50</mn></msub><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">m</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>3</mn></msup></mrow><mrow><mi>ρ</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">g</mi><mi mathvariant="normal">/</mi><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">3</mn></msup></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mo>⋅</mo><mi>ν</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">c</mi><msup><mi mathvariant="normal">m</mi><mn mathvariant="normal">2</mn></msup><mi mathvariant="normal">/</mi><mi mathvariant="normal">s</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">D^* [\mathrm{1}]= \frac{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/s^2}] \cdot (D_{50} [\mathrm{cm}])^3}{\rho [\mathrm{g/cm^3}] \cdot \nu [\mathrm{cm^2/s}]}</annotation></semantics></math></p>
@@ -416,7 +418,7 @@ boulders. Where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>B</mi></msub><annotation encoding="application/x-tex">\phi_B</annotation></semantics></math>
 is the size class of the maximum bed grain size mobilized,</li>
 </ul>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><mn>8</mn><mo>≤</mo><msub><mi>ϕ</mi><mi>B</mi></msub><mo>≤</mo><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">-8 \leq \phi_B \leq -2</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>8</mn><mo>≤</mo><msub><mi>ϕ</mi><mi>B</mi></msub><mo>≤</mo><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">-8 \leq \phi_B \leq -2</annotation></semantics></math></p>
 <ul>
 <li>
 <strong>suspended transport</strong>: bankfull flows are able to
@@ -424,12 +426,64 @@ transport particles larger than silts and clays. Where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>ϕ</mi><mi>S</mi></msub><annotation encoding="application/x-tex">\phi_S</annotation></semantics></math>
 is the size class of the maximum grain size suspended,</li>
 </ul>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mi>S</mi></msub><mo>≤</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\phi_S \leq 3</annotation></semantics></math>
-## Validation</p>
-<p><mark>TODO: Add here the validation based on redd surveys.</mark></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ϕ</mi><mi>S</mi></msub><mo>≤</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">\phi_S \leq 3</annotation></semantics></math></p>
 </div>
 </div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
+</h2>
+<p>Spawning geographic extent was validated against redd surveys. Redd
+survey data were assembled for the following reaches. Redd counts from
+surveys were binned by river mile for comparison. Habistat spawning
+extents and predicted spawning habitat area were similarly mapped onto
+river miles using NHD reach lengths or published river mile standards
+where available. Visual comparison for alignment provided a first round
+of validation, which will continue to be refined and used to adapt the
+spawning reach delineation logic.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Reach</th>
+<th>River Mile Source</th>
+<th>Redd Survey Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Lower Yuba River</td>
+<td>Published (DWR)</td>
+<td><mark>add here</mark></td>
+</tr>
+<tr class="even">
+<td>Feather River</td>
+<td>Published (DWR)</td>
+<td><mark>add here</mark></td>
+</tr>
+<tr class="odd">
+<td>Battle Creek</td>
+<td>NHDPlusV2</td>
+<td><mark>add here</mark></td>
+</tr>
+<tr class="even">
+<td>Clear Creek</td>
+<td>NHDPlusV2</td>
+<td><mark>add here</mark></td>
+</tr>
+<tr class="odd">
+<td>Mill Creek</td>
+<td>NHDPlusV2</td>
+<td><mark>add here</mark></td>
+</tr>
+</tbody>
+</table>
+<!--
+| American River   | Published (DWR)   | <mark>add here</mark> |
+| Mokelumne River  | Published (EBMUD) | <mark>add here</mark> |
+| Deer Creek       | NHDPlusV2         | <mark>add here</mark> |
+--><p><img src="figures/spawning-extents-validation-reaches.png"></p>
+<p>The following charts compare the modeled geographic scope, the
+modeled habitat area, and summarized redd survey outputs.</p>
+<p><img src="figures/spawning-extents-val-lower-yuba-river.png"><img src="figures/spawning-extents-val-feather-river.png"><img src="figures/spawning-extents-val-battle-creek.png"><img src="figures/spawning-extents-val-clear-creek.png"><img src="figures/spawning-extents-val-mill-creek.png"></p>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr>
