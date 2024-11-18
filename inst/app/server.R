@@ -264,7 +264,7 @@ function(input, output, session){
       #geom_hline(aes(yintercept = chan_width_ft)) + #, linetype="Channel Width (ft)")) +
       geom_vline(aes(xintercept = active_map_params$flow)) +
       geom_point(aes(x = active_map_params$flow,
-                     y = if (active_map_params$flow %in% pf$flow_cfs) pf[[wua_var()]][[which(pf$flow_cfs == active_map_params$flow)]] else NA)) +
+                     y = if (active_map_params$flow %in% flow_idx) pf[[wua_var()]][[which(flow_idx == active_map_params$flow)]] else NA)) +
       #geom_text(aes(x = 1, y = chan_width_ft, label = chan_width_ft)) +
       scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
       #scale_y_continuous(trans = ihs, labels = scales::label_comma(), limits = c(0, NA)) +
@@ -307,7 +307,7 @@ function(input, output, session){
           input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
         geom_vline(aes(xintercept = active_map_params$flow)) +
         geom_point(aes(x = active_map_params$flow,
-                       y = if (active_map_params$flow %in% pf$flow_cfs) pf[[wua_var()]][[which(pf$flow_cfs == active_map_params$flow)]] else NA)) +
+                       y = if (active_map_params$flow %in% flow_idx) pf[[wua_var()]][[which(flow_idx == active_map_params$flow)]] else NA)) +
         scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
         scale_y_continuous(limits = c(0, NA)) +
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
@@ -347,7 +347,7 @@ function(input, output, session){
           input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
         geom_vline(aes(xintercept = active_map_params$flow)) +
         geom_point(aes(x = active_map_params$flow,
-                       y = if (active_map_params$flow %in% pf$flow_cfs) pf[[wua_var()]][[which(pf$flow_cfs == active_map_params$flow)]] else NA)) +
+                       y = if (active_map_params$flow %in% flow_idx) pf[[wua_var()]][[which(flow_idx == active_map_params$flow)]] else NA)) +
         scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
         scale_y_continuous(limits = c(0, NA)) +
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
