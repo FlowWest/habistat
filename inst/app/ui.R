@@ -8,8 +8,9 @@ shinyUI(
       title = tagList(
         tags$div(
           class = "title-container",
-          tags$img(src = "habistat_hexlogo.svg", class = "title-image"),
-          tags$span("HabiStat", class = "title-text")
+          # tags$img(src = "habistat_hexlogo.svg", class = "title-image"),
+          # tags$span("HabiStat", class = "title-text")
+          tags$img(src = "habistat_wordmark.svg", class = "title-image", alt = "HabiStat"),
         )
       ),
       id = "tabs",
