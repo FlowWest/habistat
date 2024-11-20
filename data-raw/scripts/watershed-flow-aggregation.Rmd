@@ -46,6 +46,9 @@ cv_watersheds_flow_xw |> usethis::use_data(overwrite=T)
 cv_mainstems_flow_xw <- make_flow_xw(river_cvpia)
 cv_mainstems_flow_xw |> usethis::use_data(overwrite=T)
 
+cv_mainstem_groups_flow_xw <- make_flow_xw(river_group)
+cv_mainstem_groups_flow_xw |> usethis::use_data(overwrite=T)
+
 habistat::flowline_geom_proj |>
   inner_join(cv_watersheds_flow_xw, by=join_by(comid)) |>
   filter(comid %in% habistat::wua_predicted$comid) |>
@@ -69,99 +72,132 @@ habistat::flowline_geom_proj |>
           aes(color = 1)) + 
   scale_color_viridis_c(direction = -1) + 
   ggtitle("Flow Multipliers by Mainstem")
+
+habistat::flowline_geom_proj |>
+  inner_join(cv_mainstem_groups_flow_xw, by=join_by(comid)) |>
+  filter(comid %in% habistat::wua_predicted$comid) |>
+  ggplot() + 
+  geom_sf(aes(color = multiplier)) + 
+  geom_sf(data = habistat::flowline_geom_proj |> 
+            filter(comid %in% cv_mainstem_groups_flow_xw$outlet_comid) |> 
+            st_line_sample(sample=1), 
+          aes(color = 1)) + 
+  scale_color_viridis_c(direction = -1) + 
+  ggtitle("Flow Multipliers by Mainstem Group")
 ```
 
 ### Applying the crosswalk to aggregate model results
 
 ```{r}
-model_predicted_final <-
-    readRDS(here::here("data-raw", "results", "model_predicted_final.Rds"))
+# model_predicted_final <-
+#     readRDS(here::here("data-raw", "results", "model_predicted_final.Rds"))
 # for backwards compatibility because habistat::wua_predicted is now pivoted
 
-load(here::here("data", "wua_predicted.Rda")) # this contains the ensemble predictions
+# load(here::here("data", "wua_predicted.Rda")) # this contains the ensemble predictions
 
 wua_predicted_cv_watersheds <- 
-  model_predicted_final |>
+  habistat::wua_predicted |>
   inner_join(cv_watersheds_flow_xw, 
              by=join_by(watershed_level_3, comid)) |>
   expand_grid(scaled = c(FALSE, TRUE)) |>
   mutate(flow_cfs = if_else(scaled, flow_cfs * multiplier, flow_cfs)) |>
-  arrange(habitat, model_name, comid, flow_cfs) |>
-  group_by(habitat, model_name, comid) |>
-  mutate(wua_per_lf_pred = if_else(scaled, NA, wua_per_lf_pred)) |>
-  mutate(wua_per_lf_pred = zoo::na.approx(wua_per_lf_pred, x = flow_cfs, na.rm=F, rule=2)) |>
+  arrange(habitat, comid, flow_cfs) |> # , model_name, 
+  group_by(habitat, comid) |> # , model_name, 
+  mutate(across(c(wua_per_lf_pred, wua_per_lf_pred_SD, wua_per_lf_pred_SN),
+                \(v) if_else(scaled, NA, v))) |>
+  mutate(across(c(wua_per_lf_pred, wua_per_lf_pred_SD, wua_per_lf_pred_SN),
+                \(v) zoo::na.approx(v, x = flow_cfs, na.rm=F, rule=2))) |>
   filter(scaled) |>
   select(-scaled) |>
   ungroup() |>
-  group_by(habitat, model_name, watershed_level_3, flow_idx) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
-            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
+  group_by(habitat, watershed_level_3, flow_idx) |> # , model_name, 
+  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_per_lf_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_per_lf_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / 43560, 
+            wua_acres_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft, na.rm=T) / 43560, 
+            wua_acres_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft, na.rm=T) / 43560, 
+            .groups="drop") |>
   inner_join(model_predicted_final |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
 
-wua_predicted_cv_watersheds <- wua_predicted_cv_watersheds |>
-  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
-  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
-         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
+# wua_predicted_cv_watersheds <- wua_predicted_cv_watersheds |>
+#   pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+#   mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+#          wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_watersheds |> usethis::use_data(overwrite=T)
 
 wua_predicted_cv_mainstems <- 
-  model_predicted_final |> 
+  habistat::wua_predicted |> 
   inner_join(cv_mainstems_flow_xw, 
              by=join_by(river_cvpia, comid)) |>
   expand_grid(scaled = c(FALSE, TRUE)) |>
   mutate(flow_cfs = if_else(scaled, flow_cfs * multiplier, flow_cfs)) |>
-  arrange(habitat, model_name, comid, flow_cfs) |>
-  group_by(habitat, model_name, comid) |>
-  mutate(wua_per_lf_pred = if_else(scaled, NA, wua_per_lf_pred)) |>
-  mutate(wua_per_lf_pred = zoo::na.approx(wua_per_lf_pred, x = flow_cfs, na.rm=F, rule=2)) |>
+  arrange(habitat, comid, flow_cfs) |> # , model_name, 
+  group_by(habitat, comid) |>  # , model_name, 
+  mutate(across(c(wua_per_lf_pred, wua_per_lf_pred_SD, wua_per_lf_pred_SN),
+                \(v) if_else(scaled, NA, v))) |>
+  mutate(across(c(wua_per_lf_pred, wua_per_lf_pred_SD, wua_per_lf_pred_SN),
+                \(v) zoo::na.approx(v, x = flow_cfs, na.rm=F, rule=2))) |>
   filter(scaled) |>
   select(-scaled) |>
   ungroup() |>
-  group_by(habitat, model_name, river_cvpia, flow_idx) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
-            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
+  group_by(habitat, river_cvpia, flow_idx) |> # , model_name, 
+  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_per_lf_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_per_lf_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / 43560, 
+            wua_acres_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft, na.rm=T) / 43560, 
+            wua_acres_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft, na.rm=T) / 43560, 
+            .groups="drop") |>
   inner_join(model_predicted_final |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx)) 
 
-wua_predicted_cv_mainstems <- wua_predicted_cv_mainstems |>
-  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
-  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
-         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
+# wua_predicted_cv_mainstems <- wua_predicted_cv_mainstems |>
+#   pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+#   mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+#          wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_mainstems |> usethis::use_data(overwrite=T)
 
 # these are the mainstems grouped for CVPIA model comparison
 wua_predicted_cv_mainstems_grouped <- 
-  model_predicted_final |> 
-  inner_join(cv_mainstems_flow_xw, 
-             by=join_by(river_cvpia, comid)) |>
+  habistat::wua_predicted |> 
+  inner_join(cv_mainstem_groups_flow_xw, 
+             by=join_by(river_group, comid)) |>
   expand_grid(scaled = c(FALSE, TRUE)) |>
   mutate(flow_cfs = if_else(scaled, flow_cfs * multiplier, flow_cfs)) |>
-  arrange(habitat, model_name, comid, flow_cfs) |>
-  group_by(habitat, model_name, comid) |>
-  mutate(wua_per_lf_pred = if_else(scaled, NA, wua_per_lf_pred)) |>
-  mutate(wua_per_lf_pred = zoo::na.approx(wua_per_lf_pred, x = flow_cfs, na.rm=F, rule=2)) |>
+  arrange(habitat, comid, flow_cfs) |> # , model_name, 
+  group_by(habitat, comid) |> # , model_name, 
+  mutate(across(c(wua_per_lf_pred, wua_per_lf_pred_SD, wua_per_lf_pred_SN),
+                \(v) if_else(scaled, NA, v))) |>
+  mutate(across(c(wua_per_lf_pred, wua_per_lf_pred_SD, wua_per_lf_pred_SN),
+                \(v) zoo::na.approx(v, x = flow_cfs, na.rm=F, rule=2))) |>
   filter(scaled) |>
   select(-scaled) |>
   ungroup() |>
-  group_by(habitat, model_name, river_group, flow_idx) |>
-  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
-            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560, .groups="drop") |>
+  group_by(habitat, river_group, flow_idx) |>  # , model_name, 
+  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_per_lf_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_per_lf_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / 43560, 
+            wua_acres_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft, na.rm=T) / 43560, 
+            wua_acres_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft, na.rm=T) / 43560, 
+            .groups="drop") |>
   inner_join(model_predicted_final |> 
                group_by(flow_idx) |> 
                summarize(flow_cfs = first(flow_cfs), .groups="drop"),
              by = join_by(flow_idx))
 
-wua_predicted_cv_mainstems_grouped <- wua_predicted_cv_mainstems_grouped |>
-  pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
-  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
-         wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
+# wua_predicted_cv_mainstems_grouped <- wua_predicted_cv_mainstems_grouped |>
+#   pivot_wider(names_from = model_name, values_from = c(wua_per_lf_pred, wua_acres_pred)) |>
+#   mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2,
+#          wua_acres_pred = (wua_acres_pred_SD + wua_acres_pred_SN) / 2)
 
 wua_predicted_cv_mainstems_grouped |> usethis::use_data(overwrite=T)
 ```
@@ -217,7 +253,8 @@ wua_predicted |>
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
   scale_color_brewer(palette = "Dark2", aesthetics = c("color", "fill")) +
-  ylab("Predicted Total Habitat (acres)") + xlab("Flow (cfs)")
+  ylab("Predicted Total Habitat (acres)") + xlab("Flow (cfs)") +
+  ggtitle("Example incorrect method of aggregating - do not use")
 ```
 
 ## DSMHabitat Comparison
@@ -232,7 +269,8 @@ mainstems_comid <-
   st_transform(st_crs(habistat::flowline_geom_proj)) |>
   mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units()) |>
   filter(str_detect(habitat, "rearing")) |>
-  left_join(habistat::flowline_attr |> select(comid, hqt_gradient_class), by=join_by(comid)) |>
+  left_join(habistat::flowline_attr |> 
+              select(comid, hqt_gradient_class, river_group), by=join_by(comid)) |>
   filter(!(watershed %in% c("Sacramento River", "San Joaquin River")))
 
 mainstems <-
@@ -243,7 +281,8 @@ mainstems <-
 mainstems_comid |> 
   ggplot() + 
   geom_sf(aes(group=river, color=hqt_gradient_class)) + 
-  theme(legend.key.height = unit(12, "point"))
+  theme(legend.key.height = unit(12, "point")) +
+  ggtitle("DSMhabitat reaches")
 ```
 
 ```{r dsmhabitat-join, fig.width=6.5, fig.height=6.5, dpi=300}
@@ -284,8 +323,13 @@ mainstems_comid |>
   st_zm() |> 
   filter(comid %in% mainstems_comid$comid) |>
   ggplot() + 
-  geom_sf(aes(color=watershed)) + 
+  geom_sf(aes(color=river_group)) + 
   theme(legend.key.height = unit(12, "point"))
+
+# http://cvpia-habitat-docs-markdown.s3-website-us-west-2.amazonaws.com/watershed/Regional_Approximation.html
+regional_approx_groups <- 
+  c("Antelope Creek", "Bear Creek", "Big Chico Creek", "Cow Creek",
+    "Elder Creek", "Mill Creek", "Paynes Creek", "Stony Creek", "Thomes Creek")
 
 # combining both floodplain and instream rearing acreages/WUAs for comparison
 dsm_habitat_combined <- mainstems |> 
@@ -298,24 +342,25 @@ dsm_habitat_combined <- mainstems |>
   arrange(watershed, flow_cfs) |>
   mutate(FR_juv_wua = zoo::na.approx(FR_juv_wua, flow_cfs, na.rm=F),
          FR_floodplain_acres_suitable = zoo::na.approx(FR_floodplain_acres_suitable, flow_cfs, na.rm=F)) |>
-  transmute(watershed, flow_cfs, 
+  transmute(river_group = watershed, flow_cfs, 
             instream_wua_per_lf = coalesce(FR_juv_wua/1000,0),
             instream_suitable_ac = coalesce(FR_juv_wua/1000,0)*length_ft/43560,
             floodplain_wua_per_lf = coalesce(FR_floodplain_acres_suitable,0)*43560/length_ft,
             floodplain_suitable_ac = coalesce(FR_floodplain_acres_suitable,0),
             combined_wua_per_lf = instream_wua_per_lf + floodplain_wua_per_lf,
             combined_suitable_ac =  instream_suitable_ac + floodplain_suitable_ac) |>
-  ungroup()
+  ungroup() |>
+  mutate(regional_approx = river_group %in% regional_approx_groups)
 
 dsm_habitat_wua_per_lf <- dsm_habitat_combined |>
-  select(watershed, flow_cfs, instream_wua_per_lf, floodplain_wua_per_lf) |>
+  select(river_group, flow_cfs, instream_wua_per_lf, floodplain_wua_per_lf, regional_approx) |>
 #  mutate(combined_wua_per_lf = pmax(instream_wua_per_lf, floodplain_wua_per_lf)) |>
   pivot_longer(cols=c(instream_wua_per_lf, floodplain_wua_per_lf)) |>
   mutate(name = paste("DSMhabitat", str_replace(name, "_wua_per_lf", "")),
          value = if_else(value>0, value, NA))
 
 dsm_habitat_suitable_ac <- dsm_habitat_combined |>
-  select(watershed, flow_cfs, instream_suitable_ac, floodplain_suitable_ac) |>
+  select(river_group, flow_cfs, instream_suitable_ac, floodplain_suitable_ac, regional_approx) |>
 #  mutate(combined_suitable_ac = pmax(instream_suitable_ac, floodplain_suitable_ac)) |>
   pivot_longer(cols=c(instream_suitable_ac, floodplain_suitable_ac)) |>
   mutate(value = if_else(value>0, value, NA)) |>
@@ -326,14 +371,35 @@ dsm_habitat_suitable_ac <- dsm_habitat_combined |>
 ```{r pred-watersheds-dsmhabitat-comparison, fig.width=8.5, fig.height=8.5, dpi=300}
 wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "rearing") |>
-  filter(river_group %in% dsm_habitat_wua_per_lf$watershed) |>
-  mutate(watershed = river_group) |>
+  filter(river_group %in% dsm_habitat_wua_per_lf$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~watershed, scales="free") + 
+  facet_wrap(~river_group, scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = "habistat rearing"), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, color = "habistat rearing")) +
   geom_line(data=dsm_habitat_suitable_ac |> 
               filter(flow_cfs <= 15000), 
+            aes(x = flow_cfs, y = value, color = paste("vs", name), linetype = regional_approx)) +
+  scale_x_log10() +
+  theme(legend.position = "top", panel.grid.minor = element_blank()) + 
+  scale_color_brewer(name = "", palette = "Dark2", aesthetics = c("color", "fill")) +
+  ylab("Predicted Total Habitat (acres)") + xlab("Flow at Outlet (cfs)") + 
+    guides(color = guide_legend(nrow = 1))
+```
+
+Removing the ones that use the "[regional approximation](http://cvpia-habitat-docs-markdown.s3-website-us-west-2.amazonaws.com/watershed/Regional_Approximation.html)"
+
+```{r pred-watersheds-dsmhabitat-comparison-filtered, fig.width=8.5, fig.height=8.5, dpi=300}
+wua_predicted_cv_mainstems_grouped |>
+  filter(habitat == "rearing") |>
+  filter(river_group %in% dsm_habitat_wua_per_lf$river_group) |>
+  filter(!(river_group %in% regional_approx_groups)) |>
+  ggplot(aes(x = flow_cfs)) + 
+  facet_wrap(~river_group, scales="free") + 
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = "habistat rearing"), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, color = "habistat rearing")) +
+  geom_line(data=dsm_habitat_suitable_ac |> 
+              filter(flow_cfs <= 15000) |>
+              filter(!(river_group %in% regional_approx_groups)), 
             aes(x = flow_cfs, y = value, color = paste("vs", name))) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
@@ -353,6 +419,8 @@ wua_predicted_cv_mainstems_grouped |>
     - make a flow-scaled version of the gage's inundation curve
     - apply the flow-scaled inundation curve to the flow-scaled habitat curve
   - consolidate and sum the result curves
+  
+Below was development of the method implemented in the Shiny app and in the `habitat_` functions.
 
 ### Streamgage drainage area attributes
 
