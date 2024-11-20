@@ -8,7 +8,7 @@ shinyUI(
       title = tagList(
         tags$div(
           class = "title-container",
-          tags$img(src = "apple-touch-icon.png", class = "title-image"),
+          tags$img(src = "habistat_hexlogo.svg", class = "title-image"),
           tags$span("HabiStat", class = "title-text")
         )
       ),
