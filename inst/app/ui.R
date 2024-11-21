@@ -22,22 +22,52 @@ shinyUI(
                  div(id = "mainControls",
                      div(style="display: inline-block;",
                          shinyWidgets::radioGroupButtons("habitat_type",
-                                                         label = "Select Habitat Type",
+                                                         label = list( "Select Habitat Type", shinyBS::bsButton(inputId = "habitat_info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
                                                          choices=c("rearing", "spawning"),
                                                          selected="rearing")),
                      div(style="display: inline-block;",
                          shinyWidgets::radioGroupButtons("flowline_scope",
-                                                         label = "Select Geographic Scope",
+                                                         label = list("Select Geographic Scope", shinyBS::bsButton(inputId = "scope_info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
                                                          choices=c("comid", "mainstem", "watershed"),
                                                          selected="comid")),
                      div(style="display: inline-block;",
                          selectInput("wua_var",
-                                     label = "Select Calculation Method",
+                                     label = list("Select Calculation Method", shinyBS::bsButton(inputId = "calc_info", label = "", icon = icon("info", lib = "font-awesome"), style = "default", size = "extra-small")),
                                      choices = list("Ensemble" = "wua_per_lf_pred",
                                                     "Scale-Dependent" = "wua_per_lf_pred_SD",
                                                     "Scale-Normalized" = "wua_per_lf_pred_SN",
                                                     "Actual" = "wua_per_lf_actual"),
                                      selected = "wua_per_lf_pred")),
+                 ),
+                 shinyBS::bsPopover(
+                   id = "habitat_info",
+                   title = "Habitat Info",
+                   content = HTML(paste0(
+                     "Select rearing (in-channel + floodplain) or spawning habitat to flow relationships"
+                   )),
+                   placement = "right",
+                   trigger = "click",
+                   options = list(container = "body")
+                 ),
+                 shinyBS::bsPopover(
+                   id = "calc_info",
+                   title = "Calculation Info",
+                   content = HTML(paste0(
+                     "Select calculation method"
+                   )),
+                   placement = "right",
+                   trigger = "click",
+                   options = list(container = "body")
+                 ),
+                 shinyBS::bsPopover(
+                   id = "scope_info",
+                   title = "Geographic Scope Info",
+                   content = HTML(paste0(
+                     "Select geographic scope"
+                   )),
+                   placement = "right",
+                   trigger = "click",
+                   options = list(container = "body")
                  ),
                  div(id = "mapControls",
                      div(id = "control_active_flow_slider",
