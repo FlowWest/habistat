@@ -80,10 +80,20 @@ spawning_hsc_dep <- spawning_hsc |>
   summarise(max_suit_index = max(suitability_index, na.rm=T)) 
 
 spawning_hsc_dep |> 
-  ggplot() + 
-  geom_line(aes(x = units_si, y = max_suit_index, color = race), size = 1) + 
-  xlab('depth (meters)') + 
-  ylab('suitability index') 
+  mutate(run = janitor::make_clean_names(race, allow_dupes=T)) |>
+  ggplot() +
+#  geom_line(data = spawning_hsc |> 
+#              filter(suitability_metric == "Depth" & species == "Chinook" & units_si < 3),
+#            aes(x = units_si / 0.3048, y = suitability_index, color = race, group = river_citation), alpha=0.25) +
+  geom_line(aes(x = units_si / 0.3048, y = max_suit_index, color = run), size = 1) +
+  xlab('depth (feet)') + 
+  ylab('suitability index') +
+  geom_line(data = tibble(x = c(0, 6.56, 6.56, Inf), y = c(1, 1, 0, 0)),
+            aes(x = x, y = y, linetype = "Max"), size = 1) +
+  scale_linetype_manual(name = "Summary", values = "dashed") +
+  scale_color_discrete(name = "Run")
+
+ggsave(here::here("vignettes", "figures", "hsi_spawning_depth.png"), width=6.5, height=4)
 ```
 
 ### Velocity HSI
@@ -113,12 +123,45 @@ spawning_hsc_vel <- spawning_hsc |>
   group_by(race, units_si) |>
   summarise(max_suit_index = max(suitability_index, na.rm=T)) 
 
-spawning_hsc_vel |> 
-  ggplot() + 
-  geom_line(aes(x = units_si, y = max_suit_index, color = race), size = 1) + 
-  xlab('velocity (meters/second)')  + 
-  ylab('suitability index')
+habistat::suitability_hsi_vel_spawning |>
+  enframe() |>
+  unnest(value) |>
+  filter(name != "max") |>
+  ggplot() +
+  geom_line(aes(x = vel_ft_s, y = hsi, color = name), size = 1) +
+  geom_line(data = habistat::suitability_hsi_vel_spawning$max,
+            aes(x = vel_ft_s, y = hsi, linetype = "Max"), size = 1) + 
+  xlab('depth (feet)') + 
+  ylab('suitability index') +
+  scale_linetype_manual(name = "Summary", values = "dashed") +
+  scale_color_discrete(name = "Run")
 
+ggsave(here::here("vignettes", "figures", "hsi_spawning_velocity.png"), width=6.5, height=4)
+```
+
+```{r}
+# Version 2
+spawning_hsc_vel_v2 <- spawning_hsc |> 
+  filter(suitability_metric == "Velocity") |> 
+  filter(units_si < 30,
+         species == "Chinook") |>   
+  group_by(race) %>%
+  complete(river_citation, units_si = unique(.$units_si)) |>
+  group_by(race, river_citation) |>
+  mutate(suitability_index = zoo::na.approx(suitability_index, x = units_si, na.rm=F)) |>
+  group_by(race, units_si) |>
+  summarise(max_suit_index = max(suitability_index, na.rm=T)) 
+
+spawning_hsc_vel_v2 |> 
+  ggplot() + 
+  geom_line(aes(x = units_si / 0.3048, y = max_suit_index, color = race), size = 1) + 
+  geom_line(data = spawning_hsc_vel_v2 |> 
+              group_by(units_si) |> 
+              summarize(max_suit_index = max(max_suit_index, na.rm=T)),
+            aes(x = units_si / 0.3048, y = max_suit_index, linetype = "Max"), size = 1) +
+  xlab('velocity (feet/second)')  + 
+  ylab('suitability index')  +
+  scale_linetype_manual(name = "Summary", values = "dashed")
 ```
 
 ## Create Suitability Data Files
@@ -129,7 +172,6 @@ spawning_depth_hsi <- spawning_hsc |>
   filter(suitability_metric == "Depth") |> 
   filter(units_si < 3,
          species == "Chinook") |>   
-  mutate(units_si = round(units_si, 1)) |> 
   group_by(race) |> 
   filter(suitability_index > 0) |>
   summarise(max_depth_m = max(units_si)) |> 
@@ -158,31 +200,26 @@ usethis::use_data(spawning_depth_hsi, overwrite = T)
 ```
 
 ```{r, echo = FALSE}
-# velocity (ranges)
-spawning_vel_hsi <- 
-  spawning_hsc_vel |> 
-  rename(run = race,
-         vel_m_s = units_si, # m/s
-         hsi = max_suit_index) |>
+# new version without rounding error
+spawning_vel_hsi <-
+  spawning_hsc_vel_v2 |>
+  rename(run = race) |>
   mutate(run = janitor::make_clean_names(run, allow_dupes=T)) |>
   group_by(run) |>
-  complete(vel_m_s = sort(unique(spawning_hsc_vel$units_si))) |>
-  arrange(run, vel_m_s) |>
-  mutate(hsi = zoo::na.approx(hsi, x = vel_m_s, na.rm=F)) |> #, rule=2)) |>
-  mutate(hsi = coalesce(hsi, 0)) |>
-  mutate(hsi = round(hsi, 1)) %>%
+  mutate(units_us = units_si / 0.3048) |>
+  reframe(vel_ft_s = seq(0,10,0.1),
+          hsi = approx(x = units_us, y = max_suit_index, xout = vel_ft_s)$y) |>
+  mutate(hsi = if_else(is.na(hsi) | is.nan(hsi) | hsi < 0, 0, hsi)) %>%
   bind_rows(. |> 
-              group_by(vel_m_s) |> 
-              summarize(hsi = max(hsi), 
+              group_by(vel_ft_s) |> 
+              summarize(hsi = max(hsi, na.rm=T), 
                         run = "max") |>
               ungroup()) |>
-  mutate(vel_ft_s = vel_m_s / 0.3048) |>
-  relocate(vel_ft_s, .before = hsi)
+  mutate(vel_m_s = vel_ft_s * 0.3048) |>
+  relocate(vel_m_s, .before = vel_ft_s)
 
 knitr::kable(spawning_vel_hsi, caption = "Velocity HSI - for each run, the velocity HSI range") |> 
   kableExtra::kable_styling(position = "left")
-
-# usethis::use_data(spawning_vel_hsi, overwrite = T)
 
 suitability_hsi_vel_spawning <-
   spawning_vel_hsi |>
@@ -192,4 +229,17 @@ suitability_hsi_vel_spawning <-
 
 usethis::use_data(suitability_hsi_vel_spawning, overwrite = T)
 # use like: suitability_hsi_vel_spawning$winter
+
+suitability_hsi_vel_spawning |>
+  enframe() |>
+  unnest(value) |>
+  filter(name != "max") |>
+  ggplot() +
+  geom_line(aes(x = vel_ft_s, y = hsi, color = name), size = 1) +
+  geom_line(data = suitability_hsi_vel_spawning$max,
+            aes(x = vel_ft_s, y = hsi, linetype = "Max"), size = 1) + 
+  xlab('depth (feet)') + 
+  ylab('suitability index') +
+  scale_linetype_manual(name = "Summary", values = "dashed") +
+  scale_color_discrete(name = "Run")
 ```
