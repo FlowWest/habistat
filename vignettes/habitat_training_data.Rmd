@@ -29,12 +29,21 @@ knitr::opts_chunk$set(
 
 Depth and velocity outputs from existing two-dimensional hydraulic models were assembled for "training reaches" within the study area, at a variety of flows. The model is currently trained on the following models:
 
+```{r eval=FALSE, include=FALSE}
+habistat::wua_hydraulic |> 
+  group_by(dataset) |> 
+  summarize(min(flow_cfs), max(flow_cfs))
+```
+
 | Stream | Extent | Length | Author | Year | Platform | Flow Range |
 | ------ | ------ | ------ | ------ | ---- | -------- | ---------- |
-| Deer Creek | Delaney Slough to Sacramento River confluence | 40,000 LF | FlowWest | 2021 | HEC-RAS 2D | ___ - ___ cfs |
-| Lower Yuba River | Englebright Dam to Feather River confluence | 120,000 LF | CBEC | 2020 | SRH-2D | ___ - ___ cfs |
-| Stanislaus River | Knights Ferry to San Joaquin River confluence | 90,000 LF | NewFields | 2013 | SRH-2D | ___ - ___ cfs |
-| Tuolumne River | Basso-La Grange Reach | ___ LF | FlowWest | ___ | HEC-RAS 2D | ___ - ___ cfs |
+| Deer Creek | Delaney Slough to Sacramento River confluence | 40,000 LF | FlowWest | 2021 | HEC-RAS 2D | 100 - 15,000 cfs |
+| Lower Yuba River | Englebright Dam to Feather River confluence | 120,000 LF | CBEC | 2020 | SRH-2D | 300 - 110,400 cfs |
+| Stanislaus River | Knights Ferry to San Joaquin River confluence | 90,000 LF | NewFields | 2013 | SRH-2D | 500 - 5,000 cfs |
+| Tuolumne River | Basso-La Grange Reach | ___ LF | FlowWest | ___ | HEC-RAS 2D | 80 - 9,600 cfs |
+| Mokelumne River | Camanche Dam to North/South Mokelume Divergence | ___ LF | EBMUD | ___ | HEC-RAS 2D | 100 - 5,000 cfs |
+
+Datasets are temporarily filtered to a maximum flow of 15,000 cfs during model development.
 
 ```{r reaches, echo=FALSE, message=FALSE, warning=FALSE}
 habistat::flowline_geom_proj |>
@@ -49,7 +58,7 @@ habistat::flowline_geom_proj |>
 
 The depth and velocity raster grids (for HEC-RAS 2D models) or vector meshes (for SRH-2D models) were divided up based on ComID reach delineations. Currently, this is a manual process that requires importing the model domain polygon into a GIS system, splitting it up into reaches, and assigning each reach a ComID number that corresponds to the overlapping NHDPlusV2 flowline.
 
-## Habiat Suitability Index
+## Habitat Suitability Index
 
 A habitat suitability index was applied to each grid/mesh cell based on depth and velocity values. The simplest habitat suitability indices are binary, *i.e.*, 1 if a cell is within suitable depth and velocity range, else 0), and this approach is currently being used. However, it is possible to instead use a habitat suitability index that includes "somewhat suitable" fractional values between 0 and 1. 
 
@@ -71,13 +80,11 @@ This index, derived from "juvenile salmonid observations from 11 different north
 
 ### Spawning
 
-For spawning, we derived general habitat suitability criteria from a dataset compiled by Mark Gard for use in [CVPIA DSMHabitat](https://cvpia-osc.github.io/DSMhabitat/). Within the dataset are spawning criteria for depth, velocity, and substrate for 11 watersheds and Fall, Late Fall, Winter, Spring for Chinook Salmon.
-
-<mark>TODO: Plot here of Mark Gard criteria</mark>
-
-The depth factor of the HSI, as the least-restrictive estimate, uses the maximum depth with a nonzero suitability across all of the runs analyzed.
+For spawning, we derived general habitat suitability criteria from a dataset compiled by Mark Gard for use in [CVPIA DSMHabitat](https://cvpia-osc.github.io/DSMhabitat/). Within the dataset are spawning criteria for depth, velocity, and substrate for 11 watersheds and Fall, Late Fall, Winter, Spring for Chinook Salmon. The depth factor of the HSI, as the least-restrictive estimate, uses the maximum depth with a nonzero suitability across all of the runs analyzed.
 
 > HSI<sub>depth</sub> = 1 if d<=6.56 else 0
+
+![](figures/hsi_spawning_depth.png)
 
 For winter run, a minimum depth also applies:
 
@@ -85,21 +92,7 @@ For winter run, a minimum depth also applies:
 
 The velocity factor of the HSI, rather than a binary threshold, uses a curve relationship with fractional suitabilities. This curve is the upper envelope of all the individual suitability curves for different runs. 
 
-```{r spawning_velocity_hsi, echo=FALSE, message=FALSE, warning=FALSE}
-habistat::suitability_hsi_vel_spawning |>
-  enframe() |>
-  unnest(cols = value) |>
-  filter(name != "max") |>
-  ggplot(aes(x = vel_ft_s, y = hsi)) +
-  geom_line(aes(color = name)) +
-  geom_line(data = habistat::suitability_hsi_vel_spawning$max, 
-            color = "black", 
-            linewidth = 1,
-            linetype = "dashed") +
-  ylab("Habitat Suitability Index") +
-  xlab("Velocity (ft/sec)") +
-  ggtitle("Velocity HSI as upper envelope of runs")
-```
+![](figures/hsi_spawning_velocity.png)
 
 If both depth and velocity criteria were fractional, then a geometric mean would be an appropriate method of combining the two. However, with the binary criterion, simple multiplication is appropriate. The overall suitability equals the velocity suitability if and only if the depth is suitable, otherwise the overall suitability is zero.
 

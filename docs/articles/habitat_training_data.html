@@ -72,6 +72,9 @@
     <li>
       <a href="../articles/spawning_extents.html">Spawning Extents</a>
     </li>
+    <li>
+      <a href="../articles/interactive_map.html">Interactive Map User Guide</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -99,7 +102,7 @@
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-11-07</h4>
+            <h4 data-toc-skip class="date">2024-11-26</h4>
       
 
       <div class="hidden name"><code>habitat_training_data.Rmd</code></div>
@@ -142,7 +145,7 @@ models:</p>
 <td>FlowWest</td>
 <td>2021</td>
 <td>HEC-RAS 2D</td>
-<td>___ - ___ cfs</td>
+<td>100 - 15,000 cfs</td>
 </tr>
 <tr class="even">
 <td>Lower Yuba River</td>
@@ -151,7 +154,7 @@ models:</p>
 <td>CBEC</td>
 <td>2020</td>
 <td>SRH-2D</td>
-<td>___ - ___ cfs</td>
+<td>300 - 110,400 cfs</td>
 </tr>
 <tr class="odd">
 <td>Stanislaus River</td>
@@ -160,7 +163,7 @@ models:</p>
 <td>NewFields</td>
 <td>2013</td>
 <td>SRH-2D</td>
-<td>___ - ___ cfs</td>
+<td>500 - 5,000 cfs</td>
 </tr>
 <tr class="even">
 <td>Tuolumne River</td>
@@ -169,10 +172,21 @@ models:</p>
 <td>FlowWest</td>
 <td>___</td>
 <td>HEC-RAS 2D</td>
-<td>___ - ___ cfs</td>
+<td>80 - 9,600 cfs</td>
+</tr>
+<tr class="odd">
+<td>Mokelumne River</td>
+<td>Camanche Dam to North/South Mokelume Divergence</td>
+<td>___ LF</td>
+<td>EBMUD</td>
+<td>___</td>
+<td>HEC-RAS 2D</td>
+<td>100 - 5,000 cfs</td>
 </tr>
 </tbody>
 </table>
+<p>Datasets are temporarily filtered to a maximum flow of 15,000 cfs
+during model development.</p>
 <p><img src="figures/training-data-reaches-1.png" width="700"></p>
 <p>The depth and velocity raster grids (for HEC-RAS 2D models) or vector
 meshes (for SRH-2D models) were divided up based on ComID reach
@@ -182,7 +196,7 @@ into reaches, and assigning each reach a ComID number that corresponds
 to the overlapping NHDPlusV2 flowline.</p>
 </div>
 <div class="section level2">
-<h2 id="habiat-suitability-index">Habiat Suitability Index<a class="anchor" aria-label="anchor" href="#habiat-suitability-index"></a>
+<h2 id="habitat-suitability-index">Habitat Suitability Index<a class="anchor" aria-label="anchor" href="#habitat-suitability-index"></a>
 </h2>
 <p>A habitat suitability index was applied to each grid/mesh cell based
 on depth and velocity values. The simplest habitat suitability indices
@@ -237,14 +251,13 @@ River Flow Effects Modeling Project</a>.</p>
 dataset compiled by Mark Gard for use in <a href="https://cvpia-osc.github.io/DSMhabitat/" class="external-link">CVPIA DSMHabitat</a>.
 Within the dataset are spawning criteria for depth, velocity, and
 substrate for 11 watersheds and Fall, Late Fall, Winter, Spring for
-Chinook Salmon.</p>
-<p><mark>TODO: Plot here of Mark Gard criteria</mark></p>
-<p>The depth factor of the HSI, as the least-restrictive estimate, uses
-the maximum depth with a nonzero suitability across all of the runs
-analyzed.</p>
+Chinook Salmon. The depth factor of the HSI, as the least-restrictive
+estimate, uses the maximum depth with a nonzero suitability across all
+of the runs analyzed.</p>
 <blockquote>
 <p>HSI<sub>depth</sub> = 1 if d&lt;=6.56 else 0</p>
 </blockquote>
+<p><img src="figures/hsi_spawning_depth.png"></p>
 <p>For winter run, a minimum depth also applies:</p>
 <blockquote>
 <p>HSI<sub>depth</sub> = 1 if (d &gt; 1.00 &amp; d&lt;=6.56) else 0</p>
@@ -253,7 +266,7 @@ analyzed.</p>
 a curve relationship with fractional suitabilities. This curve is the
 upper envelope of all the individual suitability curves for different
 runs.</p>
-<p><img src="figures/training-data-spawning_velocity_hsi-1.png" width="700"></p>
+<p><img src="figures/hsi_spawning_velocity.png"></p>
 <p>If both depth and velocity criteria were fractional, then a geometric
 mean would be an appropriate method of combining the two. However, with
 the binary criterion, simple multiplication is appropriate. The overall

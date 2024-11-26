@@ -84,6 +84,22 @@ spawning_hsc_dep |>
   geom_line(aes(x = units_si, y = max_suit_index, color = race), size = 1) + 
   xlab('depth (meters)') + 
   ylab('suitability index') 
+
+spawning_hsc_dep |> 
+  mutate(run = janitor::make_clean_names(race, allow_dupes=T)) |>
+  ggplot() +
+#  geom_line(data = spawning_hsc |> 
+#              filter(suitability_metric == "Depth" & species == "Chinook" & units_si < 3),
+#            aes(x = units_si / 0.3048, y = suitability_index, color = race, group = river_citation), alpha=0.25) +
+  geom_line(aes(x = units_si / 0.3048, y = max_suit_index, color = run), size = 1) +
+  xlab('depth (feet)') + 
+  ylab('suitability index') +
+  geom_line(data = tibble(x = c(0, 6.56, 6.56, Inf), y = c(1, 1, 0, 0)),
+            aes(x = x, y = y, linetype = "Max"), size = 1) +
+  scale_linetype_manual(name = "Summary", values = "dashed") +
+  scale_color_discrete(name = "Run")
+
+ggsave(here::here("vignettes", "figures", "hsi_spawning_depth.png"), width=6.5, height=4)
 ```
 
 ### Velocity HSI
@@ -119,6 +135,20 @@ spawning_hsc_vel |>
   xlab('velocity (meters/second)')  + 
   ylab('suitability index')
 
+habistat::suitability_hsi_vel_spawning |>
+  enframe() |>
+  unnest(value) |>
+  filter(name != "max") |>
+  ggplot() +
+  geom_line(aes(x = vel_ft_s, y = hsi, color = name), size = 1) +
+  geom_line(data = habistat::suitability_hsi_vel_spawning$max,
+            aes(x = vel_ft_s, y = hsi, linetype = "Max"), size = 1) + 
+  xlab('depth (feet)') + 
+  ylab('suitability index') +
+  scale_linetype_manual(name = "Summary", values = "dashed") +
+  scale_color_discrete(name = "Run")
+
+ggsave(here::here("vignettes", "figures", "hsi_spawning_velocity.png"), width=6.5, height=4)
 ```
 
 ## Create Suitability Data Files
