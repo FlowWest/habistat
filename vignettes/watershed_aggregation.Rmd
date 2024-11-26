@@ -12,6 +12,9 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(tidyverse)
+library(sf)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -54,7 +57,19 @@ while the Feather River watershed (not including the Yuba) is:
 
 The Upper Sacramento River and Upper San Joaquin River are treated as distinct tributaries of the Sacramento River and San Joaquin River respectively. They have their own `river_group` and `watershed_level_3` names.
 
-<mark>TODO: Add map of Watersheds and Mainstems</mark>
+```{r watershed-map, echo=FALSE}
+ggplot() +
+  geom_sf(data = habistat::cv_watersheds, aes(fill = watershed_level_3), color = NA, alpha=0.5) +
+  geom_sf(data = habistat::cv_mainstems, aes(color = river_group)) +
+  scale_fill_discrete( name = "cv_watersheds$watershed_level_3\ncv_mainstems$river_group") +
+  scale_color_discrete(name = "cv_watersheds$watershed_level_3\ncv_mainstems$river_group") +
+  geom_sf(data = habistat::cv_watersheds |> 
+            group_by(watershed_level_1) |> 
+            summarize(),
+          color = "black", fill = NA) +
+  theme_minimal() +
+  labs(title = "Habistat Watersheds")
+```
 
 ## Aggregation
 
