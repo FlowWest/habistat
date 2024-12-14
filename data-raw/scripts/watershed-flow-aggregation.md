@@ -1,13 +1,15 @@
 Predictor Data Preparation and Consolidation
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-11-20
+2024-12-13
 
 - [Basic Flow Crosswalk via Drainage Area and
   Precipitation](#basic-flow-crosswalk-via-drainage-area-and-precipitation)
   - [Applying the crosswalk to aggregate model
     results](#applying-the-crosswalk-to-aggregate-model-results)
 - [DSMHabitat Comparison](#dsmhabitat-comparison)
+- [Comparison with Regional Flow
+  Approximation](#comparison-with-regional-flow-approximation)
 
 ``` r
 library(tidyverse)
@@ -367,8 +369,12 @@ mainstems_comid |>
 
 ``` r
 # http://cvpia-habitat-docs-markdown.s3-website-us-west-2.amazonaws.com/watershed/Regional_Approximation.html
-# These are the watersheds that use regional approximation for *instream* habitat
+# These are the watersheds that use regional approximation for instream rearing habitat
 regional_approx_groups <- 
+  c("Antelope Creek", "Bear Creek", "Big Chico Creek", 
+    "Elder Creek", "Mill Creek", "Paynes Creek", "Stony Creek", "Thomes Creek")
+# These are the watersheds that use regional approximation for instream spawning habitat
+regional_approx_groups_spawning <- 
   c("Antelope Creek", "Bear Creek", "Big Chico Creek", "Cow Creek",
     "Elder Creek", "Mill Creek", "Paynes Creek", "Stony Creek", "Thomes Creek")
 # These are the watersheds that use scaled proxies for floodplain habitat
@@ -470,7 +476,8 @@ dsm_habitat_combined <-
                                wua_per_lf)) |>
   mutate(regional_approx = 
            ((hab == "floodplain") & ((river_group %in% c(deer_creek_fp_proxy, cottonwood_creek_fp_proxy)))) |
-           ((hab != "floodplain") & ((river_group %in% c(regional_approx_groups)))))|>
+           ((hab == "juv") & ((river_group %in% c(regional_approx_groups)))) |
+           ((hab == "spawn") & ((river_group %in% c(regional_approx_groups_spawning)))))|>
   mutate(hab_type = case_when(hab == "juv" ~ "rearing",
                               hab == "spawn" ~ "spawning",
                               hab == "floodplain" ~ "rearing"),
@@ -582,6 +589,250 @@ wua_predicted_cv_mainstems_grouped |>
     ## Warning in scale_x_log10(): log-10 transformation introduced infinite values.
 
 ![](watershed-flow-aggregation_files/figure-gfm/pred-watersheds-dsmhabitat-comparison-4.png)<!-- -->
+
+## Comparison with Regional Flow Approximation
+
+``` r
+upper_mid_sac_tribs <- DSMhabitat::modeling_exist %>% 
+  left_join(DSMhabitat::watershed_regions, by = c('Watershed' = 'watershed')) %>% 
+  filter(region == 'Upper-mid Sacramento River', 
+         Watershed != 'Upper-mid Sacramento River'
+  )
+watersheds_without_modeling <- upper_mid_sac_tribs %>%
+  select(watershed = Watershed, contains('spawn')) %>% 
+  gather(species, spawn_modeling, -watershed) %>% 
+  group_by(watershed) %>% 
+  summarise(no_modeling = sum(spawn_modeling, na.rm = T) == 0) %>% 
+  filter(no_modeling) %>% 
+  pull(watershed)
+cat(c("Watersheds without any Spawning (spawn) Model:", paste(watersheds_without_modeling, collapse = ", "), "\n"))
+```
+
+    ## Watersheds without any Spawning (spawn) Model: Antelope Creek, Bear Creek, Big Chico Creek, Cow Creek, Elder Creek, Mill Creek, Paynes Creek, Stony Creek, Thomes Creek
+
+``` r
+watersheds_with_spawn <- upper_mid_sac_tribs %>% 
+  filter(!(Watershed %in% watersheds_without_modeling)) %>% 
+  pull(Watershed)
+cat(c("Watersheds with Spawning (FR spawn) Model:", paste(watersheds_with_spawn, collapse = ", "), "\n"))
+```
+
+    ## Watersheds with Spawning (FR spawn) Model: Battle Creek, Butte Creek, Clear Creek, Cottonwood Creek, Deer Creek
+
+``` r
+watersheds_with_fry <- upper_mid_sac_tribs %>% 
+  filter(FR_fry) %>% 
+  pull(Watershed)
+cat(c("Watersheds with Rearing (FR fry) Model:", paste(watersheds_with_fry, collapse = ", "), "\n"))
+```
+
+    ## Watersheds with Rearing (FR fry) Model: Battle Creek, Clear Creek, Cottonwood Creek, Cow Creek
+
+``` r
+watersheds_with_juv <- upper_mid_sac_tribs %>% 
+  filter(FR_juv) %>% 
+  pull(Watershed)
+cat(c("Watersheds with Rearing (FR juv) Model:", paste(watersheds_with_juv, collapse = ", "), "\n"))
+```
+
+    ## Watersheds with Rearing (FR juv) Model: Battle Creek, Clear Creek, Cottonwood Creek, Cow Creek, Deer Creek
+
+``` r
+river_lengths <- 
+  mainstems_comid |> # note this is a general, not run-specific habitat extent dataset
+  st_drop_geometry() |>
+  group_by(watershed, habitat) |>
+  summarize(length_ft = sum(length_ft)) |>
+  pivot_wider(names_from = habitat, 
+              values_from = length_ft, 
+              names_repair = janitor::make_clean_names) |>
+  transmute(river_group = watershed, 
+            juv = coalesce(rearing, 0) + coalesce(rearing_and_spawning, 0),
+            spawn = coalesce(rearing_and_spawning, 0)) |>
+  pivot_longer(cols = c(juv, spawn),
+               names_to = "hab",
+               values_to = "length_ft") |>
+  mutate(length_rm = length_ft / 5280) |>
+  glimpse()
+```
+
+    ## `summarise()` has grouped output by 'watershed'. You can override using the
+    ## `.groups` argument.
+
+    ## Rows: 48
+    ## Columns: 5
+    ## Groups: watershed [24]
+    ## $ watershed   <chr> "American River", "American River", "Antelope Creek", "Ant…
+    ## $ river_group <chr> "American River", "American River", "Antelope Creek", "Ant…
+    ## $ hab         <chr> "juv", "spawn", "juv", "spawn", "juv", "spawn", "juv", "sp…
+    ## $ length_ft   <dbl> 118816.94, 99546.05, 160133.24, 126501.58, 127772.02, 1215…
+    ## $ length_rm   <dbl> 22.50321, 18.85342, 30.32826, 23.95863, 24.19925, 23.02454…
+
+``` r
+interp_flows <- seq_log10(50, 15000, 0.05, snap=100) # to align with habistat flows
+
+regional_approx_curve <- 
+  DSMhabitat::upper_mid_sac_region_instream |>
+  # select spawn and juv and convert WUA/1000LF to WUA/LF
+  transmute(flow_cfs, 
+            spawn = FR_spawn_wua / 1000, 
+            juv = FR_juv_wua / 1000) |>
+  pivot_longer(cols = c(spawn, juv), names_to = "hab", values_to = "wua_per_lf") |>
+  # interpolate onto the habistat flow sequence
+  group_by(hab) |>
+  reframe(wua_per_lf = approx(y = wua_per_lf, x = log(flow_cfs), xout = log(interp_flows), na.rm = F)$y,
+          flow_cfs = interp_flows) |>
+  drop_na()
+
+regional_approx_curve |>
+  ggplot() + 
+  geom_line(aes(x = flow_cfs, y = wua_per_lf, color = hab)) +
+  scale_x_log10() +
+  scale_y_continuous(limits = c(0, NA), 
+                     breaks = scales::breaks_width(2), 
+                     expand = c(0, 0)) +
+  annotation_logticks(sides = "b") + 
+  theme(panel.grid.minor = element_blank(),
+        strip.placement = "outside",
+        strip.text.y.left = element_text(angle = 0)) + 
+  labs(title = "Upper-Mid Sacramento Regional Approximation",
+       subtitle = "Fall Run Chinook Salmon",
+       caption = paste("Spawning (spawn) based on: Battle Creek, Butte Creek, Clear Creek.",
+                       "Rearing (juv) based on: Battle Creek, Butte Creek, Clear Creek, Cow Creek.",
+                       sep = "\n")) +
+  xlab("Flow (cfs)") +
+  ylab("Suitable Habitat Area (ft2) per linear ft") +
+  scale_color_brewer(name = "Habitat Type", palette = "Dark2", aesthetics = c("color", "fill")) 
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/dsmhabitat-upper-mid-sac-region-instream-1.png)<!-- -->
+
+``` r
+instream_regional_approx_est <- 
+  river_lengths |>
+  inner_join(regional_approx_curve, 
+             by = join_by(hab), 
+             relationship = "many-to-many") |>
+  mutate(suitable_ac = wua_per_lf * length_ft / 43560,
+         habitat = case_when(hab == "spawn" ~ "spawning",
+                             hab == "juv" ~ "rearing"))
+
+instream_regional_approx_est  |>
+  filter(river_group %in% dsm_habitat_combined$river_group) |>
+  ggplot(aes(x = flow_cfs)) + 
+  facet_wrap(~river_group, scales="free") + 
+  geom_line(aes(y = suitable_ac, color = habitat)) +
+  scale_x_log10() +
+  theme(legend.position = "top", panel.grid.minor = element_blank()) + 
+  scale_color_brewer(name = "Habitat Type", palette = "Dark2", aesthetics = c("color", "fill")) +
+  scale_linetype_manual(name = "Regional Approx.", values = c("TRUE" = "dashed", "FALSE" = "solid")) +
+  ylab("Predicted Total Habitat (acres)") + xlab("Flow at Outlet (cfs)") + 
+  guides(color = guide_legend(nrow = 2), linetype = guide_legend(nrow = 2)) +
+  ggtitle("Instream Regional Approximation Applied to All Watersheds")
+```
+
+    ## Warning: No shared levels found between `names(values)` of the manual scale and the
+    ## data's linetype values.
+
+![](watershed-flow-aggregation_files/figure-gfm/regional-approx-acres-1.png)<!-- -->
+
+``` r
+wua_predicted_cv_mainstems_grouped |>
+  filter(habitat == "rearing") |>
+  filter(river_group %in% dsm_habitat_combined$river_group) |>
+  filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
+  ggplot(aes(x = flow_cfs)) + 
+  facet_wrap(~river_group, scales="free") + 
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
+                  fill = "habistat"), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, 
+                linetype = "combined instream + floodplain",
+                color = "habistat")) +
+  geom_line(data=dsm_habitat_combined |>
+              filter(run == "fall") |>
+              filter(hab_type == "rearing") |>
+              filter(flow_cfs <= 15000) |>
+              #filter(!regional_approx) |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed), 
+            aes(x = flow_cfs, 
+                y = suitable_ac, 
+                linetype = hab_subtype,
+                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "empirical")))) +
+  geom_line(data = instream_regional_approx_est |>
+              filter(habitat == "rearing") |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed),
+            aes(y = suitable_ac,, 
+                linetype = "instream",
+                color = "DSMHabitat regional approx")) +
+  scale_x_log10() +
+  scale_linetype_manual(name = "Habitat Type", 
+                     values = c("instream" = "solid", #"#6388b4",
+                                "floodplain" = "dashed", #"#ef6f6a",
+                                "combined instream + floodplain" = "dotted")) + ##bb7693"),) +
+  scale_color_manual(name = "Data Source", 
+                     values = c("habistat" = "#ffae34", 
+                                "DSMHabitat empirical" = "#6388b4",
+                                "DSMHabitat regional approx" = "#ef6f6a"),
+                     aesthetics = c("color", "fill")) +
+  theme(legend.position = "top", 
+        panel.grid.minor = element_blank()) + 
+  guides(color = guide_legend(nrow = 3), 
+         linetype = guide_legend(nrow = 3)) +
+  ylab("Predicted Total Habitat (acres)") + 
+  xlab("Flow at Outlet (cfs)") + 
+  ggtitle("Rearing Comparison for Upper-Mid Sacramento Tributaries - Total Acres")
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/upper-mid-sac-comparison-rearing-1.png)<!-- -->
+
+``` r
+wua_predicted_cv_mainstems_grouped |>
+  filter(habitat == "spawning") |>
+  filter(river_group %in% dsm_habitat_combined$river_group) |>
+  filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
+  ggplot(aes(x = flow_cfs)) + 
+  facet_wrap(~river_group, scales="free") + 
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
+                  fill = "habistat"), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, 
+                linetype = "instream",
+                color = "habistat")) +
+  geom_line(data=dsm_habitat_combined |>
+              filter(run == "fall") |>
+              filter(hab_type == "spawning") |>
+              filter(flow_cfs <= 15000) |>
+              #filter(!regional_approx) |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed), 
+            aes(x = flow_cfs, 
+                y = suitable_ac, 
+                linetype = hab_subtype,
+                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "empirical")))) +
+  geom_line(data = instream_regional_approx_est |>
+              filter(habitat == "spawning") |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed),
+            aes(y = suitable_ac,, 
+                linetype = "instream",
+                color = "DSMHabitat regional approx")) +
+  scale_x_log10() +
+  scale_linetype_manual(name = "Habitat Type", 
+                     values = c("instream" = "solid", #"#6388b4",
+                                "floodplain" = "dashed", #"#ef6f6a",
+                                "combined instream + floodplain" = "dotted")) + ##bb7693"),) +
+  scale_color_manual(name = "Data Source", 
+                     values = c("habistat" = "#ffae34", 
+                                "DSMHabitat empirical" = "#6388b4",
+                                "DSMHabitat regional approx" = "#ef6f6a"),
+                     aesthetics = c("color", "fill")) +
+  theme(legend.position = "top", 
+        panel.grid.minor = element_blank()) + 
+  guides(color = guide_legend(nrow = 3), 
+         linetype = guide_legend(nrow = 3)) +
+  ylab("Predicted Total Habitat (acres)") + 
+  xlab("Flow at Outlet (cfs)") + 
+  ggtitle("Spawning Comparison for Upper-Mid Sacramento Tributaries - Total Acres")
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/upper-mid-sac-comparison-spawning-1.png)<!-- -->
 
 ``` r
 knitr::knit_exit()
