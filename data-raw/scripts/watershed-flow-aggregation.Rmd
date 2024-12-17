@@ -702,10 +702,14 @@ wua_predicted_cv_mainstems_grouped |>
 # attempt at dec_jun_mean_flow_scaling value replication... 
 # DSMflow::flows_cfs$biop_itp_2018_2019 |> select(date, `Antelope Creek`, `Deer Creek`) |> janitor::clean_names() |> filter(month(date) %in% c(6,12)) |> mutate(scale = antelope_creek/deer_creek) 
 
-scale_fp_flow_area <- function(ws) {
+scale_fp_flow_area <- function(ws, proxy_ws, flow_scalar) {
 
   watershed_metadata <- filter(DSMhabitat::floodplain_modeling_metadata, 
                                 watershed == ws)
+  
+  # optional manual overrides of values that are pulled from watershed_metadata:
+  selected_proxy_ws <- if(missing(proxy_ws)) watershed_metadata$scaling_watershed else proxy_ws
+  selected_flow_scalar <- if(missing(flow_scalar)) watershed_metadata$dec_jun_mean_flow_scaling else flow_scalar
   
   low_gradient <- filter(DSMhabitat::low_gradient_lengths, watershed_name == ws)
   
@@ -714,26 +718,24 @@ scale_fp_flow_area <- function(ws) {
     spread(species, miles)
   
   proxy_watershed_metadata <- filter(DSMhabitat::floodplain_modeling_metadata, 
-                                      watershed == watershed_metadata$scaling_watershed)
+                                      watershed == selected_proxy_ws)
   
   species_present <- filter(DSMhabitat::watershed_species_present, 
                             watershed_name == ws)  
   
-  # TODO- modify so it works with any watershed
-  # TODO - start by generating all (Deer, Tuolumne, Cottonwood) and then we can filter out
-  # geographically later 
-  proxy_data <- switch(watershed_metadata$scaling_watershed, # proxy_watershed
+  
+  proxy_data <- switch(selected_proxy_ws,
                        "Deer Creek" = DSMhabitat::deer_creek_floodplain,
                        "Tuolumne River" = DSMhabitat::tuolumne_river_floodplain,
                        "Cottonwood Creek" = DSMhabitat::cottonwood_creek_floodplain)
   
   # scale flow
-  scaled_flow <- round(proxy_data$flow_cfs * watershed_metadata$dec_jun_mean_flow_scaling)
+  scaled_flow <- round(proxy_data$flow_cfs * selected_flow_scalar)
   
   # fall run area
   # divide floodplain area by watershed length of proxy watershed to get area/mile, scale to hydrology
   scaled_area_per_mile_FR <- (proxy_data$FR_floodplain_acres / proxy_watershed_metadata$modeled_length_mi) *
-  watershed_metadata$dec_jun_mean_flow_scaling
+  selected_flow_scalar
   
   # apportion area by high gradient/low gradient, .1 is downscaling for high gradient
   fp_area_FR <- round((scaled_area_per_mile_FR * low_gradient$fr) +
@@ -753,7 +755,7 @@ scale_fp_flow_area <- function(ws) {
     }
     
     scaled_area_per_mile_LFR <- (lfr_proxy / proxy_watershed_metadata$modeled_length_mi) *
-      watershed_metadata$dec_jun_mean_flow_scaling
+      selected_flow_scalar
     
     fp_area_LFR <-round((scaled_area_per_mile_LFR * low_gradient$lfr) +
       (scaled_area_per_mile_LFR * (rearing_extents$lfr - low_gradient$lfr) * 0.1), 2)
@@ -770,7 +772,7 @@ scale_fp_flow_area <- function(ws) {
    }
    
     scaled_area_per_mile_WR <- (wr_proxy / proxy_watershed_metadata$modeled_length_mi) *
-      watershed_metadata$dec_jun_mean_flow_scaling
+      selected_flow_scalar
     
     fp_area_WR <-round((scaled_area_per_mile_WR * low_gradient$wr) +
       (scaled_area_per_mile_WR * (rearing_extents$wr - low_gradient$wr) * 0.1), 2)
@@ -791,7 +793,7 @@ scale_fp_flow_area <- function(ws) {
     }
     
     scaled_area_per_mile_SR <- (sr_proxy / proxy_watershed_metadata$modeled_length_mi) *
-      watershed_metadata$dec_jun_mean_flow_scaling
+      selected_flow_scalar
     
     fp_area_SR <- round((scaled_area_per_mile_SR * low_gradient$sr) +
       (scaled_area_per_mile_SR * (rearing_extents$sr - low_gradient$sr) * 0.1), 2)
@@ -812,7 +814,7 @@ scale_fp_flow_area <- function(ws) {
     }
     
     scaled_area_per_mile_ST <- (st_proxy / proxy_watershed_metadata$modeled_length_mi) *
-      watershed_metadata$dec_jun_mean_flow_scaling
+      selected_flow_scalar
     
     fp_area_ST <- round((scaled_area_per_mile_ST * low_gradient$st) +
       (scaled_area_per_mile_ST * (rearing_extents$st - low_gradient$st) * 0.1), 2)
@@ -822,7 +824,7 @@ scale_fp_flow_area <- function(ws) {
   
   result <- result |> 
     mutate(watershed = ws, 
-           proxy_watershed = watershed_metadata$scaling_watershed)
+           proxy_watershed = selected_proxy_ws)
   
   return(mutate(result, watershed = ws))
 }
@@ -839,7 +841,8 @@ deer_creek_fp_proxy <- c("Antelope Creek", "Bear Creek",  "Cow Creek",
 cottonwood_creek_fp_proxy <- c("Stony Creek", "Thomes Creek")
 tuolumne_river_fp_proxy <- c("Calaveras River")
 
-watersheds_fp_scale <- DSMhabitat::floodplain_modeling_metadata |> filter(!is.na(dec_jun_mean_flow_scaling)) |> 
+watersheds_fp_scale <- DSMhabitat::floodplain_modeling_metadata |> 
+  filter(!is.na(dec_jun_mean_flow_scaling)) |> 
   pull(watershed)
 
 full_fp_results <- data.frame()
