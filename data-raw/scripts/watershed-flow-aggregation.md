@@ -409,7 +409,7 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
          floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
                                              floodplain_acres,
                                              DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
-  
+
 dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"), 
                                possibly(function(watershed) {
                                  df <- as.data.frame(do.call(`::`, list(pkg = "DSMhabitat", name = watershed)))
@@ -1192,4 +1192,48 @@ flow_scalars <-
 
 ``` r
 knitr::knit_exit()
+
+flow_scalars |>
+  rename(scaling_flow = flow_cfs) |>
+  pivot_longer(cols = starts_with("flow_scalar_"),
+               names_transform = \(x) str_replace(x, "flow_scalar_", ""),
+               values_to = "flow_scalar") |>
+  mutate(proxy_ws = case_when(name == "cottonwood" ~ "Cottonwood Creek",
+                              name == "deer" ~ "Deer Creek",
+                              name == "tuolumne" ~ "Tuolumne River")) |>
+  mutate(result = pmap(list(river_group, proxy_ws, flow_scalar),
+                       possibly(scale_fp_flow_area, NA))) |>
+  unnest(result) |>
+  mutate(habitat = "floodplain") |>
+  pivot_longer(ends_with("_floodplain_acres"),
+               names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
+               names_to = "run", 
+               values_to = "suitable_ac") |>
+  mutate(run = factor(run, 
+                      levels = c("FR", "LFR", "WR", "SR", "ST"),
+                      labels = c("fall", "late fall", "winter", "spring", "steelhead")))
 ```
+
+    ## Warning: There were 3 warnings in `mutate()`.
+    ## The first warning was:
+    ## ℹ In argument: `result = pmap(...)`.
+    ## Caused by warning:
+    ## ! Unknown or uninitialised column: `fr`.
+    ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.
+
+    ## # A tibble: 8,985 × 14
+    ##    river_group    scaling_flow q_cottonwood q_deer q_tuolumne name   flow_scalar
+    ##    <chr>                 <dbl>        <dbl>  <dbl>      <dbl> <chr>        <dbl>
+    ##  1 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  2 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  3 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  4 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  5 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  6 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  7 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  8 American River        3945.         355.   716.      1172. cotto…        11.1
+    ##  9 American River        3945.         355.   716.      1172. cotto…        11.1
+    ## 10 American River        3945.         355.   716.      1172. cotto…        11.1
+    ## # ℹ 8,975 more rows
+    ## # ℹ 7 more variables: proxy_ws <chr>, flow_cfs <dbl>, watershed <chr>,
+    ## #   proxy_watershed <chr>, habitat <chr>, run <fct>, suitable_ac <dbl>

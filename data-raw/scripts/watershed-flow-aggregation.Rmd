@@ -327,7 +327,7 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
          floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
                                              floodplain_acres,
                                              DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
-  
+
 dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"), 
                                possibly(function(watershed) {
                                  df <- as.data.frame(do.call(`::`, list(pkg = "DSMhabitat", name = watershed)))
@@ -1012,10 +1012,36 @@ flow_scalars <-
   mutate(flow_scalar_cottonwood = flow_cfs / q_cottonwood,
          flow_scalar_deer = flow_cfs / q_deer,
          flow_scalar_tuolumne = flow_cfs / q_tuolumne)
+```
+
+```{r}
+knitr::knit_exit()
 
 flow_scalars |>
-  pivot_longer(names_from = )
+  rename(scaling_flow = flow_cfs) |>
+  pivot_longer(cols = starts_with("flow_scalar_"),
+               names_transform = \(x) str_replace(x, "flow_scalar_", ""),
+               values_to = "flow_scalar") |>
+  mutate(proxy_ws = case_when(name == "cottonwood" ~ "Cottonwood Creek",
+                              name == "deer" ~ "Deer Creek",
+                              name == "tuolumne" ~ "Tuolumne River")) |>
+  mutate(result = pmap(list(river_group, proxy_ws, flow_scalar),
+                       possibly(scale_fp_flow_area, NA))) |>
+  unnest(result) |>
+  mutate(habitat = "floodplain") |>
+  pivot_longer(ends_with("_floodplain_acres"),
+               names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
+               names_to = "run", 
+               values_to = "suitable_ac") |>
+  mutate(run = factor(run, 
+                      levels = c("FR", "LFR", "WR", "SR", "ST"),
+                      labels = c("fall", "late fall", "winter", "spring", "steelhead")))
 ```
+
+
+
+
+
 
 
 ```{r}
