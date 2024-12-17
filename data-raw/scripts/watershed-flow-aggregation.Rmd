@@ -888,6 +888,79 @@ full_fp_results |>
 
 ```
 
+```{r upper-mid-sac-comparison-rearing-fp, fig.width=8.5, fig.height=8.5, dpi=300}
+floodplain_proxy_est <- 
+  DSMhabitat::floodplain_modeling_metadata |> 
+  filter(!is.na(dec_jun_mean_flow_scaling)) |>
+  mutate(result = pmap(list(watershed, scaling_watershed, dec_jun_mean_flow_scaling),
+                       scale_fp_flow_area)) |>
+  rename(river_group = watershed) |>
+  unnest(result) |>
+  mutate(habitat = "floodplain") |>
+  pivot_longer(ends_with("_floodplain_acres"),
+               names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
+               names_to = "run", 
+               values_to = "suitable_ac") |>
+  mutate(run = factor(run, 
+                      levels = c("FR", "LFR", "WR", "SR", "ST"),
+                      labels = c("fall", "late fall", "winter", "spring", "steelhead")))
+
+# TODO: Pull the monthly mean flow for all watershed
+# TODO: Calculate ratios of each ws monthly mean flow to each of the three proxy ws
+# TODO: Remove the filter(!is.na(dec_jun_mean_flow_scaling)) filter so that all can be mapped
+
+wua_predicted_cv_mainstems_grouped |>
+  filter(habitat == "rearing") |>
+  filter(river_group %in% dsm_habitat_combined$river_group) |>
+  filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
+  ggplot(aes(x = flow_cfs)) + 
+  facet_wrap(~river_group, scales="free") + 
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
+                  fill = "habistat"), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, 
+                linetype = "combined instream + floodplain",
+                color = "habistat")) +
+  geom_line(data=dsm_habitat_combined |>
+              filter(run == "fall") |>
+              filter(hab_type == "rearing") |>
+              filter(flow_cfs <= 15000) |>
+              #filter(!regional_approx) |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed), 
+            aes(x = flow_cfs, 
+                y = suitable_ac, 
+                linetype = hab_subtype,
+                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "empirical")))) +
+  geom_line(data = instream_regional_approx_est |>
+              filter(habitat == "rearing") |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed),
+            aes(y = suitable_ac,, 
+                linetype = "instream",
+                color = "DSMHabitat regional approx")) +
+  geom_line(data = floodplain_proxy_est |>
+              filter(habitat == "floodplain" & run == "fall") |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed),
+            aes(y = suitable_ac,, 
+                linetype = "floodplain",
+                color = "DSMHabitat floodplain proxy")) +
+  scale_x_log10() +
+  scale_linetype_manual(name = "Habitat Type", 
+                     values = c("instream" = "solid", #"#6388b4",
+                                "floodplain" = "dashed", #"#ef6f6a",
+                                "combined instream + floodplain" = "dotted")) + ##bb7693"),) +
+  scale_color_manual(name = "Data Source", 
+                     values = c("habistat" = "#ffae34", 
+                                "DSMHabitat empirical" = "#6388b4",
+                                "DSMHabitat regional approx" = "#ef6f6a",
+                                "DSMHabitat floodplain proxy" = "#bb7693"),
+                     aesthetics = c("color", "fill")) +
+  theme(legend.position = "top", 
+        panel.grid.minor = element_blank()) + 
+  guides(color = guide_legend(nrow = 3), 
+         linetype = guide_legend(nrow = 3)) +
+  ylab("Predicted Total Habitat (acres)") + 
+  xlab("Flow at Outlet (cfs)") + 
+  ggtitle("Rearing Comparison for Upper-Mid Sacramento Tributaries - Total Acres")
+```
 
 ```{r}
 knitr::knit_exit()
