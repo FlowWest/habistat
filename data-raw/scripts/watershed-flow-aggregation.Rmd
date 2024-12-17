@@ -303,6 +303,9 @@ deer_creek_fp_proxy <-
     "Mill Creek", "Paynes Creek") 
 cottonwood_creek_fp_proxy <- c("Stony Creek", "Thomes Creek")
 
+# These are reaches where suitability is already applied so we shouldn't be using DSMhabitat::apply_suitability to scale again:
+suitability_already_applied <- c("Antelope Creek", "Battle Creek", "Bear Creek", "Cow Creek", "Deer Creek", "Mill Creek", "Paynes Creek", "Sacramento River", "Sutter Bypass", "Yolo Bypass", "North Delta", "South Delta")
+
 #remotes::install_github("CVPIA-OSC/DSMhabitat")
 watersheds <- mainstems |> pull(watershed) |> unique()
 watershed_name <- tolower(gsub(pattern = "-| ", replacement = "_", x = watersheds))
@@ -321,7 +324,9 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
   mutate(run = run |> factor(levels = c("FR", "LFR", "WR", "SR", "ST"),
                              labels = c("fall", "late fall", "winter", "spring", "steelhead")),
          hab = "floodplain" |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain")),
-         floodplain_acres_suitable = DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86)
+         floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
+                                             floodplain_acres,
+                                             DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
   
 dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"), 
                                possibly(function(watershed) {
@@ -989,8 +994,8 @@ mean_monthly_inflow <-
   summarize(flow_cmd = mean(flow_cmd)) |>
   # convert cubic meters per day to cubic feet per second
   mutate(flow_cfs = flow_cmd * (1 / 0.3048)^3 * (1 / 86400)) |>
-  inner_join(inflow_xw, by = join_by(inflow_id)) |>
-  inner_join(mean_monthly_inflow |>
+  inner_join(inflow_xw, by = join_by(inflow_id)) %>%
+  inner_join(. |>
                filter(inflow_id %in% c("DEER_256", "COTT_MF", "TUOL_135")) |>
                select(inflow_id, month, flow_cfs) |>
                pivot_wider(names_from = inflow_id, values_from = flow_cfs) |>
@@ -1007,6 +1012,9 @@ flow_scalars <-
   mutate(flow_scalar_cottonwood = flow_cfs / q_cottonwood,
          flow_scalar_deer = flow_cfs / q_deer,
          flow_scalar_tuolumne = flow_cfs / q_tuolumne)
+
+flow_scalars |>
+  pivot_longer(names_from = )
 ```
 
 

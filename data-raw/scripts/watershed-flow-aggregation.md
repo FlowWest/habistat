@@ -1,7 +1,7 @@
 Predictor Data Preparation and Consolidation
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-12-13
+2024-12-17
 
 - [Basic Flow Crosswalk via Drainage Area and
   Precipitation](#basic-flow-crosswalk-via-drainage-area-and-precipitation)
@@ -10,6 +10,8 @@ Predictor Data Preparation and Consolidation
 - [DSMHabitat Comparison](#dsmhabitat-comparison)
 - [Comparison with Regional Flow
   Approximation](#comparison-with-regional-flow-approximation)
+  - [Instream Rearing and Spawning](#instream-rearing-and-spawning)
+  - [Floodplain](#floodplain)
 
 ``` r
 library(tidyverse)
@@ -383,6 +385,9 @@ deer_creek_fp_proxy <-
     "Mill Creek", "Paynes Creek") 
 cottonwood_creek_fp_proxy <- c("Stony Creek", "Thomes Creek")
 
+# These are reaches where suitability is already applied so we shouldn't be using DSMhabitat::apply_suitability to scale again:
+suitability_already_applied <- c("Antelope Creek", "Battle Creek", "Bear Creek", "Cow Creek", "Deer Creek", "Mill Creek", "Paynes Creek", "Sacramento River", "Sutter Bypass", "Yolo Bypass", "North Delta", "South Delta")
+
 #remotes::install_github("CVPIA-OSC/DSMhabitat")
 watersheds <- mainstems |> pull(watershed) |> unique()
 watershed_name <- tolower(gsub(pattern = "-| ", replacement = "_", x = watersheds))
@@ -401,7 +406,9 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
   mutate(run = run |> factor(levels = c("FR", "LFR", "WR", "SR", "ST"),
                              labels = c("fall", "late fall", "winter", "spring", "steelhead")),
          hab = "floodplain" |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain")),
-         floodplain_acres_suitable = DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86)
+         floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
+                                             floodplain_acres,
+                                             DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
   
 dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"), 
                                possibly(function(watershed) {
@@ -591,6 +598,8 @@ wua_predicted_cv_mainstems_grouped |>
 ![](watershed-flow-aggregation_files/figure-gfm/pred-watersheds-dsmhabitat-comparison-4.png)<!-- -->
 
 ## Comparison with Regional Flow Approximation
+
+### Instream Rearing and Spawning
 
 ``` r
 upper_mid_sac_tribs <- DSMhabitat::modeling_exist %>% 
@@ -833,6 +842,353 @@ wua_predicted_cv_mainstems_grouped |>
 ```
 
 ![](watershed-flow-aggregation_files/figure-gfm/upper-mid-sac-comparison-spawning-1.png)<!-- -->
+
+### Floodplain
+
+``` r
+# from DSMhabitat data-raw/watershed/floodplain_utils.R and modified for this use case 
+
+# attempt at dec_jun_mean_flow_scaling value replication... 
+# DSMflow::flows_cfs$biop_itp_2018_2019 |> select(date, `Antelope Creek`, `Deer Creek`) |> janitor::clean_names() |> filter(month(date) %in% c(6,12)) |> mutate(scale = antelope_creek/deer_creek) 
+
+scale_fp_flow_area <- function(ws, proxy_ws, flow_scalar) {
+
+  watershed_metadata <- filter(DSMhabitat::floodplain_modeling_metadata, 
+                                watershed == ws)
+  
+  # optional manual overrides of values that are pulled from watershed_metadata:
+  selected_proxy_ws <- if(missing(proxy_ws)) watershed_metadata$scaling_watershed else proxy_ws
+  selected_flow_scalar <- if(missing(flow_scalar)) watershed_metadata$dec_jun_mean_flow_scaling else flow_scalar
+  
+  low_gradient <- filter(DSMhabitat::low_gradient_lengths, watershed_name == ws)
+  
+  rearing_extents <- filter(DSMhabitat::watershed_lengths, watershed == ws, lifestage == "rearing") %>% 
+    select(watershed, species, miles) %>% 
+    spread(species, miles)
+  
+  proxy_watershed_metadata <- filter(DSMhabitat::floodplain_modeling_metadata, 
+                                      watershed == selected_proxy_ws)
+  
+  species_present <- filter(DSMhabitat::watershed_species_present, 
+                            watershed_name == ws)  
+  
+  
+  proxy_data <- switch(selected_proxy_ws,
+                       "Deer Creek" = DSMhabitat::deer_creek_floodplain,
+                       "Tuolumne River" = DSMhabitat::tuolumne_river_floodplain,
+                       "Cottonwood Creek" = DSMhabitat::cottonwood_creek_floodplain)
+  
+  # scale flow
+  scaled_flow <- round(proxy_data$flow_cfs * selected_flow_scalar)
+  
+  # fall run area
+  # divide floodplain area by watershed length of proxy watershed to get area/mile, scale to hydrology
+  scaled_area_per_mile_FR <- (proxy_data$FR_floodplain_acres / proxy_watershed_metadata$modeled_length_mi) *
+  selected_flow_scalar
+  
+  # apportion area by high gradient/low gradient, .1 is downscaling for high gradient
+  fp_area_FR <- round((scaled_area_per_mile_FR * low_gradient$fr) +
+    (scaled_area_per_mile_FR * (rearing_extents$fr - low_gradient$fr) * 0.1), 2)
+  
+  result <- data.frame(
+    flow_cfs = scaled_flow,
+    FR_floodplain_acres = fp_area_FR
+  )
+  
+  if (species_present$lfr) {
+    # latefall floodplain area
+    lfr_proxy <- if ("LFR_floodplain_acres" %in% colnames(proxy_data)) {
+      proxy_data$LFR_floodplain_acres
+    } else {
+      proxy_data$FR_floodplain_acres 
+    }
+    
+    scaled_area_per_mile_LFR <- (lfr_proxy / proxy_watershed_metadata$modeled_length_mi) *
+      selected_flow_scalar
+    
+    fp_area_LFR <-round((scaled_area_per_mile_LFR * low_gradient$lfr) +
+      (scaled_area_per_mile_LFR * (rearing_extents$lfr - low_gradient$lfr) * 0.1), 2)
+    
+    result <- bind_cols(result, LFR_floodplain_acres = fp_area_LFR)
+  }
+  
+  if (species_present$wr) {
+    # winter run floodplain area
+   wr_proxy <- if ("WR_floodplain_acres" %in% colnames(proxy_data)) {
+     proxy_data$WR_floodplain_acres
+   } else {
+     proxy_data$FR_floodplain_acres 
+   }
+   
+    scaled_area_per_mile_WR <- (wr_proxy / proxy_watershed_metadata$modeled_length_mi) *
+      selected_flow_scalar
+    
+    fp_area_WR <-round((scaled_area_per_mile_WR * low_gradient$wr) +
+      (scaled_area_per_mile_WR * (rearing_extents$wr - low_gradient$wr) * 0.1), 2)
+    
+    result <- bind_cols(result, WR_floodplain_acres = fp_area_WR) 
+  }
+  
+  if (species_present$sr) {
+    # spring run floodplain area
+    sr_proxy <- if ("SR_floodplain_acres" %in% colnames(proxy_data)) {
+      proxy_data$SR_floodplain_acres
+    } else {
+      if ("ST_floodplain_acres" %in% colnames(proxy_data)) {
+        proxy_data$ST_floodplain_acres 
+      } else {
+        proxy_data$FR_floodplain_acres 
+      }
+    }
+    
+    scaled_area_per_mile_SR <- (sr_proxy / proxy_watershed_metadata$modeled_length_mi) *
+      selected_flow_scalar
+    
+    fp_area_SR <- round((scaled_area_per_mile_SR * low_gradient$sr) +
+      (scaled_area_per_mile_SR * (rearing_extents$sr - low_gradient$sr) * 0.1), 2)
+    
+    result <- bind_cols(result, SR_floodplain_acres = fp_area_SR)
+  }
+  
+  if (species_present$st) {
+    # steelhead floodplain area
+    st_proxy <- if ("ST_floodplain_acres" %in% colnames(proxy_data)) {
+      proxy_data$ST_floodplain_acres
+    } else {
+      if ("SR_floodplain_acres" %in% colnames(proxy_data)) {
+        proxy_data$SR_floodplain_acres 
+      } else {
+        proxy_data$FR_floodplain_acres 
+      }
+    }
+    
+    scaled_area_per_mile_ST <- (st_proxy / proxy_watershed_metadata$modeled_length_mi) *
+      selected_flow_scalar
+    
+    fp_area_ST <- round((scaled_area_per_mile_ST * low_gradient$st) +
+      (scaled_area_per_mile_ST * (rearing_extents$st - low_gradient$st) * 0.1), 2)
+    
+    result <- bind_cols(result, ST_floodplain_acres = fp_area_ST)
+  }
+  
+  result <- result |> 
+    mutate(watershed = ws, 
+           proxy_watershed = selected_proxy_ws)
+  
+  return(mutate(result, watershed = ws))
+}
+```
+
+``` r
+# comparison file: 
+# wua_predicted_cv_mainstems_grouped
+
+deer_creek_fp_proxy <- c("Antelope Creek", "Bear Creek",  "Cow Creek",
+    "Mill Creek", "Paynes Creek") 
+# partial_model_scaled <- c("Big Chico Creek")
+cottonwood_creek_fp_proxy <- c("Stony Creek", "Thomes Creek")
+tuolumne_river_fp_proxy <- c("Calaveras River")
+
+watersheds_fp_scale <- DSMhabitat::floodplain_modeling_metadata |> 
+  filter(!is.na(dec_jun_mean_flow_scaling)) |> 
+  pull(watershed)
+
+full_fp_results <- data.frame()
+for(i in 1:length(watersheds_fp_scale)) {
+  result <- scale_fp_flow_area(watersheds_fp_scale[i])
+  full_fp_results <- bind_rows(full_fp_results, result)
+}
+
+full_fp_results |> 
+  ggplot(aes(x = flow_cfs, y = FR_floodplain_acres, color = proxy_watershed)) + 
+  geom_line() +
+  facet_wrap(~watershed, scales = "free") 
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
+# full_deer_creek_fp_results <- data.frame()
+# for(i in 1:length(deer_creek_fp_proxy)) {
+#   result <- scale_fp_flow_area(deer_creek_fp_proxy[i])
+#   full_deer_creek_fp_results <- bind_rows(full_deer_creek_fp_results, result)
+# }
+# 
+# flows <- c(DSMhabitat::mill_creek_floodplain$flow_cfs, DSMhabitat::cow_creek_floodplain$flow_cfs)
+# 
+# # get_approx <- function(df, species_column) {
+# #   approxfun(df$flow_cfs, df[,species_column, drop = TRUE], rule = 2)
+# # }
+# 
+# full_deer_creek_fp_results |> 
+#   select(flow_cfs, floodplain_acres = FR_floodplain_acres, watershed) |> 
+#   ggplot(aes(x = flow_cfs, y = floodplain_acres, color = watershed)) + 
+#   geom_line() + 
+#   ggtitle("Deer Creek Floodplain Proxy Approximations")
+# 
+# full_cottonwood_creek_fp_results <- data.frame()
+# for(i in 1:length(cottonwood_creek_fp_proxy)) {
+#   result <- scale_fp_flow_area(cottonwood_creek_fp_proxy[i])
+#   full_cottonwood_creek_fp_results <- bind_rows(full_cottonwood_creek_fp_results, result)
+# }
+# 
+# full_cottonwood_creek_fp_results |> 
+#   select(flow_cfs, floodplain_acres = FR_floodplain_acres, watershed) |> 
+#   ggplot(aes(x = flow_cfs, y = floodplain_acres, color = watershed)) + 
+#   geom_line() + 
+#   ggtitle("Cottonwood Creek Floodplain Proxy Approximations")
+```
+
+``` r
+floodplain_proxy_est <- 
+  DSMhabitat::floodplain_modeling_metadata |> 
+  filter(!is.na(dec_jun_mean_flow_scaling)) |>
+  mutate(result = pmap(list(watershed, scaling_watershed, dec_jun_mean_flow_scaling),
+                       scale_fp_flow_area)) |>
+  rename(river_group = watershed) |>
+  unnest(result) |>
+  mutate(habitat = "floodplain") |>
+  pivot_longer(ends_with("_floodplain_acres"),
+               names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
+               names_to = "run", 
+               values_to = "suitable_ac") |>
+  mutate(run = factor(run, 
+                      levels = c("FR", "LFR", "WR", "SR", "ST"),
+                      labels = c("fall", "late fall", "winter", "spring", "steelhead")))
+
+# TODO: Pull the monthly mean flow for all watershed
+# TODO: Calculate ratios of each ws monthly mean flow to each of the three proxy ws
+# TODO: Remove the filter(!is.na(dec_jun_mean_flow_scaling)) filter so that all can be mapped
+
+wua_predicted_cv_mainstems_grouped |>
+  filter(habitat == "rearing") |>
+  filter(river_group %in% dsm_habitat_combined$river_group) |>
+  filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
+  ggplot(aes(x = flow_cfs)) + 
+  facet_wrap(~river_group, scales="free") + 
+  geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
+                  fill = "habistat"), alpha=0.33) +
+  geom_line(aes(y = wua_acres_pred, 
+                linetype = "combined instream + floodplain",
+                color = "habistat")) +
+  geom_line(data=dsm_habitat_combined |>
+              filter(run == "fall") |>
+              filter(hab_type == "rearing") |>
+              filter(flow_cfs <= 15000) |>
+              #filter(!regional_approx) |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed), 
+            aes(x = flow_cfs, 
+                y = suitable_ac, 
+                linetype = hab_subtype,
+                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "empirical")))) +
+  geom_line(data = instream_regional_approx_est |>
+              filter(habitat == "rearing") |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed),
+            aes(y = suitable_ac,, 
+                linetype = "instream",
+                color = "DSMHabitat regional approx")) +
+  geom_line(data = floodplain_proxy_est |>
+              filter(habitat == "floodplain" & run == "fall") |>
+              filter(river_group %in% upper_mid_sac_tribs$Watershed),
+            aes(y = suitable_ac,, 
+                linetype = "floodplain",
+                color = "DSMHabitat floodplain proxy")) +
+  scale_x_log10() +
+  scale_linetype_manual(name = "Habitat Type", 
+                     values = c("instream" = "solid", #"#6388b4",
+                                "floodplain" = "dashed", #"#ef6f6a",
+                                "combined instream + floodplain" = "dotted")) + ##bb7693"),) +
+  scale_color_manual(name = "Data Source", 
+                     values = c("habistat" = "#ffae34", 
+                                "DSMHabitat empirical" = "#6388b4",
+                                "DSMHabitat regional approx" = "#ef6f6a",
+                                "DSMHabitat floodplain proxy" = "#bb7693"),
+                     aesthetics = c("color", "fill")) +
+  theme(legend.position = "top", 
+        panel.grid.minor = element_blank()) + 
+  guides(color = guide_legend(nrow = 3), 
+         linetype = guide_legend(nrow = 3)) +
+  ylab("Predicted Total Habitat (acres)") + 
+  xlab("Flow at Outlet (cfs)") + 
+  ggtitle("Rearing Comparison for Upper-Mid Sacramento Tributaries - Total Acres")
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/upper-mid-sac-comparison-rearing-fp-1.png)<!-- -->
+
+Monthly inflows
+
+Streams:
+<https://www.sciencebase.gov/catalog/item/61e7442ed34e3618e01cf68f>
+Monthly inflows:
+<https://www.sciencebase.gov/catalog/item/61e74499d34e3618e01cf694>
+Monthly diversions:
+<https://www.sciencebase.gov/catalog/item/61e74461d34e3618e01cf691>
+
+``` r
+inflow_locs <- 
+  read_sf(here::here("data-raw", "source", "monthly_flows", "CVHM2_InflowLocations.shp.zip")) |>
+  janitor::clean_names()
+
+inflow_vals <- 
+  read_csv(here::here("data-raw", "source", "monthly_flows", "CVHM2_Inflows_1921_2019.csv")) |>
+  pivot_longer(cols = c(-Month, -Year, -YYYYMM), 
+               names_to = "inflow_id",
+               values_to = "flow_cmd") |>
+  janitor::clean_names() 
+```
+
+    ## Rows: 1181 Columns: 65
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## dbl (65): Month, Year, YYYYMM, SACR_205, COWC_211, BATT_220, COTT_NF, COTT_M...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+inflow_xw <- 
+  read_csv(here::here("data-raw", "source", "monthly_flows", "CVHM2_Inflows_XW.csv"))
+```
+
+    ## Rows: 65 Columns: 3
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (3): name, inflow_id, river_group
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+mean_monthly_inflow <-
+  inflow_vals |>
+  group_by(inflow_id, month) |>
+  summarize(flow_cmd = mean(flow_cmd)) |>
+  # convert cubic meters per day to cubic feet per second
+  mutate(flow_cfs = flow_cmd * (1 / 0.3048)^3 * (1 / 86400)) |>
+  inner_join(inflow_xw, by = join_by(inflow_id)) %>%
+  inner_join(. |>
+               filter(inflow_id %in% c("DEER_256", "COTT_MF", "TUOL_135")) |>
+               select(inflow_id, month, flow_cfs) |>
+               pivot_wider(names_from = inflow_id, values_from = flow_cfs) |>
+               rename(q_deer = DEER_256,
+                      q_cottonwood = COTT_MF,
+                      q_tuolumne = TUOL_135),
+             by = join_by(month))
+```
+
+    ## `summarise()` has grouped output by 'inflow_id'. You can override using the
+    ## `.groups` argument.
+
+``` r
+flow_scalars <- 
+  mean_monthly_inflow |>
+  filter(month %in% c(12, 1)) |>
+  group_by(river_group) |>
+  summarize(across(c(flow_cfs, starts_with("q_")), mean)) |>
+  mutate(flow_scalar_cottonwood = flow_cfs / q_cottonwood,
+         flow_scalar_deer = flow_cfs / q_deer,
+         flow_scalar_tuolumne = flow_cfs / q_tuolumne)
+```
 
 ``` r
 knitr::knit_exit()
