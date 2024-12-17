@@ -1,0 +1,1674 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Earll, Marisa, M.</origin>
+        <pubdate>20220823</pubdate>
+        <title>Monthly Inflows to the Surface Water Network for the Central Valley Hydrologic Model Version 2 (CVHM2)</title>
+        <geoform>tabular digital data</geoform>
+        <onlink>https://doi.org/10.5066/P9ICSZWF</onlink>
+        <lworkcit>
+          <citeinfo>
+            <origin>Claudia C. Faunt</origin>
+            <origin>Jonathan A. Traum</origin>
+            <origin>Scott E. Boyce</origin>
+            <origin>Whitney A. Seymour</origin>
+            <origin>Elizabeth R. Jachens</origin>
+            <origin>Justin T. Brandt</origin>
+            <origin>Michelle Sneed</origin>
+            <origin>Sandra Bond</origin>
+            <origin>Marina F. Marcelli</origin>
+            <pubdate>20240422</pubdate>
+            <title>Groundwater Sustainability and Land Subsidence in California’s Central Valley</title>
+            <geoform>publication</geoform>
+            <serinfo>
+              <sername>Water</sername>
+              <issue>vol. 16, issue 8</issue>
+            </serinfo>
+            <onlink>https://doi.org/10.3390/w16081189</onlink>
+          </citeinfo>
+        </lworkcit>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>This digital dataset contains the monthly inflows to the surface water network in the updated Central Valley Hydrologic Model (CVHM2) for water years 1922-2019.  The surface water inflows are simulated through the Streamflow Routing Package (SFR2) using 65 inflows locations, 271 stream segments that represent 4043 stream reaches, and 13 bifurcations that comprise the stream network. The bifurcations simulate the bypass canals that are used for flood control by routing water between two stream reach locations within the stream network.  This dataset includes the inflow and bifurcation locations and monthly magnitude.</abstract>
+      <purpose>The surface water inflow and bifurcation dataset were used as input the Streamflow Routing Package (SFR2) of the CVHM2 to simulate surface water flow in the CVHM2.</purpose>
+      <supplinf>This data release has been modified from its original version. See “CVHM2_SurfaceWater_versionhistory.txt” in the attached files section on the parent page for this data release  for more detail (https://doi.org/10.5066/P9ICSZWF).</supplinf>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>19211001</begdate>
+          <enddate>20190930</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>ground condition</current>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>None planned</update>
+    </status>
+    <spdom>
+      <bounding>
+        <westbc>-123.8315</westbc>
+        <eastbc>-117.9163</eastbc>
+        <northbc>40.7486</northbc>
+        <southbc>34.5199</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>ISO 19115 Topic Category</themekt>
+        <themekey>geoscientificInformation</themekey>
+        <themekey>inlandWaters</themekey>
+      </theme>
+      <theme>
+        <themekt>USGS Thesaurus</themekt>
+        <themekey>hydrology</themekey>
+        <themekey>hydrogeology</themekey>
+        <themekey>groundwater</themekey>
+        <themekey>model</themekey>
+        <themekey>surface water</themekey>
+      </theme>
+      <theme>
+        <themekt>USGS Metadata Identifier</themekt>
+        <themekey>USGS:61e74499d34e3618e01cf694</themekey>
+      </theme>
+      <place>
+        <placekt>U.S. Board of Geographic Names (BGN) and Geographic Names Information System (GNIS)</placekt>
+        <placekey>California</placekey>
+        <placekey>Central Valley</placekey>
+        <placekey>Sacramento Valley</placekey>
+        <placekey>San Joaquin Valley</placekey>
+      </place>
+    </keywords>
+    <accconst>None.  Please see 'Distribution Info' for details.</accconst>
+    <useconst>None. Users are advised to read the dataset's metadata thoroughly to understand appropriate use and data limitations. It is requested that the suggested citation for this USGS data release be included in any publications that reference or utilize these data.</useconst>
+    <datacred>Spatial datasets supporting the Central Valley Groundwater Availability project were developed primarily by the U.S. Geological Survey's (USGS) Groundwater Resources Program. This program is conducting large-scale multidisciplinary regional studies of groundwater availability. The U.S. Bureau of Reclamation is supporting the updating of the Central Valley datasets and their documentation and release.</datacred>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>Data have been checked to ensure the accuracy of the data. If any errors are detected, please notify the originating office. The U.S. Geological Survey strongly recommends that careful attention be paid to the metadata file associated with these data. The U.S. Geological Survey shall not be held liable for improper or incorrect use of the data described and (or) contained herein. Acknowledgement of the U.S. Geological Survey would be appreciated in products derived from these data. Any use of trade, product, or firm names is for descriptive purposes only and does not imply endorsement by the U.S. Government. Although this Federal Geographic Data Committee-compliant metadata file is intended to document the dataset in nonproprietary form, as well as in ArcGIS format, this metadata file may include some ArcGIS-specific terminology.</attraccr>
+    </attracc>
+    <logic>Tabular, non-spatial dataset. Categories were determined by the dataset originator, who transcribed them into this table.</logic>
+    <complete>The measurements in this dataset are computer-generated and are used as input in the Central Valley Hydrologic Model. The dataset is complete and is not anticipated to change.</complete>
+    <lineage>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>U.S. Geological Survey (USGS)</origin>
+            <pubdate>2019</pubdate>
+            <title>National Water Information System data available on the World Wide Web (USGS Water Data for the Nation</title>
+            <geoform>tabular digital data</geoform>
+            <onlink>http://dx.doi.org/10.5066/F7P55KJN</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>19211001</begdate>
+              <enddate>20190930</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>observed</srccurr>
+        </srctime>
+        <srccitea>USGS, 2019</srccitea>
+        <srccontr>surface water inflow data</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>California Department of Water Resources (CA DWR)</origin>
+            <pubdate>2015</pubdate>
+            <title>California Data Exchange Center Reservoir Releases</title>
+            <geoform>tabular digital data</geoform>
+            <onlink>https://cdec.water.ca.gov</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>19211001</begdate>
+              <enddate>20130930</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>observed</srccurr>
+        </srctime>
+        <srccitea>CA DWR, 2015</srccitea>
+        <srccontr>Surface water inflow data for Stony Creek, Calaveras River, Chowchilla River, Fresno River, Kings River, Kaweah River, Tule River, and Kern River.</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>California Department of Water Resources (CA DWR)</origin>
+            <pubdate>2017</pubdate>
+            <title>CalSim 3.0 model Inflows</title>
+            <geoform>tabular digital data</geoform>
+            <onlink>https://water.ca.gov/Library/Modeling-and-Analysis/Central-Valley-models-and-tools/CalSim-3</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>19211001</begdate>
+              <enddate>20130930</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>Model Output</srccurr>
+        </srctime>
+        <srccitea>CA DWR, 2017</srccitea>
+        <srccontr>Surface water inflow data for North Fork Cottonwood Creek, Middle Fork Cottonwood Creek, South Fork Cottonwood Creek, Paynes and Sevenmile Creek, Antelope Creek Group, Mill Creek, Thomes Creek, North Fork Stony Creek, South Fork Stony Creek, Big Chico Creek, North Fork Honcut Creek, South Fork Creek.</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>James M. Montgomery, Consulting Engineers</origin>
+            <pubdate>1990</pubdate>
+            <title>Central Valley ground-surface water model, Central Valley, California</title>
+            <geoform>tabular digital data</geoform>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>19211001</begdate>
+              <enddate>19320301</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>Model Output</srccurr>
+        </srctime>
+        <srccitea>CVGSM Model</srccitea>
+        <srccontr>Surface water inflows for the Sacramento River, Cow Creek, Battle Creek, Elder Creek, Black Butte Release to Stony Creek, Bear River, Stanislaus River, Orestimba Creek, Bear Creek Group, Deadman's Creek, Chowchilla River, Fresno River, Kern River, Friant-Kern Canal Wasteway Deliveries to Kaweah River, Friant-Kern Canal Wasteway Deliveries to Tule River</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Tyler Hatch</origin>
+            <pubdate>20210427</pubdate>
+            <title>The 1.0 version of the Fine Grid California Central Valley Groundwater-Surface Water Simulation Model (C2VSimFG Version 1.0 ) is a computer program that simulates water movement through the linked land surface, groundwater, and surface water flow systems in California’s Central Valley using the DWR-developed software, Integrated Water Flow Model Version 2015 (IWFM-2015</title>
+            <geoform>tabular digital data</geoform>
+            <onlink>https://data.cnra.ca.gov/dataset/c2vsimfg</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>19211031</begdate>
+              <enddate>20150930</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>Model Output</srccurr>
+        </srctime>
+        <srccitea>Hatch, 2021</srccitea>
+        <srccontr>Inflows for sites CACH_390, CACH_Low, FKWI_024, FKWT_011, FKWK_421, CVCK_004, FKCK_004, LPAN_999, LBAN_999, DMC, Cal_Aq, Zapato</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>California Department of Water Resources (CA DWR)</origin>
+            <pubdate>2019</pubdate>
+            <title>The California Hydroclimate Report Water Year 2019</title>
+            <geoform>tabular digital data</geoform>
+            <onlink>https://water.ca.gov/Programs/Flood-Management/Flood-Data/Climatology-and-Meteorology</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <rngdates>
+              <begdate>20131001</begdate>
+              <enddate>20190930</enddate>
+            </rngdates>
+          </timeinfo>
+          <srccurr>observed</srccurr>
+        </srctime>
+        <srccitea>CA DWR, 2019</srccitea>
+        <srccontr>The California Hydroclimate Report Water Year 2019</srccontr>
+      </srcinfo>
+      <srcinfo>
+        <srccite>
+          <citeinfo>
+            <origin>Scott E. Boyce</origin>
+            <origin>Randall T. Hanson</origin>
+            <origin>Ian Ferguson</origin>
+            <origin>Wolfgang Schmid</origin>
+            <origin>Wesley R. Henson</origin>
+            <origin>Thomas Reimann</origin>
+            <origin>Steffen W. Mehl</origin>
+            <origin>Marisa M. Earll</origin>
+            <pubdate>2020</pubdate>
+            <title>One-Water Hydrologic Flow Model: A MODFLOW based conjunctive-use simulation software</title>
+            <geoform>publication</geoform>
+            <pubinfo>
+              <pubplace>n/a</pubplace>
+              <publish>US Geological Survey</publish>
+            </pubinfo>
+            <onlink>https://doi.org/10.3133/tm6A60</onlink>
+          </citeinfo>
+        </srccite>
+        <typesrc>Digital and/or Hardcopy</typesrc>
+        <srctime>
+          <timeinfo>
+            <sngdate>
+              <caldate>2020</caldate>
+            </sngdate>
+          </timeinfo>
+          <srccurr>publication date</srccurr>
+        </srctime>
+        <srccitea>Boyce and others, 2020</srccitea>
+        <srccontr>MODFLOW One-Water Hydrologic Flow Model (MF-OWHM)</srccontr>
+      </srcinfo>
+      <procstep>
+        <procdesc>Inflow data was downloaded from the National Water Information System (USGS, 2019) at gage sites located along the stream network and were aggregated to monthly volumes in cubic meters per day for water years 1922- 2019.  The tabulated inflows were used as input to the Streamflow Routing Package (SFR2) to simulate the surface water network in the CVHM2.</procdesc>
+        <srcused>USGS, 2019</srcused>
+        <procdate>2019</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Monthly reservoir releases were downloaded from the California Data Exchange Center at locations along the stream network for water years 1922- 2019 (CA DWR, 2015). The tabulated reservoir releases were used as inflows to the Streamflow Routing Package (SFR2) to simulate the surface water network in the CVHM2.</procdesc>
+        <srcused>CA DWR, 2015</srcused>
+        <procdate>2019</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Monthly inflow data was gathered from the Fine Grid California Central Valley Groundwater-Surface Water Simulation Model (C2VSimFG Version 1.0; Hatch, 2021) for water years 1922 - 2015. The data was tabulated and used as input to the Streamflow Routing Package (SFR2) to simulate flow in the CVHM2.</procdesc>
+        <srcused>Hatch, 2021</srcused>
+        <procdate>2015</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Inflows for site identifiers CACH_390, CACH_Low, FKWI_024, FKWT_011, FKWK_421, CVCK_004, FKCK_004, LPAN_999, LBAN_999, DMC, Cal_Aq, Zapato were extended for water years 2016 - 2019  using historical values based on water year designations defined by the Department of Water Resources annual Hydroclimate Report. Water year type designations were matched with similar historical designations for the San Joaquin and Sacramento Valley Regions and used as inflows to extend the model through water year 2019. The water year types were either "wet", "normal", "above normal", "below normal", "critically dry", or "dry" as defined by the California Hydroclimate Report (CA DWR, 2019).</procdesc>
+        <srcused>CA DWR, 2019</srcused>
+        <procdate>20191231</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Ten of the SFR bifurcations were gathered from the 1.0 version of the Fine Grid California Central Valley Groundwater-Surface Water Simulation Model (C2VSimFG Version 1.0; Hatch, 2021) from bypass locations in the diversion file (C2VSimFG_Diversions.dat) for the water years 1922 - 2015. The bypass locations include Moulton, Colusa, Tisdale, Fremont, Sacramento Weir, Knights, Bypass #1, Bypass #2, Bypass #3, and KNGN. The Delta and Mariposa Bypasses were routed through SFR using a defined fraction of the available flow into segment (iprior = -2). The Chowchilla Bypass uses a constant value of 50 cubic feet per second (cfs).</procdesc>
+        <srcused>Hatch, 2021</srcused>
+        <procdate>2020</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>The bifurcations were extended for water years 2016 - 2019 using historical values based on water year designations defined by the Department of Water Resources annual Hydroclimate Report. Water year type designations were matched with similar historical designations for the San Joaquin and Sacramento Valley Regions and used as inflows to extend the model through water year 2019. The water year types were either "wet", "normal", "above normal", "below normal", "critically dry", or "dry" as defined by the California Hydroclimate Report (CA DWR, 2019).</procdesc>
+        <srcused>CA DWR, 2019</srcused>
+        <procdate>2020</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <spdoinfo>
+    <direct>Vector</direct>
+    <ptvctinf>
+      <sdtsterm>
+        <sdtstype>G-polygon</sdtstype>
+        <ptvctcnt>43218</ptvctcnt>
+      </sdtsterm>
+    </ptvctinf>
+  </spdoinfo>
+  <spref>
+    <horizsys>
+      <planar>
+        <mapproj>
+          <mapprojn>Albers Conical Equal Area</mapprojn>
+          <albers>
+            <stdparll>29.5</stdparll>
+            <stdparll>45.5</stdparll>
+            <longcm>-120.0</longcm>
+            <latprjo>23.0</latprjo>
+            <feast>0.0</feast>
+            <fnorth>0.0</fnorth>
+          </albers>
+        </mapproj>
+        <planci>
+          <plance>coordinate pair</plance>
+          <coordrep>
+            <absres>0.6096</absres>
+            <ordres>0.6096</ordres>
+          </coordrep>
+          <plandu>meters</plandu>
+        </planci>
+      </planar>
+      <geodetic>
+        <horizdn>North_American_Datum_1983</horizdn>
+        <ellips>GRS_1980</ellips>
+        <semiaxis>6378137.0</semiaxis>
+        <denflat>298.257222101</denflat>
+      </geodetic>
+    </horizsys>
+  </spref>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>CVHM2_Inflows_1921_2019.csv</enttypl>
+        <enttypd>Comma Separated Value (CSV) file containing data. The ranges are rounded  in the metadata file.</enttypd>
+        <enttypds>Producer Defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Month</attrlabl>
+        <attrdef>Calendar month represented in numeric form (M)</attrdef>
+        <attrdefs>dataset originator</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>12</rdommax>
+            <attrunit>Calendar Month</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Year</attrlabl>
+        <attrdef>Calendar year represented in numeric form (YYYY)</attrdef>
+        <attrdefs>dataset originator</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1921</rdommin>
+            <rdommax>2019</rdommax>
+            <attrunit>Calendar Year</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>YYYYMM</attrlabl>
+        <attrdef>Calendar month and year represented in numeric form (YYYYMM)</attrdef>
+        <attrdefs>dataset originator</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>192110 (October 1921)</rdommin>
+            <rdommax>201912 (December 2019)</rdommax>
+            <attrunit>Calendar Year and Month (YYYYMM)</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>SACR_205</attrlabl>
+        <attrdef>Monthly Inflow for station SACR_205</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>3202593</rdommin>
+            <rdommax>118522909</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>COWC_211</attrlabl>
+        <attrdef>Monthly Inflow for station COWC_211</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1547</rdommin>
+            <rdommax>13799515</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>BATT_220</attrlabl>
+        <attrdef>Monthly Inflow for station BATT_220</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>164591</rdommin>
+            <rdommax>5959549</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>COTT_NF</attrlabl>
+        <attrdef>Monthly Inflow for station COTT_NF</attrdef>
+        <attrdefs>CalSim 3.0 data set I_CWD018</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>7439345</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>COTT_MF</attrlabl>
+        <attrdef>Monthly Inflow for station COTT_MF</attrdef>
+        <attrdefs>CalSim 3.0 data set I_CWD018</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>7439345</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>COTT_SF</attrlabl>
+        <attrdef>Monthly Inflow for station COTT_SF</attrdef>
+        <attrdefs>CalSim 3.0 data set I_SWC008</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>8518856</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>PAYS_225</attrlabl>
+        <attrdef>Monthly Inflow for station PAYS_225</attrdef>
+        <attrdefs>CalSim 3.0 data set I_PYN001</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>2535443</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>ANTL_233</attrlabl>
+        <attrdef>Monthly Inflow for station for ANTL_233</attrdef>
+        <attrdefs>CalSim 3.0 (I_ANT011)* 2.06 and NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>31516</rdommin>
+            <rdommax>6007181</rdommax>
+            <attrunit>Cubic meters per month</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>MILL_243</attrlabl>
+        <attrdef>Monthly Inflow for station MILL_243</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>150322</rdommin>
+            <rdommax>4497819</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>ELDE_237</attrlabl>
+        <attrdef>Monthly Inflow for station ELDE_237</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>4005686</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>THOM_248</attrlabl>
+        <attrdef>Monthly Inflow for station THOM_248</attrdef>
+        <attrdefs>NWIS and CalSim 3.0 set I_THM028</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>8625590</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DEER_256</attrlabl>
+        <attrdef>Monthly Inflow for station DEER_256</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>3022</rdommin>
+            <rdommax>10567571</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>STON_263</attrlabl>
+        <attrdef>Monthly Inflow for station STON_263</attrdef>
+        <attrdefs>CDEC (Black Butte)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>24684882</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>STON_NF</attrlabl>
+        <attrdef>Monthly inflow for station for STON_NF</attrdef>
+        <attrdefs>C2VSim - CalSim 3.0 set I_BLKBT * 0.26</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>3332288</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>STON_SF</attrlabl>
+        <attrdef>Monthly inflow for station for STON_SF</attrdef>
+        <attrdefs>C2VSim - Stony Gorge Releases + CalSim 3 Local Inflow to Black Butte Reservoir (I_BLKBT) * 0.74</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>11646544</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>BIGC_269</attrlabl>
+        <attrdef>Monthly Inflow for station BIGC_269</attrdef>
+        <attrdefs>CalSim 3.0 I_BCC014 and NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>24692</rdommin>
+            <rdommax>3782613</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>BUTT_283</attrlabl>
+        <attrdef>Monthly Inflow for station BUTT_283</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>139969</rdommin>
+            <rdommax>8880544</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FEAT_341</attrlabl>
+        <attrdef>Monthly Inflow for station FEAT_341</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1002478</rdommin>
+            <rdommax>127406443</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>YUBA_349</attrlabl>
+        <attrdef>Monthly Inflow for station YUBA_349</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>161587</rdommin>
+            <rdommax>65369886</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>BEAR_357</attrlabl>
+        <attrdef>Monthly Inflow for station BEAR_357</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>13864517</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CACH_390</attrlabl>
+        <attrdef>Monthly Inflow for station CACH_390</attrdef>
+        <attrdefs>CalSim 3.0 I_CCH053</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>996</rdommin>
+            <rdommax>24568184</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CACH_Low</attrlabl>
+        <attrdef>Monthly Inflow for station CACH_Low</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>31001423</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>AMER_374</attrlabl>
+        <attrdef>Monthly Inflow for station AMER_374</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>38705</rdommin>
+            <rdommax>82087214</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>PUTA_400</attrlabl>
+        <attrdef>Monthly Inflow for station PUTA_400</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>19075945</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CONS_188</attrlabl>
+        <attrdef>Monthly Inflow for station CONS_188</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>19029774</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DRYC_182</attrlabl>
+        <attrdef>Monthly Inflow for station DRYC_182</attrdef>
+        <attrdefs>C2VSim - NWIS with corrections</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>7854611</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>MOKE_173</attrlabl>
+        <attrdef>Monthly Inflow for station MOKE_173</attrdef>
+        <attrdefs>NWIS and CDEC (Camanche Reservoir)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>13260</rdommin>
+            <rdommax>12651170</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CALV_161</attrlabl>
+        <attrdef>Monthly Inflow for station CALV_161</attrdef>
+        <attrdefs>CDEC (New Hogan Lake)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>8408011</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>STAN_146</attrlabl>
+        <attrdef>Monthly inflow for station STAN_146</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>18508348</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>TUOL_135</attrlabl>
+        <attrdef>Monthly inflow for station TUOL_135</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>32001321</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>ORIS_128</attrlabl>
+        <attrdef>Monthly inflow for station ORIS_128</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>2004064</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>MERC_116</attrlabl>
+        <attrdef>Monthly inflow for station MERC_116</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>42094</rdommin>
+            <rdommax>18182270</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>BEAR_105</attrlabl>
+        <attrdef>Monthly inflow for station BEAR_105</attrdef>
+        <attrdefs>CVGSM and C2Vsim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>7270502</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DEAD_093</attrlabl>
+        <attrdef>Monthly inflow for station DEAD_093</attrdef>
+        <attrdefs>CDEC (Camanche Reservoir) with corrections</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>5816402</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CHOW_080, MADC_080</attrlabl>
+        <attrdef>Monthly inflow for station CHOW_080 and station MADC_080</attrdef>
+        <attrdefs>CDEC (Buchanan Dam) and Moderna Canal Spills to Chowchilla River (made = 0 because not used)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>4896910</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FRES_069,MADC_069</attrlabl>
+        <attrdef>Monthly inflow for station FRES_069 and station MADC_069</attrdef>
+        <attrdefs>CVGSM Model, NWIS, CDEC (Hidden Dam)and Moderna Canal Spills to Fresno River (made = 0 because not used)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>4400052</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>SANJ_054</attrlabl>
+        <attrdef>Monthly inflow for station SANJ_054</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>33348001</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>KING_023</attrlabl>
+        <attrdef>Monthly inflow for station KING_023</attrdef>
+        <attrdefs>NWIS, CDEC (Pine Flat Dam)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>49213</rdommin>
+            <rdommax>36873784</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>KAWE_420</attrlabl>
+        <attrdef>Monthly inflow for station KAWE_420</attrdef>
+        <attrdefs>NWIS, CDEC (Terminus Dam)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>9355550</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>TULE_010</attrlabl>
+        <attrdef>Monthly inflow for station TULE_010</attrdef>
+        <attrdefs>NWIS, CDEC (Success Dam)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>4855298</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>KERN_001</attrlabl>
+        <attrdef>Monthly inflow for station KERN_001</attrdef>
+        <attrdefs>NWIS, CDEC (Isabella Dam)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>162467</rdommin>
+            <rdommax>17313060</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FKWI_024</attrlabl>
+        <attrdef>Monthly inflow for station FKWI_024</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1203929</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FKWT_011</attrlabl>
+        <attrdef>Monthly inflow for station FKWT_011</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>641108</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>FKWK_421</attrlabl>
+        <attrdef>Monthly inflow for station FKWK_421</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1913369</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CVCK_004,FKCK_004</attrlabl>
+        <attrdef>Monthly inflow for station CVCK_004 and station FKCK_004</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>3621862</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>LOSG_999</attrlabl>
+        <attrdef>Monthly inflow for station LOSG_999</attrdef>
+        <attrdefs>CalSim 3.0 (I_LGT001)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>703197</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>WHIT_999</attrlabl>
+        <attrdef>Monthly inflow for station WHIT_999</attrdef>
+        <attrdefs>CalSim 3.0 (I_WTR001)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>508627</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CLEA_999</attrlabl>
+        <attrdef>Monthly inflow for station CLEA_999</attrdef>
+        <attrdefs>NWIS</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>32809</rdommin>
+            <rdommax>14085985</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DELP_999</attrlabl>
+        <attrdef>Monthly inflow for station DELP_999</attrdef>
+        <attrdefs>CalSim 3.0 (I_LGT001)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>832721</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>CANT_999</attrlabl>
+        <attrdef>Monthly inflow for station CANT_999</attrdef>
+        <attrdefs>CalSim 3.0 (I_CAT001)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>392488</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>PANO_999</attrlabl>
+        <attrdef>Monthly inflow for station PANO_999</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>741849</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>LPAN_999</attrlabl>
+        <attrdef>Monthly inflow for station LPAN_999</attrdef>
+        <attrdefs>CalSim 3.0 (I_LPC007)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>708475</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>LBAN_999</attrlabl>
+        <attrdef>Monthly inflow for station LBAN_999</attrdef>
+        <attrdefs>Estimated based on ORIS_128</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>70319745</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>HOSP_999</attrlabl>
+        <attrdef>Monthly inflow for station HOSP_999</attrdef>
+        <attrdefs>Place holder for Hospital Creek set to zero</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>INGR_999</attrlabl>
+        <attrdef>Monthly inflow for station INGR_999</attrdef>
+        <attrdefs>Place holder for Ingraham Creek set to zero</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DMC</attrlabl>
+        <attrdef>Monthly inflow for station DMC</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>5541608</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Cal_Aq</attrlabl>
+        <attrdef>Monthly inflow for station Cal_Aq</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>11603895</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Deer</attrlabl>
+        <attrdef>Monthly inflow for station Deer</attrdef>
+        <attrdefs>CalSim 3.0 (I_DEC001)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1592496</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Poso</attrlabl>
+        <attrdef>Monthly inflow for station Poso</attrdef>
+        <attrdefs>CalSim 3.0 (I_PSC001)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>2207044</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Zapato</attrlabl>
+        <attrdef>Monthly inflow for station Zapato</attrdef>
+        <attrdefs>CalSim 3.0 (I_CCH053)</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>708299</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>honcut</attrlabl>
+        <attrdef>Monthly inflow for station Honcut</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>2757162</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Mendota</attrlabl>
+        <attrdef>Placeholder for Mendota Pool set to zero</attrdef>
+        <attrdefs>C2VSim</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>0.0</rdommax>
+            <attrunit>Cubic meters per day</attrunit>
+            <attrmres>1</attrmres>
+          </rdom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>CVHM2_InflowLocations.zip Attribute Table</enttypl>
+        <enttypd>Zip folder containing several files including shapefile (CVHM2_InflowLocations.shp) and table (CVHM2_InflowLocations.dbf) with attribute information associated with the data set.</enttypd>
+        <enttypds>Producer Defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>FID</attrlabl>
+        <attrdef>Internal feature number.</attrdef>
+        <attrdefs>ESRI</attrdefs>
+        <attrdomv>
+          <udom>Sequential unique whole numbers that are automatically generated.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Shape</attrlabl>
+        <attrdef>Feature geometry.</attrdef>
+        <attrdefs>ESRI</attrdefs>
+        <attrdomv>
+          <udom>Coordinates defining the features.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NAME</attrlabl>
+        <attrdef>Detailed name for inflow location.</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Detailed name for inflow location</edomv>
+            <edomvd>Detailed name for inflow location</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>INFLOW_ID</attrlabl>
+        <attrdef>Inflow identification for inflow locations in CVHM2_Inflows_1921_2019.csv</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Inflow identification for inflow locations</edomv>
+            <edomvd>Inflow identification for inflow locations</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>CVHM2_SFR_Bifurcations.zip Attribute Table</enttypl>
+        <enttypd>Zip folder containing several files including shapefile (CVHM2_SFR_Bifurcations.shp) and table (CVHM2_SFR_Bifurcations.dbf) with attribute information associated with the data set.</enttypd>
+        <enttypds>Producer Defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>FID</attrlabl>
+        <attrdef>Internal feature number.</attrdef>
+        <attrdefs>ESRI</attrdefs>
+        <attrdomv>
+          <udom>Sequential unique whole numbers that are automatically generated.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Shape</attrlabl>
+        <attrdef>Feature geometry.</attrdef>
+        <attrdefs>ESRI</attrdefs>
+        <attrdomv>
+          <udom>Coordinates defining the features.</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NAME</attrlabl>
+        <attrdef>Name of bifurcation location</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>San Joaquin River Flow to Mendota Pool</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Mariposa Bypass inflow from Eastside Bypass</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Kings River Flow to Tulare Lake</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Moulton Weir Spill</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Tisdale Weir Spill</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Fremont Weir Spill</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Colusa Weir Spill</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Sacramento Weir Spill</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Knights Cut from Colusa Drain</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Flow to Delta from Sacramento River</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Butte Basin bypass 1</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Butte Basin bypass 2</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Butte Basin bypass 3</edomv>
+            <edomvd>Description of bifurcation</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>INFLOW_ID</attrlabl>
+        <attrdef>Unique identifier used in the streamflow-routing package (SFR)</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Chowby</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Mariposa</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>KNGN</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Moulton_W</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Tisdale_W</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Fremont_W</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Colusa_W</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Sac_W</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Knights_C</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Delta</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Bypass_1</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Bypass_2</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Bypass_3</edomv>
+            <edomvd>Bifurcation name used in SFR</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>CVHM2_Bifurcations_1921_2019.csv</enttypl>
+        <enttypd>Comma Separated Value (CSV) file containing data.</enttypd>
+        <enttypds>Producer Defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Date</attrlabl>
+        <attrdef>Date of Bifurcation</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>10/1/1921</rdommin>
+            <rdommax>9/1/2019</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Delta</attrlabl>
+        <attrdef>Monthly Bifurcation for the Delta</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.5</rdommin>
+            <rdommax>0.5</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Mariposa</attrlabl>
+        <attrdef>Monthly Bifurcation for the Mariposa Bypass</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>1</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Moulton_W</attrlabl>
+        <attrdef>Monthly Bifurcation for the Moulton Weir</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>36065810.72</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Colusa_W</attrlabl>
+        <attrdef>Monthly Bifurcation for the Colusa Weir</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>117788038.7</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Tisdale_W</attrlabl>
+        <attrdef>Monthly Bifurcation for the Tisdale Weir</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>40277161.8</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Fremont_W</attrlabl>
+        <attrdef>Monthly Bifurcation for the Fremont Weir</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>278763631.9</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Sac_W</attrlabl>
+        <attrdef>Monthly Bifurcation for the Sacramento Weir</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>58567159.56</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Knights_C</attrlabl>
+        <attrdef>Monthly Bifurcation for the Knights Cut</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>26107167.21</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Bypass 1</attrlabl>
+        <attrdef>Monthly Bifurcation for the M&amp;T Flood Relief Structure to Butte Basin</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>24012645.64</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Bypass 2</attrlabl>
+        <attrdef>Monthly Bifurcation for the 3Bs Flood Relief Structure to Butte Basin</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>12006300.77</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Bypass 3</attrlabl>
+        <attrdef>Monthly Bifurcation for the Goose Lake Flood Relief Structure to Butte Basin</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>KNGN</attrlabl>
+        <attrdef>Monthly Bifurcation for the Kings River</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.0</rdommin>
+            <rdommax>10931607.31</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Chowby</attrlabl>
+        <attrdef>Monthly Bifurcation for the Chowby Bifurcation</attrdef>
+        <attrdefs>Producer Defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>122329</rdommin>
+            <rdommax>122329</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+    </detailed>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>U.S. Geological Survey</cntorg>
+          <cntper>GS ScienceBase</cntper>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>mailing address</addrtype>
+          <address>Denver Federal Center, Building 810, Mail Stop 302</address>
+          <city>Denver</city>
+          <state>CO</state>
+          <postal>80225</postal>
+          <country>United States</country>
+        </cntaddr>
+        <cntvoice>1-888-275-8747</cntvoice>
+        <cntemail>sciencebase@usgs.gov</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>Although these data have been used by the U.S. Geological Survey, U.S. Department of the Interior, no warranty expressed or implied is made by the U.S. Geological Survey as to the accuracy of the data.  The act of distribution shall not constitute any such warranty, and no responsibility is assumed by the U.S. Geological Survey in the use of these data, software, or related materials.
+
+The use of firm, trade, or brand names in this report is for identification purposes only and does not 
+constitute endorsement by the U.S. Geological Survey.  The names mentioned in this document may be trademarks or registered trademarks of their respective trademark owners.</distliab>
+    <stdorder>
+      <digform>
+        <digtinfo>
+          <formname>Digital Data</formname>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>https://doi.org/10.5066/P9ICSZWF</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <fees>None</fees>
+    </stdorder>
+  </distinfo>
+  <metainfo>
+    <metd>20240612</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Elizabeth R. Jachens</cntper>
+          <cntorg>U.S. Geological Survey, SOUTHWEST REGION</cntorg>
+        </cntperp>
+        <cntpos>Hydrologist</cntpos>
+        <cntaddr>
+          <addrtype>mailing address</addrtype>
+          <address>4165 Spruance Road</address>
+          <city>San Diego</city>
+          <state>CA</state>
+          <postal>92101-0821</postal>
+          <country>US</country>
+        </cntaddr>
+        <cntvoice>619-225-6185</cntvoice>
+        <cntfax>619-225-6144</cntfax>
+        <cntemail>ejachens@usgs.gov</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>

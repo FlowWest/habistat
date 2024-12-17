@@ -962,6 +962,54 @@ wua_predicted_cv_mainstems_grouped |>
   ggtitle("Rearing Comparison for Upper-Mid Sacramento Tributaries - Total Acres")
 ```
 
+Monthly inflows
+
+Streams: https://www.sciencebase.gov/catalog/item/61e7442ed34e3618e01cf68f
+Monthly inflows: https://www.sciencebase.gov/catalog/item/61e74499d34e3618e01cf694
+Monthly diversions: https://www.sciencebase.gov/catalog/item/61e74461d34e3618e01cf691
+
+```{r}
+inflow_locs <- 
+  read_sf(here::here("data-raw", "source", "monthly_flows", "CVHM2_InflowLocations.shp.zip")) |>
+  janitor::clean_names()
+
+inflow_vals <- 
+  read_csv(here::here("data-raw", "source", "monthly_flows", "CVHM2_Inflows_1921_2019.csv")) |>
+  pivot_longer(cols = c(-Month, -Year, -YYYYMM), 
+               names_to = "inflow_id",
+               values_to = "flow_cmd") |>
+  janitor::clean_names() 
+
+inflow_xw <- 
+  read_csv(here::here("data-raw", "source", "monthly_flows", "CVHM2_Inflows_XW.csv"))
+
+mean_monthly_inflow <-
+  inflow_vals |>
+  group_by(inflow_id, month) |>
+  summarize(flow_cmd = mean(flow_cmd)) |>
+  # convert cubic meters per day to cubic feet per second
+  mutate(flow_cfs = flow_cmd * (1 / 0.3048)^3 * (1 / 86400)) |>
+  inner_join(inflow_xw, by = join_by(inflow_id)) |>
+  inner_join(mean_monthly_inflow |>
+               filter(inflow_id %in% c("DEER_256", "COTT_MF", "TUOL_135")) |>
+               select(inflow_id, month, flow_cfs) |>
+               pivot_wider(names_from = inflow_id, values_from = flow_cfs) |>
+               rename(q_deer = DEER_256,
+                      q_cottonwood = COTT_MF,
+                      q_tuolumne = TUOL_135),
+             by = join_by(month))
+
+flow_scalars <- 
+  mean_monthly_inflow |>
+  filter(month %in% c(12, 1)) |>
+  group_by(river_group) |>
+  summarize(across(c(flow_cfs, starts_with("q_")), mean)) |>
+  mutate(flow_scalar_cottonwood = flow_cfs / q_cottonwood,
+         flow_scalar_deer = flow_cfs / q_deer,
+         flow_scalar_tuolumne = flow_cfs / q_tuolumne)
+```
+
+
 ```{r}
 knitr::knit_exit()
 ```

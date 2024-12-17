@@ -1,0 +1,66 @@
+name,inflow_id,river_group
+DMC flow from Delta,DMC,
+Cal Aq flow from Delta,Cal_Aq,
+Kern_River,KERN_001,
+Tule_River,TULE_010,
+FKC_Wasteway_Deliveries_to_Tule_River,FKWT_011,
+FKC_Wasteway_Deliveries_to_Kaweah_River,FKWK_421,
+Kaweah_River,KAWE_420,
+Kings_River,KING_023,
+San_Joaquin_River,SANJ_054,
+Fresno_River,FRES_069,
+Chowchilla_River,CHOW_080,
+Deadman's_Creek,DEAD_093,
+Oristimba_Creek,ORIS_128,
+Bear_Creek_Group,BEAR_105,Bear Creek
+Merced_River,MERC_116,Merced River
+Tuolumne_River,TUOL_135,Tuolumne River
+Stanislaus_River,STAN_146,Stanislaus River
+Calaveras_River,CALV_161,Calaveras River
+Mokelumne_River,MOKE_173,Mokelumne River
+Dry_Creek,DRYC_182,
+Putah_Creek,PUTA_400,
+Consumnes_River,CONS_188,Cosumnes River
+American_River,AMER_374,American River
+Cache_Creek,CACH_390,
+Bear_River,BEAR_357,Bear River
+Yuba_River,YUBA_349,Yuba River
+Feather_River,FEAT_341,Feather River
+Butte_and_Chico_Creek,BUTT_283,Butte Creek
+Big_Chico_Creek,BIGC_269,Big Chico Creek
+Stony_Creek,STON_263,Stony Creek
+Thomes_Creek,THOM_248,Thomes Creek
+Deer_Creek_Group,DEER_256,Deer Creek
+Elder_Creek,ELDE_237,Elder Creek
+Mill_Creek,MILL_243,Mill Creek
+Antelope_Creek_Group,ANTL_233,Antelope Creek
+Paynes_and_Sevenmile_Creek,PAYS_225,Paynes Creek
+Cottonwood_Creek,COTT_NF,
+Battle_Creek,BATT_220,Battle Creek
+Cow_Creek,COWC_211,Cow Creek
+Sacramento_River,SACR_205,
+LOS GATOS C AB NUNEZ CYN,LOSG_999,
+WHITE R NR DUCOR CA,WHIT_999,
+CLEAR C NR IGO CA,CLEA_999,
+MADC_spills_to_Fresno_River,MADC_069,
+MADC_spills_to_Chowchilla_River,MADC_080,
+FKC_wasteway_deliveries_to_Kings_River,FKWI_024,
+Cross_Valley_Canal_deliveries_to_Kern_River,CVCK_004,
+Friant_Kern_Canal_deliveries_to_Kern_River,FKCK_004,
+Del_Puerto_Creek,DELP_999,
+Cantua_Creek,CANT_999,
+Hospital Creek,HOSP_999,
+Los Banos,LBAN_999,
+Little Panoche,LPAN_999,
+Panoche Creek,PANO_999,
+Ingram Creek,INGR_999,
+Cottonwood_Creek,COTT_MF,Cottonwood Creek
+Cottonwood_Creek,COTT_SF,
+Stony_Creek,STON_NF,
+Stony_Creek,STON_SF,
+Cache_Creek,CACH_Low,
+Huncut,Honcut,
+Deer Creek (Tulare),Deer,
+Poso River,Poso,
+Zapato Chino Creek,Zapato,
+Inflow to Mendota Pool (Placeholder),Mendota,
