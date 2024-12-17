@@ -1051,10 +1051,13 @@ floodplain_proxy_est <-
   pivot_longer(ends_with("_floodplain_acres"),
                names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
                names_to = "run", 
-               values_to = "suitable_ac") |>
+               values_to = "floodplain_ac") |>
   mutate(run = factor(run, 
                       levels = c("FR", "LFR", "WR", "SR", "ST"),
-                      labels = c("fall", "late fall", "winter", "spring", "steelhead")))
+                      labels = c("fall", "late fall", "winter", "spring", "steelhead"))) |>
+  mutate(suitable_ac = if_else(river_group %in% suitability_already_applied,
+                               floodplain_ac,
+                               DSMhabitat::apply_suitability(floodplain_ac * 4046.86) / 4046.86))
 
 # TODO: Pull the monthly mean flow for all watershed
 # TODO: Calculate ratios of each ws monthly mean flow to each of the three proxy ws
