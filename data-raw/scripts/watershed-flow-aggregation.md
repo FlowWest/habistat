@@ -1,7 +1,7 @@
 Predictor Data Preparation and Consolidation
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-12-17
+2024-12-18
 
 - [Basic Flow Crosswalk via Drainage Area and
   Precipitation](#basic-flow-crosswalk-via-drainage-area-and-precipitation)
@@ -1006,10 +1006,14 @@ for(i in 1:length(watersheds_fp_scale)) {
 full_fp_results |> 
   ggplot(aes(x = flow_cfs, y = FR_floodplain_acres, color = proxy_watershed)) + 
   geom_line() +
-  facet_wrap(~watershed, scales = "free") 
+  facet_wrap(~watershed, scales = "free_y") + 
+  scale_x_log10(breaks = scales::breaks_log(),
+                labels = scales::label_number()) +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 90)) 
 ```
 
-![](watershed-flow-aggregation_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](watershed-flow-aggregation_files/figure-gfm/fp_proxy_data-1.png)<!-- -->
 
 ``` r
 # full_deer_creek_fp_results <- data.frame()
@@ -1122,7 +1126,7 @@ wua_predicted_cv_mainstems_grouped |>
 
 ![](watershed-flow-aggregation_files/figure-gfm/upper-mid-sac-comparison-rearing-fp-1.png)<!-- -->
 
-Monthly inflows
+#### Replicate monthly flow scaling
 
 Streams:
 <https://www.sciencebase.gov/catalog/item/61e7442ed34e3618e01cf68f>
@@ -1130,6 +1134,8 @@ Monthly inflows:
 <https://www.sciencebase.gov/catalog/item/61e74499d34e3618e01cf694>
 Monthly diversions:
 <https://www.sciencebase.gov/catalog/item/61e74461d34e3618e01cf691>
+
+Version using CVHM2:
 
 ``` r
 inflow_locs <- 
@@ -1189,58 +1195,124 @@ mean_monthly_inflow <-
 ``` r
 flow_scalars <- 
   mean_monthly_inflow |>
-  filter(month %in% c(12, 1)) |>
+  filter(month %in% c(12, 1, 2, 3, 4, 5, 6)) |>
   group_by(river_group) |>
   summarize(across(c(flow_cfs, starts_with("q_")), mean)) |>
-  mutate(flow_scalar_cottonwood = flow_cfs / q_cottonwood,
-         flow_scalar_deer = flow_cfs / q_deer,
-         flow_scalar_tuolumne = flow_cfs / q_tuolumne)
+  mutate(qscal_cottonwood = flow_cfs / q_cottonwood,
+         qscal_deer = flow_cfs / q_deer,
+         qscal_tuolumne = flow_cfs / q_tuolumne)
+
+# flow_scalars |>
+#   rename(scaling_flow = flow_cfs) |>
+#   pivot_longer(cols = starts_with("qscal_"),
+#                names_transform = \(x) str_replace(x, "qscal_", ""),
+#                values_to = "flow_scalar") |>
+#   mutate(proxy_ws = case_when(name == "cottonwood" ~ "Cottonwood Creek",
+#                               name == "deer" ~ "Deer Creek",
+#                               name == "tuolumne" ~ "Tuolumne River")) |>
+#   mutate(result = pmap(list(river_group, proxy_ws, flow_scalar),
+#                        possibly(scale_fp_flow_area, NA))) |>
+#   unnest(result) |>
+#   mutate(habitat = "floodplain") |>
+#   pivot_longer(ends_with("_floodplain_acres"),
+#                names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
+#                names_to = "run", 
+#                values_to = "suitable_ac") |>
+#   mutate(run = factor(run, 
+#                       levels = c("FR", "LFR", "WR", "SR", "ST"),
+#                       labels = c("fall", "late fall", "winter", "spring", "steelhead")))
 ```
+
+Version using DSMFlow:
+
+``` r
+mean_dec_jun_flows <- 
+  DSMflow::flows_cfs$biop_itp_2018_2019 |> 
+  pivot_longer(cols = -date, names_to = "watershed", values_to = "flow_cfs") |>
+  mutate(water_year = year(date) + if_else(month(date) >= 10, 1, 0)) |>
+  filter(month(date) %in% c(12, 1, 2, 3, 4, 5, 6)) |>
+  group_by(watershed) |>
+  summarize(mean_flow_cfs = mean(flow_cfs))
+#  select(date, `Antelope Creek`, `Deer Creek`) |> 
+#  janitor::clean_names() |> 
+#  filter(month(date) %in% c(6,12)) |> mutate(scale = antelope_creek/deer_creek)
+
+proxy_watersheds <- 
+  c("dc" = "Deer Creek", 
+    "cc" = "Cottonwood Creek", 
+    "tr" = "Tuolumne River")
+
+proxy_flows <- 
+  mean_dec_jun_flows |>
+  filter(watershed %in% proxy_watersheds) |>
+  pivot_wider(names_from = watershed, 
+              values_from = mean_flow_cfs) |>
+  rename_with(\(x) setNames(names(proxy_watersheds), proxy_watersheds)[x])
+
+flow_scalars <- 
+  mean_dec_jun_flows |>
+  mutate(qscal_dc = mean_flow_cfs / proxy_flows$dc,
+         qscal_cc = mean_flow_cfs / proxy_flows$cc,
+         qscal_tr = mean_flow_cfs / proxy_flows$tr) |>
+  left_join(DSMhabitat::watershed_regions, by = join_by(watershed)) |>
+  left_join(DSMhabitat::floodplain_modeling_metadata |>
+              select(watershed, scaling_watershed, dec_jun_mean_flow_scaling),
+            by = join_by(watershed)) |>
+  mutate(selected_proxy = case_when(
+    watershed %in% proxy_watersheds ~ watershed,
+    !is.na(scaling_watershed) ~ scaling_watershed,
+    region %in% c("South Delta", "San Joaquin River") ~ "Tuolumne River",
+    abs(mean_flow_cfs - proxy_flows$dc) <= abs(mean_flow_cfs - proxy_flows$cc) ~ "Deer Creek",
+    abs(mean_flow_cfs - proxy_flows$dc) > abs(mean_flow_cfs - proxy_flows$cc) ~ "Cottonwood Creek"))
+
+proxy_lookup <- 
+  flow_scalars |>
+  select(watershed, selected_proxy) |>
+  deframe()
+
+floodplain_proxy_est <-
+  flow_scalars |>
+  rename(river_group = watershed) |>
+  filter(!str_detect(river_group, "Sacramento")) |>
+  pivot_longer(cols = starts_with("qscal_"),
+               names_transform = \(x) proxy_watersheds[str_replace(x, "qscal_", "")],
+               names_to = "proxy_ws",
+               values_to = "flow_scalar") |>
+  mutate(selected = (proxy_ws == proxy_lookup[river_group]),
+         flow_scalar_combined = if_else(selected,
+                                        coalesce(dec_jun_mean_flow_scaling, flow_scalar),
+                                        flow_scalar),
+         result = pmap(list(river_group, proxy_ws, flow_scalar_combined),
+                       possibly(scale_fp_flow_area, NA))) |>
+  drop_na(result) |>
+  unnest(result) 
+
+floodplain_proxy_est |>
+  ggplot() +
+  facet_wrap(~river_group, scales = "free_y") +
+  geom_line(aes(x = flow_cfs, y = FR_floodplain_acres, color = proxy_ws)) + 
+  scale_x_log10(breaks = scales::breaks_log(),
+                labels = scales::label_number()) +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 90))
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/fp_proxy_data_expanded-1.png)<!-- -->
+
+``` r
+floodplain_proxy_est |>
+  filter(selected) |>
+  ggplot() +
+  facet_wrap(~river_group, scales = "free_y") +
+  geom_line(aes(x = flow_cfs, y = FR_floodplain_acres, color = proxy_ws)) + 
+  scale_x_log10(breaks = scales::breaks_log(),
+                labels = scales::label_number()) +
+  theme(panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 90))
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/fp_proxy_data_expanded-2.png)<!-- -->
 
 ``` r
 knitr::knit_exit()
-
-flow_scalars |>
-  rename(scaling_flow = flow_cfs) |>
-  pivot_longer(cols = starts_with("flow_scalar_"),
-               names_transform = \(x) str_replace(x, "flow_scalar_", ""),
-               values_to = "flow_scalar") |>
-  mutate(proxy_ws = case_when(name == "cottonwood" ~ "Cottonwood Creek",
-                              name == "deer" ~ "Deer Creek",
-                              name == "tuolumne" ~ "Tuolumne River")) |>
-  mutate(result = pmap(list(river_group, proxy_ws, flow_scalar),
-                       possibly(scale_fp_flow_area, NA))) |>
-  unnest(result) |>
-  mutate(habitat = "floodplain") |>
-  pivot_longer(ends_with("_floodplain_acres"),
-               names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
-               names_to = "run", 
-               values_to = "suitable_ac") |>
-  mutate(run = factor(run, 
-                      levels = c("FR", "LFR", "WR", "SR", "ST"),
-                      labels = c("fall", "late fall", "winter", "spring", "steelhead")))
 ```
-
-    ## Warning: There were 3 warnings in `mutate()`.
-    ## The first warning was:
-    ## ℹ In argument: `result = pmap(...)`.
-    ## Caused by warning:
-    ## ! Unknown or uninitialised column: `fr`.
-    ## ℹ Run `dplyr::last_dplyr_warnings()` to see the 2 remaining warnings.
-
-    ## # A tibble: 8,985 × 14
-    ##    river_group    scaling_flow q_cottonwood q_deer q_tuolumne name   flow_scalar
-    ##    <chr>                 <dbl>        <dbl>  <dbl>      <dbl> <chr>        <dbl>
-    ##  1 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  2 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  3 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  4 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  5 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  6 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  7 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  8 American River        3945.         355.   716.      1172. cotto…        11.1
-    ##  9 American River        3945.         355.   716.      1172. cotto…        11.1
-    ## 10 American River        3945.         355.   716.      1172. cotto…        11.1
-    ## # ℹ 8,975 more rows
-    ## # ℹ 7 more variables: proxy_ws <chr>, flow_cfs <dbl>, watershed <chr>,
-    ## #   proxy_watershed <chr>, habitat <chr>, run <fct>, suitable_ac <dbl>
