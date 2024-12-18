@@ -384,9 +384,12 @@ deer_creek_fp_proxy <-
   c("Antelope Creek", "Bear Creek", "Big Chico Creek", "Cow Creek",
     "Mill Creek", "Paynes Creek") 
 cottonwood_creek_fp_proxy <- c("Stony Creek", "Thomes Creek")
+tuolumne_river_fp_proxy <- c("Calaveras River")
 
 # These are reaches where suitability is already applied so we shouldn't be using DSMhabitat::apply_suitability to scale again:
 suitability_already_applied <- c("Antelope Creek", "Battle Creek", "Bear Creek", "Cow Creek", "Deer Creek", "Mill Creek", "Paynes Creek", "Sacramento River", "Sutter Bypass", "Yolo Bypass", "North Delta", "South Delta")
+# pretty sure that all the scaled watersheds are in this too...
+suitability_already_applied <- unique(c(suitability_already_applied, deer_creek_fp_proxy, cottonwood_creek_fp_proxy, tuolumne_river_fp_proxy))
 
 #remotes::install_github("CVPIA-OSC/DSMhabitat")
 watersheds <- mainstems |> pull(watershed) |> unique()
@@ -402,13 +405,14 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
   pivot_longer(cols = ends_with("_floodplain_acres"), 
                names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
                names_to = "run",
-               values_to = "floodplain_acres") |>
+               values_to = "floodplain_acres_suitable") |>
+               #values_to = "floodplain_acres") |>
   mutate(run = run |> factor(levels = c("FR", "LFR", "WR", "SR", "ST"),
                              labels = c("fall", "late fall", "winter", "spring", "steelhead")),
-         hab = "floodplain" |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain")),
-         floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
-                                             floodplain_acres,
-                                             DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
+         hab = "floodplain" |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain")))
+         #floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
+         #                                    floodplain_acres,
+         #                                    DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
 
 dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"), 
                                possibly(function(watershed) {
@@ -482,7 +486,7 @@ dsm_habitat_combined <-
                                (suitable_ac * 43560 / length_ft),
                                wua_per_lf)) |>
   mutate(regional_approx = 
-           ((hab == "floodplain") & ((river_group %in% c(deer_creek_fp_proxy, cottonwood_creek_fp_proxy)))) |
+           ((hab == "floodplain") & ((river_group %in% c(deer_creek_fp_proxy, cottonwood_creek_fp_proxy, tuolumne_river_fp_proxy)))) |
            ((hab == "juv") & ((river_group %in% c(regional_approx_groups)))) |
            ((hab == "spawn") & ((river_group %in% c(regional_approx_groups_spawning)))))|>
   mutate(hab_type = case_when(hab == "juv" ~ "rearing",
