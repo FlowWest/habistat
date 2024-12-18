@@ -12,6 +12,7 @@ Predictor Data Preparation and Consolidation
   Approximation](#comparison-with-regional-flow-approximation)
   - [Instream Rearing and Spawning](#instream-rearing-and-spawning)
   - [Floodplain](#floodplain)
+- [Simplified Plots](#simplified-plots)
 
 ``` r
 library(tidyverse)
@@ -386,11 +387,12 @@ deer_creek_fp_proxy <-
 deer_creek_partial_model_scaled <- c("Big Chico Creek")
 cottonwood_creek_fp_proxy <- c("Stony Creek", "Thomes Creek")
 tuolumne_river_fp_proxy <- c("Calaveras River")
+fp_proxy_groups <- c(deer_creek_fp_proxy, cottonwood_creek_fp_proxy, tuolumne_river_fp_proxy)
 
 # These are reaches where suitability is already applied so we shouldn't be using DSMhabitat::apply_suitability to scale again. List is from the help docs for DSMhabitat::apply_suitability
 suitability_already_applied <- c("Antelope Creek", "Battle Creek", "Bear Creek", "Cow Creek", "Deer Creek", "Mill Creek", "Paynes Creek", "Sacramento River", "Sutter Bypass", "Yolo Bypass", "North Delta", "South Delta")
 # pretty sure that all the scaled watersheds are in this too...
-suitability_already_applied <- unique(c(suitability_already_applied, deer_creek_fp_proxy, cottonwood_creek_fp_proxy, tuolumne_river_fp_proxy))
+suitability_already_applied <- unique(c(suitability_already_applied, fp_proxy_groups))
 
 #remotes::install_github("CVPIA-OSC/DSMhabitat")
 watersheds <- mainstems |> pull(watershed) |> unique()
@@ -771,7 +773,7 @@ wua_predicted_cv_mainstems_grouped |>
             aes(x = flow_cfs, 
                 y = suitable_ac, 
                 linetype = hab_subtype,
-                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "hydraulic model")))) +
+                color = paste("DSMHabitat", if_else(regional_approx, "approximation", "hydraulic model")))) +
   geom_line(data = instream_regional_approx_est |>
               filter(habitat == "rearing") |>
               filter(river_group %in% upper_mid_sac_tribs$Watershed),
@@ -820,7 +822,7 @@ wua_predicted_cv_mainstems_grouped |>
             aes(x = flow_cfs, 
                 y = suitable_ac, 
                 linetype = hab_subtype,
-                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "hydraulic model")))) +
+                color = paste("DSMHabitat", if_else(regional_approx, "approximation", "hydraulic model")))) +
   geom_line(data = instream_regional_approx_est |>
               filter(habitat == "spawning") |>
               filter(river_group %in% upper_mid_sac_tribs$Watershed),
@@ -1082,19 +1084,19 @@ wua_predicted_cv_mainstems_grouped |>
             aes(x = flow_cfs, 
                 y = suitable_ac, 
                 linetype = hab_subtype,
-                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "hydraulic model")))) +
+                color = paste("DSMHabitat", if_else(regional_approx, "approximation", "hydraulic model")))) +
   geom_line(data = instream_regional_approx_est |>
               filter(habitat == "rearing") |>
               filter(river_group %in% upper_mid_sac_tribs$Watershed),
             aes(y = suitable_ac,, 
                 linetype = "instream",
-                color = "DSMHabitat regional approx")) +
+                color = "DSMHabitat approximation")) +
   geom_line(data = floodplain_proxy_est_v1 |>
               filter(habitat == "floodplain" & run == "fall") |>
               filter(river_group %in% upper_mid_sac_tribs$Watershed),
             aes(y = suitable_ac,, 
                 linetype = "floodplain",
-                color = "DSMHabitat floodplain proxy")) +
+                color = "DSMHabitat approximation")) +
   scale_x_log10() +
   scale_linetype_manual(name = "Habitat Type", 
                      values = c("instream" = "solid", #"#6388b4",
@@ -1103,8 +1105,7 @@ wua_predicted_cv_mainstems_grouped |>
   scale_color_manual(name = "Data Source", 
                      values = c("habistat" = "#ffae34", 
                                 "DSMHabitat hydraulic model" = "#6388b4",
-                                "DSMHabitat regional approx" = "#ef6f6a",
-                                "DSMHabitat floodplain proxy" = "#bb7693"),
+                                "DSMHabitat approximation" = "#ef6f6a"),
                      aesthetics = c("color", "fill")) +
   theme(legend.position = "top", 
         panel.grid.minor = element_blank()) + 
@@ -1112,12 +1113,12 @@ wua_predicted_cv_mainstems_grouped |>
          linetype = guide_legend(nrow = 3)) +
   ylab("Predicted Total Habitat (acres)") + 
   xlab("Flow at Outlet (cfs)") + 
-  ggtitle("Rearing Comparison for all Tributaries - Total Acres")
+  ggtitle("Rearing Comparison for Upper-Mid Sacramento Tributaries - Total Acres")
 ```
 
 ![](watershed-flow-aggregation_files/figure-gfm/upper-mid-sac-comparison-rearing-fp-1.png)<!-- -->
 
-#### Replicate monthly flow scaling
+Replicate monthly flow scaling
 
 Streams:
 <https://www.sciencebase.gov/catalog/item/61e7442ed34e3618e01cf68f>
@@ -1319,11 +1320,92 @@ floodplain_proxy_est_pivot <-
   mutate(suitable_ac = if_else(river_group %in% suitability_already_applied,
                                floodplain_ac,
                                DSMhabitat::apply_suitability(floodplain_ac * 4046.86) / 4046.86))
+```
 
+``` r
+# version summing instream and floodplain
+dsm_habitat_combined_sum <-
+  dsm_habitat_combined |>
+  ungroup() |>
+  filter(hab_type == "rearing" & hab %in% c("juv", "floodplain") & !regional_approx) |>
+  select(river_group, run, hab, flow_cfs, wua_per_lf, suitable_ac) |>
+  group_by(river_group, run) |>
+  arrange(river_group, run, hab, flow_cfs) |>
+  complete(hab = c("juv", "floodplain"), flow_cfs) |>
+  complete(hab = c("juv", "floodplain"), flow_cfs = interp_flows) |>
+  group_by(river_group, run, hab) |>
+  mutate(across(c(wua_per_lf, suitable_ac),
+                \(v) zoo::na.approx(v, x = log(flow_cfs), na.rm = F, rule = 2:2))) |>
+  group_by(river_group, run, flow_cfs) |>
+  summarize(across(c(wua_per_lf, suitable_ac), sum))
+```
+
+    ## `summarise()` has grouped output by 'river_group', 'run'. You can override
+    ## using the `.groups` argument.
+
+``` r
+dsm_habitat_combined_sum |>
+  filter(run == "fall") |>
+  ggplot() + 
+  facet_wrap(~river_group, scales = "free_y") +
+  geom_line(data = dsm_habitat_combined |> 
+              filter(run == "fall" & hab %in% c("juv", "floodplain")),
+            aes(x = flow_cfs, y = suitable_ac, linetype = "original", color = hab)) +
+  geom_line(aes(x = flow_cfs, y = suitable_ac, linetype = "combined")) +
+  scale_x_log10() +
+  scale_linetype_manual(values = c("original" = "solid", "combined" = "dashed"))
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/dsmhabitat-combine_instream_floodplain_actual-1.png)<!-- -->
+
+``` r
+dsm_habitat_proxy_estimates_combined <-
+  bind_rows("juv" = instream_regional_approx_est |>
+              filter(hab == "juv") |>
+              ungroup() |>
+              select(river_group, flow_cfs, suitable_ac),
+          "floodplain" = floodplain_proxy_est_pivot |>
+            ungroup() |>
+            filter(run == "fall") |>
+            select(river_group, flow_cfs, suitable_ac),
+          .id = "hab") 
+
+dsm_habitat_proxy_estimates_combined_sum <-
+  dsm_habitat_proxy_estimates_combined |>
+  select(river_group, hab, flow_cfs, suitable_ac) |>
+  group_by(river_group) |>
+  arrange(river_group, hab, flow_cfs) |>
+  complete(hab = c("juv", "floodplain"), flow_cfs) |>
+  complete(hab = c("juv", "floodplain"), flow_cfs = interp_flows) |>
+  group_by(river_group, hab) |>
+  mutate(suitable_ac = zoo::na.approx(suitable_ac, 
+                                      x = log(flow_cfs), 
+                                      na.rm = F, 
+                                      rule = 2:2)) |>
+  group_by(river_group, flow_cfs) |>
+  summarize(suitable_ac = sum(suitable_ac))
+```
+
+    ## `summarise()` has grouped output by 'river_group'. You can override using the
+    ## `.groups` argument.
+
+``` r
+dsm_habitat_proxy_estimates_combined_sum |>
+  ggplot() + 
+  facet_wrap(~river_group, scales = "free_y") +
+  geom_line(data = dsm_habitat_proxy_estimates_combined,
+            aes(x = flow_cfs, y = suitable_ac, linetype = "original", color = hab)) +
+  geom_line(aes(x = flow_cfs, y = suitable_ac, linetype = "combined")) +
+  scale_x_log10() +
+  scale_linetype_manual(values = c("original" = "solid", "combined" = "dashed"))
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/dsmhabitat-combine_instream_floodplain_proxy-1.png)<!-- -->
+
+``` r
 wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "rearing") |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
-  # filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~river_group, scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
@@ -1334,35 +1416,34 @@ wua_predicted_cv_mainstems_grouped |>
   geom_line(data=dsm_habitat_combined |>
               filter(run == "fall") |>
               filter(hab_type == "rearing") |>
-              filter(flow_cfs <= 15000), # |>
-              #filter(!regional_approx) |>
-              #filter(river_group %in% upper_mid_sac_tribs$Watershed), 
+              filter(flow_cfs <= 15000),
             aes(x = flow_cfs, 
                 y = suitable_ac, 
                 linetype = hab_subtype,
-                color = paste("DSMHabitat", if_else(regional_approx, "regional approx", "hydraulic model")))) +
+                color = paste("DSMHabitat", if_else(regional_approx, "approximation", "hydraulic model")))) +
   geom_line(data = instream_regional_approx_est |>
               filter(habitat == "rearing"), # |>
-              #filter(river_group %in% upper_mid_sac_tribs$Watershed),
             aes(y = suitable_ac,, 
                 linetype = "instream",
-                color = "DSMHabitat regional approx")) +
+                color = "DSMHabitat approximation")) +
   geom_line(data = floodplain_proxy_est_pivot |>
               filter(habitat == "floodplain" & run == "fall"), # |>
-              #filter(river_group %in% upper_mid_sac_tribs$Watershed),
             aes(y = suitable_ac,, 
                 linetype = "floodplain",
-                color = "DSMHabitat floodplain proxy")) +
+                color = "DSMHabitat approximation")) +
+  geom_line(data = dsm_habitat_proxy_estimates_combined_sum,
+            aes(y = suitable_ac,
+                linetype = "combined instream + floodplain",
+                color = "DSMHabitat approximation")) +
   scale_x_log10() +
   scale_linetype_manual(name = "Habitat Type", 
-                     values = c("instream" = "solid", #"#6388b4",
-                                "floodplain" = "dashed", #"#ef6f6a",
-                                "combined instream + floodplain" = "dotted")) + ##bb7693"),) +
+                     values = c("instream" = "solid",
+                                "floodplain" = "dashed", 
+                                "combined instream + floodplain" = "dotted")) +
   scale_color_manual(name = "Data Source", 
                      values = c("habistat" = "#ffae34", 
                                 "DSMHabitat hydraulic model" = "#6388b4",
-                                "DSMHabitat regional approx" = "#ef6f6a",
-                                "DSMHabitat floodplain proxy" = "#bb7693"),
+                                "DSMHabitat approximation" = "#ef6f6a"),
                      aesthetics = c("color", "fill")) +
   theme(legend.position = "top", 
         panel.grid.minor = element_blank()) + 
@@ -1374,6 +1455,67 @@ wua_predicted_cv_mainstems_grouped |>
 ```
 
 ![](watershed-flow-aggregation_files/figure-gfm/dsmhabitat-comparison-rearing-fp-1.png)<!-- -->
+
+## Simplified Plots
+
+``` r
+reach_groups <- list(
+  "Watersheds with DSMHabitat Instream Regional Approximation" = regional_approx_groups,
+  "Watersheds with DSMHabitat Floodplain Proxy Approximation" = fp_proxy_groups,
+  "Watersheds in Habistat training dataset" = c("Deer Creek", "Mokelumne River", "Stanislaus River", "Yuba River"),
+  "Watersheds with DSMHabitat full model data" = c("American River", "Bear River", "Clear Creek", "Cottonwood Creek","Feather River", "Tuolumne River"))
+
+for (x in names(reach_groups)) {
+  
+  plt <- wua_predicted_cv_mainstems_grouped |>
+    filter(habitat == "rearing") |>
+    filter(river_group %in% reach_groups[[x]]) |>
+    ggplot(aes(x = flow_cfs)) + 
+    facet_wrap(~river_group, scales="free_y") + 
+    geom_line(aes(y = wua_acres_pred, color = "habistat")) +
+    geom_line(data = dsm_habitat_combined_sum |>
+                filter(run == "fall") |>
+                filter(river_group %in% reach_groups[[x]]) |>
+                filter(flow_cfs >= 50 & flow_cfs <= 15000),
+              aes(y = suitable_ac,
+                  color = "DSMHabitat hydraulic model")) +
+    geom_line(data = dsm_habitat_proxy_estimates_combined_sum |>
+                filter(river_group %in% reach_groups[[x]]) |>
+                filter(flow_cfs >= 50 & flow_cfs <= 15000),
+              aes(y = suitable_ac,
+                  color = "DSMHabitat approximation")) +
+    scale_color_manual(name = "Data Source", 
+                       values = c("habistat" = "#ffae34", 
+                                  "DSMHabitat hydraulic model" = "#6388b4",
+                                  "DSMHabitat approximation" = "#ef6f6a"),
+                       aesthetics = c("color", "fill")) +
+    scale_x_log10() +
+    theme(legend.position = "top", 
+          panel.grid.minor = element_blank()) + 
+    guides(color = guide_legend(nrow = 1)) +
+    ylab("Predicted Total Habitat (acres)") + 
+    xlab("Flow at Outlet (cfs)") + 
+    ggtitle(x)
+  
+  print(plt)
+  
+}
+```
+
+    ## Warning: Removed 144 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-1.png)<!-- -->
+
+    ## Warning: Removed 75 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-2.png)<!-- -->
+
+    ## Warning: Removed 61 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-3.png)<!-- -->![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-4.png)<!-- -->
 
 ``` r
 knitr::knit_exit()
