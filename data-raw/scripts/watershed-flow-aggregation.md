@@ -408,7 +408,7 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
   pivot_longer(cols = ends_with("_floodplain_acres"), 
                names_transform = \(x) str_replace(x, "_floodplain_acres", ""),
                names_to = "run",
-               values_to = "floodplain_acres_suitable") |>
+               values_to = "suitable_ac") |>
                #values_to = "floodplain_acres") |>
   mutate(run = run |> factor(levels = c("FR", "LFR", "WR", "SR", "ST"),
                              labels = c("fall", "late fall", "winter", "spring", "steelhead")),
@@ -436,6 +436,24 @@ dsm_habitat_instream <- map_df(paste(watershed_name, "instream", sep = "_"),
          hab = hab |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain"))) |>
   drop_na() |>
   select(-wua_per_1000ft)
+
+dsm_habitat_instream_sqm <- map_df(paste(watershed_name, "instream", sep = "_"), 
+                               possibly(function(watershed) {
+                                 df <- as.data.frame(do.call(`::`, list(pkg = "DSMhabitat", name = watershed)))
+                                 }, otherwise = NULL)) |> 
+  select(river_group = watershed,
+         flow_cfs,
+         ends_with("_sqm")) |>
+  pivot_longer(cols = ends_with("_sqm"), 
+               names_transform = \(x) str_replace(x, "_sqm", ""),
+               names_to = "run_hab",
+               values_to = "suitable_sqm") |>
+  separate_wider_delim(run_hab, names = c("run", "hab"), delim = "_") |>
+  mutate(run = run |> factor(levels = c("FR", "LFR", "WR", "SR", "ST"),
+                             labels = c("fall", "late fall", "winter", "spring", "steelhead")),
+         hab = hab |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain"))) |>
+  mutate(suitable_ac = suitable_sqm * (1 / 0.3048)^2 * (1 / 43560)) |>
+  select(-suitable_sqm)
 
 # flow ranges
 
@@ -467,11 +485,19 @@ mainstems_comid |>
 
 ``` r
 dsm_habitat_combined <-
-  dsm_habitat_instream |>
-  filter(hab %in% c("spawn", "juv")) |>
-  full_join(dsm_habitat_floodplain |>
-              select(river_group, hab, run, flow_cfs, suitable_ac = floodplain_acres_suitable),
-            by = join_by(river_group, hab, run, flow_cfs)) |>
+  bind_rows("instream_wua" = 
+              dsm_habitat_instream |>
+              filter(hab %in% c("spawn", "juv")) |>
+              drop_na(wua_per_lf),
+            "instream_sqm" = 
+              dsm_habitat_instream_sqm |>
+              filter(hab %in% c("spawn", "juv")) |>
+              drop_na(suitable_ac),
+            "floodplain_acres" = 
+              dsm_habitat_floodplain |>
+              select(river_group, hab, run, flow_cfs, suitable_ac) |>
+              drop_na(suitable_ac),
+            .id = "source_datatype") |>
   inner_join(mainstems |> 
                mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units()) |>
                group_by(watershed) |> 
@@ -481,13 +507,9 @@ dsm_habitat_combined <-
   arrange(river_group, hab, run, flow_cfs) |>
   group_by(river_group, hab, run) |>
   mutate(wua_per_lf = zoo::na.approx(wua_per_lf, x = flow_cfs, na.rm=F),
-         suitable_ac = zoo::na.approx(suitable_ac, x = flow_cfs, na.rm=F))|>
-  mutate(suitable_ac = if_else(hab == "floodplain", 
-                               suitable_ac, 
-                               (wua_per_lf * length_ft / 43560)),
-         wua_per_lf = if_else(hab == "floodplain", 
-                               (suitable_ac * 43560 / length_ft),
-                               wua_per_lf)) |>
+         suitable_ac = zoo::na.approx(suitable_ac, x = flow_cfs, na.rm=F)) |>
+  mutate(suitable_ac = coalesce(suitable_ac, (wua_per_lf * length_ft / 43560)),
+         wua_per_lf = coalesce(wua_per_lf, (suitable_ac * 43560 / length_ft))) |>
   mutate(regional_approx = 
            ((hab == "floodplain") & ((river_group %in% c(deer_creek_fp_proxy, cottonwood_creek_fp_proxy, tuolumne_river_fp_proxy)))) |
            ((hab == "juv") & ((river_group %in% c(regional_approx_groups)))) |
@@ -1413,14 +1435,6 @@ wua_predicted_cv_mainstems_grouped |>
   geom_line(aes(y = wua_acres_pred, 
                 linetype = "combined instream + floodplain",
                 color = "habistat")) +
-  geom_line(data=dsm_habitat_combined |>
-              filter(run == "fall") |>
-              filter(hab_type == "rearing") |>
-              filter(flow_cfs <= 15000),
-            aes(x = flow_cfs, 
-                y = suitable_ac, 
-                linetype = hab_subtype,
-                color = paste("DSMHabitat", if_else(regional_approx, "approximation", "hydraulic model")))) +
   geom_line(data = instream_regional_approx_est |>
               filter(habitat == "rearing"), # |>
             aes(y = suitable_ac,, 
@@ -1431,6 +1445,14 @@ wua_predicted_cv_mainstems_grouped |>
             aes(y = suitable_ac,, 
                 linetype = "floodplain",
                 color = "DSMHabitat approximation")) +
+  geom_line(data=dsm_habitat_combined |>
+              filter(run == "fall") |>
+              filter(hab_type == "rearing") |>
+              filter(flow_cfs <= 15000),
+            aes(x = flow_cfs, 
+                y = suitable_ac, 
+                linetype = hab_subtype,
+                color = paste("DSMHabitat", if_else(regional_approx, "approximation", "hydraulic model")))) +
   geom_line(data = dsm_habitat_proxy_estimates_combined_sum,
             aes(y = suitable_ac,
                 linetype = "combined instream + floodplain",
@@ -1510,12 +1532,7 @@ for (x in names(reach_groups)) {
     ## Warning: Removed 75 rows containing missing values or values outside the scale range
     ## (`geom_line()`).
 
-![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-2.png)<!-- -->
-
-    ## Warning: Removed 61 rows containing missing values or values outside the scale range
-    ## (`geom_line()`).
-
-![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-3.png)<!-- -->![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-4.png)<!-- -->
+![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-2.png)<!-- -->![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-3.png)<!-- -->![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-4.png)<!-- -->
 
 ``` r
 knitr::knit_exit()
