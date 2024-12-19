@@ -271,6 +271,24 @@ wua_predicted_cv_mainstems_grouped |> usethis::use_data(overwrite=T)
 Plotting the output
 
 ``` r
+drainage_areas <-
+  habistat::cv_watersheds |>
+  group_by(watershed_level_3) |>
+  summarize() |>
+  transmute(river_group = watershed_level_3,
+            area_ac = st_area(geometry) |>
+                        units::set_units("acres") |>
+                        units::drop_units()) |>
+  st_drop_geometry() 
+
+watershed_labels <-
+  drainage_areas |>
+  transmute(river_group,
+            label = str_glue("{river_group}\n{format(round(area_ac, -3), big.mark=',')} ac")) |>
+  deframe()
+```
+
+``` r
 wua_predicted_cv_watersheds |>
   ggplot(aes(x = flow_cfs)) + 
   facet_wrap(~watershed_level_3, scales="free") + 
@@ -303,7 +321,7 @@ wua_predicted_cv_mainstems |>
 ``` r
 wua_predicted_cv_mainstems_grouped |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, fill = habitat), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, color = habitat)) +
   scale_x_log10() +
@@ -324,7 +342,7 @@ wua_predicted |>
   summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
             wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft, na.rm=T) / 43560, .groups="drop") |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_line(aes(y = wua_acres_pred, color = habitat)) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
@@ -527,7 +545,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "rearing") |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
                   fill = paste("habistat", habitat)), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, color = paste("habistat", habitat))) +
@@ -552,7 +570,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "spawning") |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
                   fill = paste("habistat", habitat)), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, color = paste("habistat", habitat))) +
@@ -579,7 +597,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "rearing") |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_per_lf_pred_SD, ymax = wua_per_lf_pred_SN, 
                   fill = paste("habistat", habitat)), alpha=0.33) +
   geom_line(aes(y = wua_per_lf_pred, color = paste("habistat", habitat))) +
@@ -604,7 +622,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "spawning") |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_per_lf_pred_SD, ymax = wua_per_lf_pred_SN, 
                   fill = paste("habistat", habitat)), alpha=0.33) +
   geom_line(aes(y = wua_per_lf_pred, color = paste("habistat", habitat))) +
@@ -758,7 +776,7 @@ instream_regional_approx_est <-
 instream_regional_approx_est  |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_line(aes(y = suitable_ac, color = habitat)) +
   scale_x_log10() +
   theme(legend.position = "top", panel.grid.minor = element_blank()) + 
@@ -780,7 +798,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
                   fill = "habistat"), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, 
@@ -829,7 +847,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
                   fill = "habistat"), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, 
@@ -1091,7 +1109,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   filter(river_group %in% upper_mid_sac_tribs$Watershed) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
                   fill = "habistat"), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, 
@@ -1303,7 +1321,7 @@ floodplain_proxy_est <-
 
 floodplain_proxy_est |>
   ggplot() +
-  facet_wrap(~river_group, scales = "free_y") +
+  facet_wrap(~watershed_labels[river_group], scales = "free_y") +
   geom_line(aes(x = flow_cfs, y = FR_floodplain_acres, color = proxy_ws)) + 
   scale_x_log10(breaks = scales::breaks_log(),
                 labels = scales::label_number()) +
@@ -1317,7 +1335,7 @@ floodplain_proxy_est |>
 floodplain_proxy_est |>
   filter(selected) |>
   ggplot() +
-  facet_wrap(~river_group, scales = "free_y") +
+  facet_wrap(~watershed_labels[river_group], scales = "free_y") +
   geom_line(aes(x = flow_cfs, y = FR_floodplain_acres, color = proxy_ws)) + 
   scale_x_log10(breaks = scales::breaks_log(),
                 labels = scales::label_number()) +
@@ -1369,7 +1387,7 @@ dsm_habitat_combined_sum <-
 dsm_habitat_combined_sum |>
   filter(run == "fall") |>
   ggplot() + 
-  facet_wrap(~river_group, scales = "free_y") +
+  facet_wrap(~watershed_labels[river_group], scales = "free_y") +
   geom_line(data = dsm_habitat_combined |> 
               filter(run == "fall" & hab %in% c("juv", "floodplain")),
             aes(x = flow_cfs, y = suitable_ac, linetype = "original", color = hab)) +
@@ -1414,7 +1432,7 @@ dsm_habitat_proxy_estimates_combined_sum <-
 ``` r
 dsm_habitat_proxy_estimates_combined_sum |>
   ggplot() + 
-  facet_wrap(~river_group, scales = "free_y") +
+  facet_wrap(~watershed_labels[river_group], scales = "free_y") +
   geom_line(data = dsm_habitat_proxy_estimates_combined,
             aes(x = flow_cfs, y = suitable_ac, linetype = "original", color = hab)) +
   geom_line(aes(x = flow_cfs, y = suitable_ac, linetype = "combined")) +
@@ -1429,7 +1447,7 @@ wua_predicted_cv_mainstems_grouped |>
   filter(habitat == "rearing") |>
   filter(river_group %in% dsm_habitat_combined$river_group) |>
   ggplot(aes(x = flow_cfs)) + 
-  facet_wrap(~river_group, scales="free") + 
+  facet_wrap(~watershed_labels[river_group], scales="free") + 
   geom_ribbon(aes(ymin = wua_acres_pred_SD, ymax = wua_acres_pred_SN, 
                   fill = "habistat"), alpha=0.33) +
   geom_line(aes(y = wua_acres_pred, 
@@ -1493,7 +1511,7 @@ for (x in names(reach_groups)) {
     filter(habitat == "rearing") |>
     filter(river_group %in% reach_groups[[x]]) |>
     ggplot(aes(x = flow_cfs)) + 
-    facet_wrap(~river_group, scales="free_y") + 
+    facet_wrap(~watershed_labels[river_group], scales="free_y") + 
     geom_line(aes(y = wua_acres_pred, color = "habistat")) +
     geom_line(data = dsm_habitat_combined_sum |>
                 filter(run == "fall") |>
