@@ -1060,4 +1060,3 @@ wua_predicted |>
   labs(title = "Rearing Estimates - Ensemble Model",
        caption = "Naive flow aggregation method - illustrative only")
 ```
-

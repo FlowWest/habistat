@@ -50,7 +50,9 @@ make_flow_xw <- function(group_var) {
   habistat::flowline_attr |>
   select({{group_var}}, 
          comid = comid,
-         da_reach = da_area_sq_km_tot,
+#         da_reach = da_area_sq_km_tot,
+# 20241223: Switched to divergence-routed due to unexpected large vlaues in da_area_sq_km_tot, e.g. see comid 1889628
+         da_reach = da_area_sq_km_div,
          pc_reach = da_ppt_mean_mm) |>
   drop_na({{group_var}}) |>
   group_by({{group_var}}) |>

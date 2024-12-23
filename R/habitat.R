@@ -125,7 +125,7 @@ habitat_fsa <- function(reach, mainstem, watershed,
                pull(comid),
              "watershed" =
                habistat::cv_watersheds |>
-               filter(river_cvpia == mainstem) |>
+               filter(watershed_level_3 == watershed) |>
                pull(comid))
 
     scaled_predictions <-
@@ -391,7 +391,7 @@ habitat_fsa_duration <- function(reach,
                pull(comid),
              "watershed" =
                habistat::cv_watersheds |>
-               filter(river_cvpia == mainstem) |>
+               filter(watershed_level_3 == watershed) |>
                pull(comid))
 
     scaled_predictions <-
