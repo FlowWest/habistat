@@ -414,6 +414,27 @@ mainstems_comid |>
   geom_sf(aes(color=river_group)) + 
   theme(legend.key.height = unit(12, "point"))
 
+cv_mainstems_spawning <- 
+  habistat::cv_mainstems |>
+  filter(str_detect(habitat, "spawning")) |>
+  group_by(river_group) |>
+  summarize() |>
+  mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units())
+
+cv_mainstems_rearing <- 
+  habistat::cv_mainstems |>
+  filter(str_detect(habitat, "rearing")) |>
+  group_by(river_group) |>
+  summarize() |>
+  mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units())
+
+cvpia_reach_lengths <- 
+  bind_rows("spawn" = st_drop_geometry(cv_mainstems_spawning),
+            "juv" = st_drop_geometry(cv_mainstems_rearing),
+            "floodplain" = st_drop_geometry(cv_mainstems_rearing),
+            .id = "hab") |>
+  mutate(hab = factor(hab, levels = c("spawn", "juv", "floodplain")))
+
 dsm_habitat_combined <-
   bind_rows("instream_wua" = 
               dsm_habitat_instream |>
@@ -428,12 +449,7 @@ dsm_habitat_combined <-
               select(river_group, hab, run, flow_cfs, suitable_ac) |>
               drop_na(suitable_ac),
             .id = "source_datatype") |>
-  inner_join(mainstems |> 
-               mutate(length_ft = st_length(geometry) |> units::set_units("ft") |> units::drop_units()) |>
-               group_by(watershed) |> 
-               summarize(length_ft = sum(length_ft)) |>
-               st_drop_geometry(),
-             by=join_by(river_group == watershed)) |>
+  inner_join(cvpia_reach_lengths, by=join_by(river_group, hab)) |>
   arrange(river_group, hab, run, flow_cfs) |>
   group_by(river_group, hab, run) |>
   mutate(wua_per_lf = zoo::na.approx(wua_per_lf, x = flow_cfs, na.rm=F),
@@ -1370,17 +1386,6 @@ ws_has_model <-
   nest(.by = hab) |>
   mutate(data = map(data, deframe)) |>
   deframe()
-
-cv_mainstems_spawning <- 
-  habistat::cv_mainstems |>
-  filter(str_detect(habitat, "spawning")) |>
-  group_by(river_group) |>
-  summarize()
-cv_mainstems_rearing <- 
-  habistat::cv_mainstems |>
-  filter(str_detect(habitat, "rearing")) |>
-  group_by(river_group) |>
-  summarize()
 
 ws_proxy_summary <-
   bind_rows("spawn" = cv_mainstems_spawning,
