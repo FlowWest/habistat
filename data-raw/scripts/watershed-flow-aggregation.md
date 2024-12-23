@@ -1,7 +1,7 @@
 Predictor Data Preparation and Consolidation
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-12-18
+2024-12-23
 
 - [Basic Flow Crosswalk via Drainage Area and
   Precipitation](#basic-flow-crosswalk-via-drainage-area-and-precipitation)
@@ -398,6 +398,9 @@ regional_approx_groups <-
 regional_approx_groups_spawning <- 
   c("Antelope Creek", "Bear Creek", "Big Chico Creek", "Cow Creek",
     "Elder Creek", "Mill Creek", "Paynes Creek", "Stony Creek", "Thomes Creek")
+# These are the watersheds that use regional approximation for spawning and instream rearing in the san joaquin basin
+regional_approx_groups_sanjoaquin <-
+  c("Cosumnes River")
 
 # These are the watersheds that use scaled proxies for floodplain habitat
 deer_creek_fp_proxy <-
@@ -430,7 +433,8 @@ dsm_habitat_floodplain <- map_df(watershed_rda_name, function(watershed) {
                #values_to = "floodplain_acres") |>
   mutate(run = run |> factor(levels = c("FR", "LFR", "WR", "SR", "ST"),
                              labels = c("fall", "late fall", "winter", "spring", "steelhead")),
-         hab = "floodplain" |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain")))
+         hab = "floodplain" |> factor(levels = c("spawn", "fry", "juv", "adult", "floodplain"))) |>
+  mutate(river_group = if_else(river_group == "Consumnes", "Cosumnes River", river_group))
          #floodplain_acres_suitable = if_else(river_group %in% suitability_already_applied,
          #                                    floodplain_acres,
          #                                    DSMhabitat::apply_suitability(floodplain_acres * 4046.86) / 4046.86))
@@ -530,8 +534,8 @@ dsm_habitat_combined <-
          wua_per_lf = coalesce(wua_per_lf, (suitable_ac * 43560 / length_ft))) |>
   mutate(regional_approx = 
            ((hab == "floodplain") & ((river_group %in% c(deer_creek_fp_proxy, cottonwood_creek_fp_proxy, tuolumne_river_fp_proxy)))) |
-           ((hab == "juv") & ((river_group %in% c(regional_approx_groups)))) |
-           ((hab == "spawn") & ((river_group %in% c(regional_approx_groups_spawning)))))|>
+           ((hab == "juv") & ((river_group %in% c(regional_approx_groups, regional_approx_groups_sanjoaquin)))) |
+           ((hab == "spawn") & ((river_group %in% c(regional_approx_groups_spawning, regional_approx_groups_sanjoaquin)))))|>
   mutate(hab_type = case_when(hab == "juv" ~ "rearing",
                               hab == "spawn" ~ "spawning",
                               hab == "floodplain" ~ "rearing"),
@@ -1367,7 +1371,7 @@ floodplain_proxy_est_pivot <-
 dsm_habitat_combined_sum <-
   dsm_habitat_combined |>
   ungroup() |>
-  filter(hab_type == "rearing" & hab %in% c("juv", "floodplain") & !regional_approx) |>
+  filter(hab_type == "rearing" & hab %in% c("juv", "floodplain") & !regional_approx) |> # only produces this combined estimate when there are modeled values for both instream AND floodplain
   select(river_group, run, hab, flow_cfs, wua_per_lf, suitable_ac) |>
   group_by(river_group, run) |>
   arrange(river_group, run, hab, flow_cfs) |>
@@ -1551,6 +1555,109 @@ for (x in names(reach_groups)) {
     ## (`geom_line()`).
 
 ![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-2.png)<!-- -->![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-3.png)<!-- -->![](watershed-flow-aggregation_files/figure-gfm/simplified-plots-4.png)<!-- -->
+
+``` r
+# watersheds used in the proxy models:
+ws_proxies <- 
+  list("spawn" = c("Battle Creek", "Butte Creek", "Clear Creek", 
+                   "Calaveras River", "Mokelumne River"), # Cottonwood not used 
+       "juv" =   c("Battle Creek", "Butte Creek", "Clear Creek", "Cow Creek",
+                   "Calaveras River", "Mokelumne River"), # Cottonwood not used
+       "floodplain" = c("Deer Creek", "Cottonwood Creek", "Tuolumne River"))
+
+# watersheds that use the proxy models:
+ws_uses_proxies <- 
+  list("spawn" = c(regional_approx_groups_spawning, regional_approx_groups_sanjoaquin),
+       "juv" = c(regional_approx_groups, regional_approx_groups_sanjoaquin),
+       "floodplain" = fp_proxy_groups)
+# Consumnes River derived from average WUA of Calaveras River and Mokelumne River
+
+# watersheds that have empirical data:
+ws_has_model <- 
+  dsm_habitat_combined |>
+  filter(!regional_approx) |>
+  group_by(hab, river_group) |> 
+  summarize(.groups = "drop") |>
+  nest(.by = hab) |>
+  mutate(data = map(data, deframe)) |>
+  deframe()
+
+cv_mainstems_spawning <- 
+  habistat::cv_mainstems |>
+  filter(str_detect(habitat, "spawning")) |>
+  group_by(river_group) |>
+  summarize()
+cv_mainstems_rearing <- 
+  habistat::cv_mainstems |>
+  filter(str_detect(habitat, "rearing")) |>
+  group_by(river_group) |>
+  summarize()
+
+ws_proxy_summary <-
+  bind_rows("spawn" = cv_mainstems_spawning,
+            "juv" = cv_mainstems_rearing,
+            "floodplain" = cv_mainstems_rearing,
+            .id = "hab") |>
+  mutate(hab = factor(hab, 
+                      levels = c("spawn", "juv", "floodplain"),
+                      labels = c("Spawning", "Rearing", "Floodplain"))) |>
+  mutate(has_model = map2_lgl(river_group, hab, \(x, y) x %in% ws_has_model[[y]]),
+         is_proxy = map2_lgl(river_group, hab, \(x, y) x %in% ws_proxies[[y]]),
+         uses_proxy = map2_lgl(river_group, hab, \(x, y) x %in% ws_uses_proxies[[y]])) |>
+    mutate(label = case_when(is_proxy ~ "Has Model (used as a proxy)",
+                             has_model ~ "Has Model",
+                             uses_proxy ~ "Does Not Have Model (uses a proxy)")) |>
+  drop_na(label)
+
+ws_proxy_summary |>
+  st_drop_geometry() |>
+  select(river_group, hab, label) |>
+  pivot_wider(names_from = hab, values_from = label) |>
+  knitr::kable()
+```
+
+| river_group | Spawning | Rearing | Floodplain |
+|:---|:---|:---|:---|
+| American River | Has Model | Has Model | Has Model |
+| Antelope Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) |
+| Battle Creek | Has Model (used as a proxy) | Has Model (used as a proxy) | Has Model |
+| Bear Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) |
+| Bear River | Has Model | Has Model | Has Model |
+| Big Chico Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Has Model |
+| Butte Creek | Has Model (used as a proxy) | Has Model (used as a proxy) | Has Model |
+| Calaveras River | Has Model (used as a proxy) | Has Model (used as a proxy) | Does Not Have Model (uses a proxy) |
+| Clear Creek | Has Model (used as a proxy) | Has Model (used as a proxy) | Has Model |
+| Cosumnes River | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Has Model |
+| Cottonwood Creek | Has Model | Has Model | Has Model (used as a proxy) |
+| Cow Creek | Does Not Have Model (uses a proxy) | Has Model (used as a proxy) | Does Not Have Model (uses a proxy) |
+| Deer Creek | Has Model | Has Model | Has Model (used as a proxy) |
+| Elder Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Has Model |
+| Feather River | Has Model | Has Model | Has Model |
+| Merced River | Has Model | Has Model | Has Model |
+| Mill Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) |
+| Mokelumne River | Has Model (used as a proxy) | Has Model (used as a proxy) | Has Model |
+| Paynes Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) |
+| Stanislaus River | Has Model | Has Model | Has Model |
+| Stony Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) |
+| Thomes Creek | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) | Does Not Have Model (uses a proxy) |
+| Tuolumne River | Has Model | Has Model | Has Model (used as a proxy) |
+| Yuba River | Has Model | Has Model | Has Model |
+
+``` r
+ws_proxy_summary |>
+  ggplot() + 
+  facet_wrap(~hab, nrow = 1) +
+  geom_sf(data = filter(cv_mainstems, habitat != "historical"), color = "lightgray", linetype = "dotted") +
+  geom_sf(aes(color = label)) +
+  theme(legend.position = "top") +
+  guides(color = guide_legend(nrow = 1)) +
+  scale_color_manual(name = "",
+                     values = c("Has Model" = "#8cc2ca",
+                                "Has Model (used as a proxy)" = "#6388b4",
+                                "Does Not Have Model (uses a proxy)" = "#ef6f6a"))
+```
+
+![](watershed-flow-aggregation_files/figure-gfm/proxy-ws-map-1.png)<!-- -->
 
 ``` r
 knitr::knit_exit()
