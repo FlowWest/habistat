@@ -1,7 +1,7 @@
 Statistical Modeling to Predict Flow-to-Suitable-Area Curves
 ================
 [Skyler Lewis](mailto:slewis@flowwest.com)
-2024-10-23
+2024-12-27
 
 - [Import Training Data](#import-training-data)
 - [Preprocess Training Data](#preprocess-training-data)
@@ -1275,8 +1275,17 @@ model_predicted_final <- bind_rows(
 
 model_predicted_final |>
   saveRDS(here::here("data-raw", "results", "model_predicted_final.Rds"))
+```
 
-wua_predicted <- model_predicted_final
+``` r
+model_predicted_final <-
+    readRDS(here::here("data-raw", "results", "model_predicted_final.Rds"))
+
+wua_predicted <-
+  model_predicted_final |>
+  pivot_wider(names_from = model_name, values_from = wua_per_lf_pred, names_prefix = "wua_per_lf_pred_") |>
+  mutate(wua_per_lf_pred = (wua_per_lf_pred_SD + wua_per_lf_pred_SN) / 2)
+
 usethis::use_data(wua_predicted, overwrite = TRUE)
 ```
 
@@ -1285,53 +1294,76 @@ usethis::use_data(wua_predicted, overwrite = TRUE)
     ## ☐ Document your data (see <https://r-pkgs.org/data.html>).
 
 ``` r
-wua_predicted_cv_mainstems |>
-  mutate(river_cvpia_short = if_else((str_length(river_cvpia) >= 12) & !str_detect(river_cvpia, "Bear "),
-                                     river_cvpia  |> str_replace(" Creek", "") |> str_replace(" River", ""),
-                                     river_cvpia)) |>
+wua_predicted |>
+  filter(!is.na(river_group)) |>
+  group_by(habitat, river_group, flow_idx, flow_cfs) |>
+  summarize(wua_per_lf_pred = sum(wua_per_lf_pred * reach_length_ft) / sum(reach_length_ft),
+            wua_acres_pred = sum(wua_per_lf_pred * reach_length_ft) / 43560,
+            wua_per_lf_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft) / sum(reach_length_ft),
+            wua_acres_pred_SD = sum(wua_per_lf_pred_SD * reach_length_ft) / 43560,
+            wua_per_lf_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft) / sum(reach_length_ft),
+            wua_acres_pred_SN = sum(wua_per_lf_pred_SN * reach_length_ft) / 43560) |>
+  ungroup() |>
   filter(habitat == "rearing") |>
-  filter(flow_cfs <= 15000) |>
   ggplot(aes(x = flow_cfs)) + 
-  geom_line(aes(y = wua_per_lf_pred, 
-                color = case_when(model_name=="SD" ~ "Scale-Dependent", 
-                                  model_name=="SN" ~ "Scale-Normalized"))) +
-  facet_wrap(~river_cvpia_short, scales = "free_y") +
-  scale_x_continuous(limits = c(0,15000)) +
-  #scale_y_log10() + scale_x_log10()  +
+  geom_ribbon(aes(ymin = wua_per_lf_pred_SD, ymax = wua_per_lf_pred_SN), alpha=0.33) +
+  geom_line(aes(y = wua_per_lf_pred)) +
+  facet_wrap(~river_group) +
+  scale_x_log10(limits = c(100, 15000)) +
   scale_color_discrete(name = "Model Type") + 
   scale_linetype_discrete(name = "Baseflow Method") + 
   theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", axis.text.x = element_text(angle=90)) +
-  ylab("Suitable Habitat Area per Linear Ft (ft2/lf)") + xlab("Flow (cfs)")
+  ylab("Suitable Habitat Area per Linear Ft (ft2/lf)") + 
+  xlab("Flow (cfs)") + 
+  annotation_logticks(sides="b") +
+  scale_y_continuous(breaks = scales::breaks_pretty(6)) +
+  labs(title = "Rearing Estimates - Ensemble Model",
+       caption = "Naive flow aggregation method - illustrative only")
 ```
 
-![](model_cleaned_files/figure-gfm/predictions-grid-mainstems-1.png)<!-- -->
+    ## `summarise()` has grouped output by 'habitat', 'river_group', 'flow_idx'. You
+    ## can override using the `.groups` argument.
 
-``` r
-# ggsave(here::here("vignettes", "figures", "model_comparison.png"))
-```
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
 
-``` r
-wua_predicted_cv_mainstems_grouped |>
-  mutate(river_group_short = if_else((str_length(river_group) >= 12) & !str_detect(river_group, "Bear "),
-                                     river_group  |> str_replace(" Creek", "") |> str_replace(" River", ""),
-                                     river_group)) |>
-  filter(habitat == "spawning") |>
-  filter(flow_cfs <= 15000) |>
-  ggplot(aes(x = flow_cfs)) + 
-  geom_line(aes(y = wua_per_lf_pred, 
-                color = case_when(model_name=="SD" ~ "Scale-Dependent", 
-                                  model_name=="SN" ~ "Scale-Normalized"))) +
-  facet_wrap(~river_group_short, scales = "free_y") +
-  scale_x_continuous(limits = c(0,15000)) +
-  #scale_y_log10() + scale_x_log10()  +
-  scale_color_discrete(name = "Model Type") + 
-  scale_linetype_discrete(name = "Baseflow Method") + 
-  theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", axis.text.x = element_text(angle=90)) +
-  ylab("Suitable Habitat Area per Linear Ft (ft2/lf)") + xlab("Flow (cfs)")
-```
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
 
-![](model_cleaned_files/figure-gfm/predictions-grid-mainstems2-1.png)<!-- -->
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
 
-``` r
-# ggsave(here::here("vignettes", "figures", "model_comparison.png"))
-```
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning in max(ids, na.rm = TRUE): no non-missing arguments to max; returning
+    ## -Inf
+
+    ## Warning: Removed 156 rows containing missing values or values outside the scale range
+    ## (`geom_line()`).
+
+![](model_cleaned_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
