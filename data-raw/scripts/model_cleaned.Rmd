@@ -1033,6 +1033,8 @@ wua_predicted <-
 usethis::use_data(wua_predicted, overwrite = TRUE)
 ```
 
+## Scratch area - digging into model outputs
+
 ```{r, fig.width=10.5, fig.height=8, dpi=300}
 wua_predicted |>
   filter(!is.na(river_group)) |>
@@ -1060,3 +1062,36 @@ wua_predicted |>
   labs(title = "Rearing Estimates - Ensemble Model",
        caption = "Naive flow aggregation method - illustrative only")
 ```
+
+```{r eval=FALSE, include=FALSE}
+before <- readRDS(here::here("data-raw", "temp", "branch60", "model_predicted_final.Rds"))
+after <- readRDS(here::here("data-raw", "temp", "branch72", "model_predicted_final.Rds"))
+
+joined <- 
+  full_join(before |> 
+              select(comid, model_name, flow_idx, habitat, watershed_level_3, wua_per_lf_pred_60 = wua_per_lf_pred),
+            after |> 
+              select(comid, model_name, flow_idx, habitat, watershed_level_3, wua_per_lf_pred_72 = wua_per_lf_pred)) |>
+  mutate(diff = wua_per_lf_pred_72 - wua_per_lf_pred_60) |>
+  left_join(habistat::flowline_attr |> select(comid, divergence_ratio, starts_with("da_area_sq_km")))
+
+
+joined |>
+  ggplot() +
+  geom_histogram(aes(x = divergence_ratio)) + 
+  facet_wrap(~if_else(diff != 0, "Change in Habitat Area Estimate", "No Change in Habitat Area Estimate"), ncol = 1, scales = "free_y") +
+  xlab("Divergence-Routed DA / Total DA") + ylab("Number of Observations")
+
+joined |>
+  filter(diff != 0) |>
+  ggplot() + geom_point(aes(y = diff, x = divergence_ratio, color = watershed_level_3, alpha = flow_idx)) +
+  xlab("Divergence-Routed DA / Total DA") + ylab("Change in Habitat Area (ft2 per ft)")
+```
+
+
+
+
+
+
+
+

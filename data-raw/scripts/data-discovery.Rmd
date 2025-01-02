@@ -211,7 +211,7 @@ flowline_vaattr <-
          stream_order = StreamOrde, 
          us_length_km = ArbolateSu,
          ds_length_km = Pathlength,
-         da_area_sq_km = TotDASqKM, # using non-divergence-routed version as "default" 
+         da_area_sq_km = DivDASqKM, # using divergence-routed version as "default" 
          da_area_sq_km_div = DivDASqKM, # include both for clarity
          da_area_sq_km_tot = TotDASqKM, # include both for clarity
          divergence_ratio = DivDASqKM / TotDASqKM,
