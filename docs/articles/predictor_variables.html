@@ -99,7 +99,7 @@
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-11-07</h4>
+            <h4 data-toc-skip class="date">2024-11-13</h4>
       
 
       <div class="hidden name"><code>predictor_variables.Rmd</code></div>
@@ -111,85 +111,412 @@
 <div class="section level2">
 <h2 id="data-sources">Data Sources<a class="anchor" aria-label="anchor" href="#data-sources"></a>
 </h2>
-<p>Datasets publicly available by ComID reach:</p>
+<p>Major data sources are as follows. Some additional data sources are
+also listed inline in the descriptions for specific variables.</p>
 <ul>
 <li>
 <a href="https://nhdplus.com/NHDPlus/NHDPlusV2_home.php" class="external-link">USGS
 NHDPlusV2</a> <a href="https://www.epa.gov/waterdata/get-nhdplus-national-hydrography-dataset-plus-data" class="external-link">EPA
-Distribution</a> including Value Added Attribute tables</li>
+Distribution</a> including Value Added Attribute tables
+<ul>
 <li>NHDPlusV2 <a href="https://www.sciencebase.gov/catalog/item/57976a0ce4b021cadec97890" class="external-link">WSC
 Supplements</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
 </li>
-<li><a href="https://www.epa.gov/national-aquatic-resource-surveys/streamcat-dataset" class="external-link">US
-EPA StreamCat Dataset</a></li>
-<li>
-<a href="https://rivers.codefornature.org/" class="external-link">Natural Flows
-Database</a><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>
+<li>NHDPlusV2 <a href="https://gaftp.epa.gov/Exposure/CurveNumberNDVI/READNow.pdf" class="external-link">Catchment
+scale Curve Number and NDVI Dataset</a><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>
 </li>
 </ul>
-<p>Transformation and calculation required to map onto ComID reach:</p>
+</li>
+<li>
+<a href="https://www.epa.gov/national-aquatic-resource-surveys/streamcat-dataset" class="external-link">US
+EPA StreamCat Dataset</a>.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> Metrics are defined <a href="https://19january2021snapshot.epa.gov/national-aquatic-resource-surveys/streamcat-metrics-and-definitions_.html" class="external-link">here</a>.
 <ul>
-<li>HQT</li>
-<li>UC Davis eFlows</li>
-<li>MERIT Hydro Width Dataset</li>
-<li>MODIS</li>
-<li>CDFW ACE &amp; California Freshwater Species Database V2</li>
+<li>StreamCat bankfull width supplement from Doyle et al. (2)<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>
+</li>
+</ul>
+</li>
+<li>
+<a href="https://rivers.codefornature.org/" class="external-link">Natural Flows
+Database</a><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>
+</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="covariates-by-type">Covariates by Type<a class="anchor" aria-label="anchor" href="#covariates-by-type"></a>
 </h2>
+<p>All covariates and other flowline attributes listed below are
+compiled by <code>comid</code> in the <a href="../reference/flowline_attr.html"><code>flowline_attr</code></a>
+dataset.</p>
 <div class="section level3">
 <h3 id="local-reach-characteristics">Local Reach Characteristics<a class="anchor" aria-label="anchor" href="#local-reach-characteristics"></a>
 </h3>
 <ul>
-<li>…</li>
+<li><p><strong>Reach Slope (ft/ft)</strong> (<code>slope</code>) Slope
+of flowline (rise / run) based on smoothed elevations. <em>Source:
+NHDPlusV2 (NHDPlusAttributes/ElevSlope/Slope)</em></p></li>
+<li><p><strong>Reach Sinuosity</strong> (<code>sinuosity</code>)
+Flowline sinuosity calculated by dividing the NHDPlusV2 flowline reach
+length by its straight line length. Straight line length is measured
+from the beginning node of a reach to the end node of the reach.
+<em>Source: Weiczorek et al. (2018):
+SINUOSITY_CONUS.txt/Sinuosity</em></p></li>
+<li><p><strong>Reach Mean Annual Precip. (mm)</strong>
+(<code>loc_ppt_mean_mm</code>) Mean annual precipitation (mm) averaged
+over the area of the reach’s local catchment. <em>Source: NHDPlusV2 VPU
+Attribute Extension (NHDPlusAttributeExtension/IncrPrecipMA/PrecipV),
+divided by 100</em></p></li>
+<li><p><strong>Reach Baseflow Index (BFI)</strong>
+(<code>loc_bfi</code>) The ratio of baseflow (the component of
+streamflow that can be attributed to ground-water discharge into
+streams) to total flow, expressed as a percentage, within the reach’s
+local catchment. <em>Source: StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/BFI_Region18.csv/BFICat)</em></p></li>
+<li><p><strong>Reach Soil Pct. Clay</strong> (<code>loc_pct_clay</code>)
+Mean percent clay content of soils within the reach’s local catchment.
+<em>Source: STATSGO via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/ClayCat)</em></p></li>
+<li><p><strong>Reach Soil Pct. Sand</strong> (<code>loc_pct_sand</code>)
+Mean percent sand content of soils within the reach’s local catchment.
+<em>Source: STATSGO via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/SandCat)</em></p></li>
+<li><p><strong>Reach Soil Permeability</strong>
+(<code>loc_permeability</code>) Mean permeability (cm/hour) of soils
+within the reach’s local catchment. <em>Source: STATSGO via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/PermCat)</em></p></li>
+<li><p><strong>Reach Depth to Bedrock</strong>
+(<code>loc_bedrock_depth</code>) Mean depth (cm) to bedrock of soils
+within the reach’s local catchment. <em>Source: STATSGO via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/RckDepCat)</em></p></li>
+<li>
+<p><strong>Bankfull Width (m)</strong> (<code>bf_width_m</code>) An
+estimate of the bankfull width in ft derived from multiple sources based
+on availability. In order of preference:</p>
+<ol style="list-style-type: decimal">
+<li><p>Predicted width of bankfull channel via random forest model.
+<em>Source: Doyle et al. (2023) via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/Bankfull_Region18.csv/BANKFULL_WIDTH_M)</em></p></li>
+<li><p>Estimated based on the upstream drainage area
+(<code>da_area_sq_km</code>) using the Bieger model:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2.76</mn><mo>⋅</mo><mi>D</mi><msup><mi>A</mi><mn>0.399</mn></msup></mrow><annotation encoding="application/x-tex">2.76 \cdot DA^{0.399}</annotation></semantics></math></p></li>
+</ol>
+</li>
+<li>
+<p><strong>Bankfull Depth (m)</strong> (<code>bf_depth_m</code>) An
+estimate of the bankfull depth in ft derived from multiple sources based
+on availability. In order of preference:</p>
+<ol style="list-style-type: decimal">
+<li><p>Predicted depth of bankfull channel via random forest model.
+<em>Source: Doyle et al. (2023) via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/Bankfull_Region18.csv/BANKFULL_DEPTH_M)</em></p></li>
+<li><p>Estimated based on the upstream drainage area
+(<code>da_area_sq_km</code>) using the Bieger model:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.23</mn><mo>⋅</mo><mi>D</mi><msup><mi>A</mi><mn>0.294</mn></msup></mrow><annotation encoding="application/x-tex">0.23 \cdot DA^{0.294}</annotation></semantics></math></p></li>
+</ol>
+</li>
+<li><p><strong>Bankfull Width:Depth Ratio</strong>
+(<code>bf_w_d_ratio</code>): The unitless ratio of bankfull width
+(<code>bf_width_m</code>) to bankfull depth (<code>bf_depth_m</code>),
+using the variables as defined above.</p></li>
+<li>
+<p><strong>Channel Width (ft)</strong> (<code>chan_width_ft</code>)
+An estimate of the channel width in ft derived from multiple sources
+based on availability. In order of preference:</p>
+<ol style="list-style-type: decimal">
+<li><p>Channel width (m) of major rivers as calculated in the <a href="https://hydro.iis.u-tokyo.ac.jp/~yamadai/MERIT_Hydro/" class="external-link">MERIT Hydro
+global hydrography dataset</a>, spatially joined to NHDPlusV2 COMID
+flowline geometries. <em>Source: MERIT Hydro channel width
+rasters.</em></p></li>
+<li><p>Bankfull width (m) as defined above (<code>bf_width_m</code>),
+converted to ft.</p></li>
+</ol>
+</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="drainage-area-characteristics">Drainage Area Characteristics<a class="anchor" aria-label="anchor" href="#drainage-area-characteristics"></a>
 </h3>
 <ul>
-<li>…</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="flow-characteristics">Flow Characteristics<a class="anchor" aria-label="anchor" href="#flow-characteristics"></a>
-</h3>
-<ul>
-<li>…</li>
+<li><p><strong>DA Area (sq km)</strong> (<code>da_area_sq_km_div</code>)
+Divergence-routed upstream drainage area. <em>Source: NHDPlusV2
+(/NHDPlusAttributes/PlusFlowlineVAA/DivDASqKm)</em></p></li>
+<li><p><strong>DA Area (sq km)</strong> (<code>da_area_sq_km_tot</code>)
+Total upstream drainage area without accounting for divergence.
+<em>Source: NHDPlusV2
+(/NHDPlusAttributes/PlusFlowlineVAA/TotDASqKm)</em></p></li>
+<li><p><strong>DA Area (sq km)</strong> (<code>da_area_sq_km</code>)
+Synonym for <code>da_area_sq_km_tot</code> such that the total
+non-divergence-routed upstream drainage area is used as the default
+unless otherwise specified.</p></li>
+<li><p><strong>Divergence Fraction</strong>
+(<code>divergence_ratio</code>): The divergence-routed drainage area
+(<code>da_area_sq_km_div</code>) divided by the total upstream drainage
+area (<code>da_area_sq_km_tot</code>), quantifying the proportion of
+drainage area that flows through the reach rather than being diverted
+into other flow paths.</p></li>
+<li><p><strong>DA Erodibility</strong> (<code>da_k_erodibility</code>)
+Mean soil erodibility (Kf) factor (unitless) of soils within the reach’s
+upstream contributing watershed. The Kf factor is used in the Universal
+Soil Loss Equation (USLE) and represents a relative index of
+susceptibility of bare, cultivated soil to particle detachment and
+transport by rainfall. <em>Source: STATSGO via StreamCat
+(NHDPlusLandscapeAttributes/StreamCat/HydroRegions/STATSGO_Set1_Region18.csv/KffactWs)</em></p></li>
+<li><p><strong>DA Avg. Slope (ft/ft)</strong>
+(<code>da_avg_slope</code>) Average slope in percent of all upstream
+(based on divergence routing) NHDPlusV2 flowline catchments. <em>Source:
+Weiczorek et al. (2018):
+BASIN_CHAR_ACC_CONUS.TXT/ACC_BASIN_SLOPE</em></p></li>
+<li><p><strong>DA Mean Elevation</strong> (<code>da_elev_mean</code>)
+Mean elevation in meters of all upstream (based on divergence routing)
+NHDPlusV2 flowline catchments <em>Source: Weiczorek et al. (2018):
+BASIN_CHAR_ACC_CONUS.TXT/ACC_ELEV_MEAN</em></p></li>
+<li><p><strong>DA Mean Annual Precip. (mm)</strong>
+(<code>da_ppt_mean_mm</code>) Mean annual precipitation in area upstream
+(based on total, non-divergence routing) of the bottom of flowline.
+<em>Source: NHDPlusV2 VPU Attribute Extension
+(NHDPlusAttributeExtension/CumTotPrecipMA/PrecipVC), divided by
+100</em></p></li>
+<li><p><strong>DA Mean NDVI</strong> (<code>mean_ndvi</code>) Mean NDVI
+(Normalized Difference Vegetation Index) value for the upstream
+catchment. Calculated from MODIS catchment-level 16-day resolution NDVI
+data for 17 years (2001-2017). <em>Source: Smith et al. (2021) dataset
+(18-California-NDVI.csv), values averaged across timesteps and divided
+by 10000.</em></p></li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="topographic-and-spatial-confinement-indicators">Topographic and Spatial Confinement Indicators<a class="anchor" aria-label="anchor" href="#topographic-and-spatial-confinement-indicators"></a>
 </h3>
 <ul>
-<li>…</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="aquatic-habitat-quality">Aquatic Habitat Quality<a class="anchor" aria-label="anchor" href="#aquatic-habitat-quality"></a>
-</h3>
-<ul>
-<li>…</li>
+<li><p><strong>Reach Topographic Position Index (mTPI)</strong>
+(<code>mtpi30_min</code>) mTPI is a measure of topographic position<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> calculated
+by comparing local elevation to a neighborhood average. Negative values
+indicate canyons or valleys, near-zero indicates flat planes, and
+positive indicates ridges or peaks. To measure river confinement, mTPI
+was calculated at 90m, 270m, and 810m scales using the USGS NED DEM.
+Then, within a 15m buffer along each <code>comid</code> flowline, the
+minimum mTPI value was taken as a representative measure of the maximum
+confinement of the channel. <em>Source: FlowWest draft spatial analysis,
+<a href="https://github.com/FlowWest/habistat/blob/main/data-raw/scripts/terrain-attributes.md#channel-confinement-via-mtpi" class="external-link">source
+code located here</a></em>.</p></li>
+<li><p><strong>Valley Bottom Width</strong>
+(<code>vb_width_transect</code>) An estimate of valley bottom width
+(meters) calculated using a variation of the slope cutoff method
+described by Guillon et al. (2019).<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> First, for each <code>comid</code>
+flowline, the valley bottom was delineated by clipping its local
+NHDPlusV2 catchment polygon to the area of the USGS NED DEM, contiguous
+to the flowline, where slope was less than 25%. Then, a series
+oftransects were drawn perpendicular to the flowline, and the valley
+bottom width was measured along each transect. Finally, the transect
+widths were averaged, creating a single average valley bottom width
+value for each <code>comid</code>. <em>Source: FlowWest draft spatial
+analysis, <a href="https://github.com/FlowWest/habistat/blob/main/data-raw/scripts/terrain-attributes.md#valley-bottom-width-via-slope-cutoff-method" class="external-link">source
+code located here</a></em>.</p></li>
+<li><p><strong>Valley Bottom:Channel Width Ratio</strong>
+(<code>vb_bf_w_ratio</code>) The ratio of valley bottom width
+(<code>vb_width_transect</code>) to bankfull width
+(<code>bf_width_m</code>), creating a unitless measure of valley bottom
+width proportional to the size of the channel.</p></li>
+<li><p><strong>Reach Levee Confinement Fraction</strong>
+(<code>frac_leveed_longitudinal</code>). The fraction of channel length
+that is adjacent to a levee. Ranges from 0 (no levees) to 1 (levees
+along entire length). Calculated by drawing perpendicular transects,
+then tabulating their intersection with levee polylines retrieved from
+the USACE National Levee Database (data retrieved 2024-02-16).
+<em>Source: FlowWest draft spatial analysis, <a href="https://github.com/FlowWest/habistat/blob/main/data-raw/scripts/levees.md" class="external-link">source
+code located here</a></em>.</p></li>
+<li><p><strong>Lateral Levee Confinement (ft)</strong>
+(<code>lateral_levee_confinement_ft</code>) The average width of the
+stream corridor between adjacent levees or to the edge of the catchment.
+Currently <code>NA</code> if there are no levees alongside the stream
+reach. Calculated by drawing perpendicular transects, then tabulating
+their intersection with levee polylines retrieved from the USACE
+National Levee Database (data retrieved 2024-02-16). <em>Source:
+FlowWest draft spatial analysis, <a href="https://github.com/FlowWest/habistat/blob/main/data-raw/scripts/levees.md" class="external-link">source
+code located here</a></em>.</p></li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="categorical">Categorical<a class="anchor" aria-label="anchor" href="#categorical"></a>
 </h3>
 <ul>
-<li>…</li>
+<li>
+<p><strong>HQT Gradient Class</strong>
+(<code>hqt_gradient_class</code>) Landscape type classifications
+indicating gradient class and distinguishing alluvial from bedrock
+zones. Three possible values:</p>
+<ul>
+<li><p><em>Valley Lowland</em> if flowline intersects with the
+<em>Valley Lowland</em> landscape type classification defined for the
+Chinook Salmon Habitat Quantification Tool (Whipple et al., 2019),<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>
+<em>else</em></p></li>
+<li><p><em>Valley Foothill</em> if flowline intersects with the
+delineated by Fault (2012),<a href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> <em>else</em></p></li>
+<li><p><em>Bedrock</em> indicating any streams outside of these
+zones.</p></li>
+</ul>
+</li>
+<li>
+<p><strong>UCD Hydrologic Class</strong> (<code>hyd_cls</code>)
+Hydrologic classifications developed by Lane et al. (2017)<a href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>,
+including the following values:</p>
+<ul>
+<li>
+<code>SM</code> <em>Snowmelt</em>
+</li>
+<li>
+<code>HSR</code> <em>High-volume snowmelt and rain</em>
+</li>
+<li>
+<code>LSR</code> <em>Low-volume snowmelt and rain</em>
+</li>
+<li>
+<code>RGW</code> <em>Rain and seasonal groundwater</em>
+</li>
+<li>
+<code>WS</code> <em>Winter storms</em>
+</li>
+<li>
+<code>GW</code> <em>Groundwater</em>
+</li>
+<li>
+<code>PGR</code> <em>Perennial groundwater and rain</em>
+</li>
+<li>
+<code>FER</code> <em>Flashy, ephemeral rain</em>
+</li>
+<li>
+<code>HLP</code> <em>High elevation, low precipitation</em>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>UCD Hydrologic Class</strong> (<code>hyd_cat</code>)
+Simplified hydrologic classifications derived from <code>hyd_cls</code>,
+including the following values:</p>
+<ul>
+<li>
+<em>Snowmelt</em> (<code>SM</code>, <code>HLP</code>)</li>
+<li>
+<em>Mixed</em> (<code>HSR</code>, <code>LSR</code>,
+<code>GW</code>)</li>
+<li>
+<em>Rain</em> (<code>RGW</code>, <code>WS</code>, <code>PGR</code>,
+<code>FER</code>)</li>
+</ul>
+</li>
+<li>
+<p><strong>UCD Geomorphologic Class</strong>
+(<code>geomorph_class</code>) Geomorphic channel types.</p>
+<ul>
+<li>For the Sacramento River basin, this variable includes the channel
+types by Guillon et al. (2020)<a href="#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a>, referenced in the <a href="https://ceff.ucdavis.edu/sites/g/files/dgvnsk5566/files/media/documents/Appendix_F%20Geomorphic%20Classification%20of%20CA.pdf" class="external-link">California
+Environmental Flows Framework</a> and <a href="https://doi.org/10.25338/B8031W" class="external-link">available on Dryad</a><a href="#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a>.
+Channel types are as follows:
+<ul>
+<li>
+<code>SAC01</code> <em>Unconfined, boulder-bedrock,
+bed-undulating</em>
+</li>
+<li>
+<code>SAC02</code> <em>Confined, boulder, high-gradient,
+step-pool/cascade</em>
+</li>
+<li>
+<code>SAC03</code> <em>Confined, boulder-bedrock, uniform</em>
+</li>
+<li>
+<code>SAC04</code> <em>Confined, boulder-bedrock, low-gradient
+step-pool</em>
+</li>
+<li>
+<code>SAC05</code> <em>Confined, gravel-cobble, uniform</em>
+</li>
+<li>
+<code>SAC06</code> <em>Partly-confined, low width-to-depth,
+gravel-cobble, riffle-pool</em>
+</li>
+<li>
+<code>SAC07</code> <em>Partly-confined, cobble-boulder,
+uniform</em>
+</li>
+<li>
+<code>SAC08</code> <em>Partly-confined, high width-to-depth,
+gravel-cobble, riffle-pool</em>
+</li>
+<li>
+<code>SAC09</code> <em>Unconfined, low width-to-depth,
+gravel</em>
+</li>
+<li>
+<code>SAC10</code> <em>Unconfined, gravel-cobble,
+riffle-pool</em>
+</li>
+</ul>
+</li>
+<li>For the San Joaquin basin, we trained a simple random forest
+classifier on the Sacramento reaches, using a series of covariates
+(slope, catchment drainage area, catchment minimum elevation, catchment
+maximum elevation, catchment relief, catchment mean annual
+precipitation, reach mTPI [topographic position index], reach gradient
+class, and hydrologic class), and used this to estimate the
+classifications for the San Joaquin reaches. These are rough estimates
+intended for use as input into the habistat model only. <em>Source:
+FlowWest draft statistical analysis, <a href="https://github.com/FlowWest/habistat/blob/main/data-raw/scripts/geomorph.md" class="external-link">source
+code located here</a></em>
+</li>
+</ul>
+</li>
 </ul>
 </div>
+<div class="section level3">
+<h3 id="identifiers">Identifiers<a class="anchor" aria-label="anchor" href="#identifiers"></a>
+</h3>
+<ul>
+<li><p><strong>NHDPlusV2 ComID</strong> (<code>comid</code>) The primary
+common identifier for the reach. <em>Source: NHDPlusV2.</em></p></li>
+<li><p><strong>GNIS Name</strong> (<code>gnis_name</code>) The common
+name for the reach as published in USGS Geographic Names Information
+System (GNIS). <em>Source: NHDPlusV2</em></p></li>
+<li><p><strong>Mainstem Group Name</strong> (<code>river_group</code>) A
+common name identifying a distinct set of mainstems within a watershed,
+e.g. “Yuba River”, “Feather River”, “Butte Creek”. <em>Source: Modified
+from the <a href="https://cvpia-osc.github.io/DSMhabitat/articles/habitat-extents-map.html" class="external-link">DSMHabitat</a>
+spawning and rearing extents dataset.</em></p></li>
+<li><p><strong>Mainstem Name</strong> (<code>river_cvpia</code>) A
+common name identifying a distinct mainstem segment, e.g. “Yuba River”,
+“North Yuba River”, “South Yuba River”. A second level heirarchy under
+<code>river_group</code>. <em>Source: Modified from the <a href="https://cvpia-osc.github.io/DSMhabitat/articles/habitat-extents-map.html" class="external-link">DSMHabitat</a>
+spawning and rearing extents dataset.</em></p></li>
+<li><p><strong>Watershed Level 1</strong>
+(<code>watershed_level_1</code>) The top-level watershed, either
+“Sacramento River” or “San Joaquin River”. *Source: Watershed boundaries
+re-classified based on from USGS HUC-12 subcatchments, documented in the
+<a href="watershed_aggregation.html">Watershed Aggregation</a>
+article.**</p></li>
+<li><p><strong>Watershed Level 2</strong>
+(<code>watershed_level_2</code>) The second-level watershed,
+corresponding to direct tributaries into the Sacramento River or San
+Joaquin River. *Source: Watershed boundaries re-classified based on from
+USGS HUC-12 subcatchments, documented in the <a href="watershed_aggregation.html">Watershed Aggregation</a>
+article.**</p></li>
+<li><p><strong>Watershed Level 3</strong>
+(<code>watershed_level_3</code>) The third-level watershed,
+corresponding to the mainstem groups identified in
+<code>river_group</code> but also including all additional NHDPlusV2
+tributaries within the watershed. *Source: Watershed boundaries
+re-classified based on from USGS HUC-12 subcatchments, documented in the
+<a href="watershed_aggregation.html">Watershed Aggregation</a>
+article.**</p></li>
+<li><p><strong>Reach Length (linear ft)</strong>
+(<code>reach_length_ft</code>): The length of the reach in feet.
+<em>Source: NHDPlusV2 (/NHDPlusAttributes/PlusFlowlineVAA/LengthKM),
+converted from kilometers to international feet.</em></p></li>
+<li><p><strong>Hydrologic Sequence Number</strong>
+(<code>hydroseq</code>) The NHDPlusV2 hydrologic sequence, allowing
+reaches to be sorted from upstream to downstream. <em>Source: NHDPlusV2
+(/NHDPlusAttributes/PlusFlowlineVAA/HydroSeq).</em></p></li>
+</ul>
 </div>
-<div class="section level2">
-<h2 id="inventory-table">Inventory Table<a class="anchor" aria-label="anchor" href="#inventory-table"></a>
-</h2>
-<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQAb8qg7jJkOE-zxzCZ6NpO3ot1JZhGxkdQdZA9gFJj3Iy5TGkgPijE2109EWMXWBm2rMrqBBB0IdUh/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" style="width:100%; border:0; height:100vh; overflow:scroll;">
-</iframe>
-<blockquote>
-<p>NEEDS TO BE UPDATED</p>
-</blockquote>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr>
@@ -198,9 +525,53 @@ Database</a><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>
 Select Attributes for NHDPlus Version 2.1 Reach Catchments and Modified
 Network Routed Upstream Watersheds for the Conterminous United States
 (ver. 4.0, August 2023): U.S. Geological Survey data release, <a href="https://doi.org/10.5066/F7765D7V" class="external-link uri">https://doi.org/10.5066/F7765D7V</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>California Environmental Flows Working Group (CEFWG).
+<li id="fn2"><p>Smith, D., Muche, M., Wolfe, K., Parmar, R. &amp;
+Johnston, J. M. (2021). NHDPlusV2 Catchment scale Curve Number and NDVI
+Dataset. <a href="ftp://newftp.epa.gov/exposure/CurveNumberNDVI" class="uri">ftp://newftp.epa.gov/exposure/CurveNumberNDVI</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Hill, R.A., Weber, M.H., Leibowitz, S.G., Olsen, A.R.
+&amp; Thornbrugh, D.J., 2016. The Stream‐ Catchment (StreamCat) Dataset:
+A database of watershed metrics for the conterminous United States.
+JAWRA Journal of the American Water Resources Association, 52(1),
+pp.120-128.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Doyle, J., R. Hill, S. Leibowitz, AND J. Ebersole.
+Random forest models to estimate bankfull and low flow channel widths
+and depths across the conterminous United States. American Water
+Resources Association, Middleburg, VA, 59(5):1099-1114, (2023). DOI: <a href="https://doi.org/10.1111/1752-1688.13116" class="external-link">10.1111/1752-1688.13116</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>California Environmental Flows Working Group (CEFWG).
 California Natural Flows Database: Functional flow metrics v1.2.1, May
-2021. <a href="https://rivers.codefornature.org/" class="external-link uri">https://rivers.codefornature.org/</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+2021. <a href="https://rivers.codefornature.org/" class="external-link uri">https://rivers.codefornature.org/</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>Theobald, D. M., Harrison-Atlas, D., Monahan, W. B.
+&amp; Albano, C. M. (2015). Ecologically-relevant maps of landforms and
+physiographic diversity for climate adaptation planning. PLOS ONE. <a href="https://10.1371/journal.pone.0143619" class="external-link uri">https://10.1371/journal.pone.0143619</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>Guillon, H., Byrne, C. F., Lane, B. A., Pasternack, G.
+B. &amp; Sandoval-Solis, S. (2019). South Fork Eel River Basin
+Geomorphic Classification. Prepared for California State Water Resources
+Control Board. <a href="https://watermanagement.ucdavis.edu/download_file/view_inline/144" class="external-link uri">https://watermanagement.ucdavis.edu/download_file/view_inline/144</a>.
+<em>“For the purposes of this study, 25 percent slope was chosen as a
+threshold between valley bottom and valley wall capturing a medial value
+between clay and sand dominated hill footslopes [Carson, M.A., 1972,
+Hillslope form and process, University Press: Cambridge].”</em> <a href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>Whipple A., T. Grantham, G. Desanker, L. Hunt, A.
+Merrill, B. Hackenjos, R. Askevold. 2019. Chinook Salmon Habitat
+Quantification Tool: User Guide (Version 1.0). Prepared for American
+Rivers. Funded by the Natural Resources Conservation Service
+Conservation Innovation Grant (#69-3A75-17-40), Water Foundation and
+Environmental Defense Fund. A report of SFEI-ASC’s Resilient Landscapes
+Program, Publication #953. San Francisco Estuary Institute, Richmond,
+CA. <a href="https://www.sfei.org/sites/default/files/biblio_files/SalmonHQT_UserGuide_2019.pdf" class="external-link uri">https://www.sfei.org/sites/default/files/biblio_files/SalmonHQT_UserGuide_2019.pdf</a><a href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>Faunt, C.C., 2012, Alluvial Boundary of California’s
+Central Valley: U.S. Geological Survey data release, <a href="https://doi.org/10.5066/P9CQNCA9" class="external-link uri">https://doi.org/10.5066/P9CQNCA9</a><a href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>Lane, B. A., Dahlke, H. E., Pasternack, G. B. &amp;
+Sandoval-Solis, S. (2017). Revealing the Diversity of Natural Hydrologic
+Regimes in California with Relevance for Environmental Flows
+Applications. <em>Journal of the American Water Resources
+Association</em> 53(2): 411-430. <a href="https://doi.org/10.1111/1752-1688.12504" class="external-link uri">https://doi.org/10.1111/1752-1688.12504</a><a href="#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>Guillon, H., Byrne, C.F., Lane, B.A., Sandoval-Solis,
+S., and Pasternack G.B. (2020). Machine Learning Predicts Reach-Scale
+Channel Types from Coarse-Scale Geospatial Data in a Large River Basin.
+J. of Water Resources Research. <a href="https://doi.org/10.1029/2019WR026691" class="external-link uri">https://doi.org/10.1029/2019WR026691</a><a href="#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p>Guillon, Hervé et al. (2020). Channel types predictions
+for the Sacramento River basin [Dataset]. Dryad. <a href="https://doi.org/10.25338/B8031W" class="external-link uri">https://doi.org/10.25338/B8031W</a><a href="#fnref12" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>

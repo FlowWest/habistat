@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>Mill Deer Survey Reaches.kml</name>
+	<StyleMap id="m_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin0</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl0</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin2">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<StyleMap id="m_ylw-pushpin3">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin4</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl3</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin0">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin4">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl0">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Style id="s_ylw-pushpin_hl3">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Folder>
+		<name>Temporary Places</name>
+		<Placemark>
+			<name>Sooner Place</name>
+			<LookAt>
+				<longitude>-121.6331175568631</longitude>
+				<latitude>40.21718338560931</latitude>
+				<altitude>0</altitude>
+				<heading>-0.3087541794837359</heading>
+				<tilt>0</tilt>
+				<range>104.7393830443635</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.6334279735762,40.21712294063195,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Below Ranchhouse</name>
+			<LookAt>
+				<longitude>-121.7378594629968</longitude>
+				<latitude>40.17887084891113</latitude>
+				<altitude>0</altitude>
+				<heading>0.2952801125039463</heading>
+				<tilt>0</tilt>
+				<range>171.4706972900837</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.7379780332614,40.17865889564285,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>2E17</name>
+			<LookAt>
+				<longitude>-121.7455402651126</longitude>
+				<latitude>40.0734578393912</latitude>
+				<altitude>0</altitude>
+				<heading>-0.3812495471623621</heading>
+				<tilt>0</tilt>
+				<range>1138.896645931181</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.7437454000833,40.0728612208901,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Dillion Cove</name>
+			<LookAt>
+				<longitude>-121.7838650522451</longitude>
+				<latitude>40.05826848416416</latitude>
+				<altitude>0</altitude>
+				<heading>-0.4059180913235988</heading>
+				<tilt>0</tilt>
+				<range>801.116666990173</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.7838973076403,40.05727057003824,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Upper Deer Creek Falls</name>
+			<LookAt>
+				<longitude>-121.5131244196265</longitude>
+				<latitude>40.20231603750332</latitude>
+				<altitude>0</altitude>
+				<heading>-0.2314167529801715</heading>
+				<tilt>0</tilt>
+				<range>272.6264466700795</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.513143886901,40.20198364974274,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Wilson Cove</name>
+			<LookAt>
+				<longitude>-121.6450920903495</longitude>
+				<latitude>40.16146024528967</latitude>
+				<altitude>0</altitude>
+				<heading>-0.3165278984229389</heading>
+				<tilt>0</tilt>
+				<range>298.1100952521319</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.6449958450683,40.16133755052437,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Avery Place</name>
+			<LookAt>
+				<gx:TimeStamp><when>2014-05-30</when>
+</gx:TimeStamp>
+				<gx:ViewerOptions>
+					<gx:option name="historicalimagery"></gx:option>
+					<gx:option enabled="0" name="sunlight"></gx:option>
+					<gx:option enabled="0" name="streetview"></gx:option>
+				</gx:ViewerOptions>
+				<longitude>-121.7795466286871</longitude>
+				<latitude>40.18196494867123</latitude>
+				<altitude>0</altitude>
+				<heading>-0.07363028310726188</heading>
+				<tilt>0</tilt>
+				<range>253.2427215141113</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.7796743334818,40.1817134588114,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Lower Deer Creek Falls</name>
+			<LookAt>
+				<longitude>-121.5810753196375</longitude>
+				<latitude>40.16794363682644</latitude>
+				<altitude>0</altitude>
+				<heading>0.05427983387914535</heading>
+				<tilt>0</tilt>
+				<range>216.4751201945014</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5813601183784,40.16804174005367,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Polk Springs</name>
+			<LookAt>
+				<gx:TimeStamp><when>2014-05-30</when>
+</gx:TimeStamp>
+				<gx:ViewerOptions>
+					<gx:option name="historicalimagery"></gx:option>
+					<gx:option enabled="0" name="sunlight"></gx:option>
+					<gx:option enabled="0" name="streetview"></gx:option>
+				</gx:ViewerOptions>
+				<longitude>-121.6635200375114</longitude>
+				<latitude>40.12015951572159</latitude>
+				<altitude>0</altitude>
+				<heading>0.001061232139539219</heading>
+				<tilt>0</tilt>
+				<range>259.9038926376402</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.6633760153469,40.11987262245409,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>A-Line Bridge</name>
+			<LookAt>
+				<longitude>-121.5963211176821</longitude>
+				<latitude>40.16432174048532</latitude>
+				<altitude>0</altitude>
+				<heading>0.04444608634899504</heading>
+				<tilt>0</tilt>
+				<range>602.079363453598</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5965109326888,40.16386965727207,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>HWY 32</name>
+			<LookAt>
+				<longitude>-121.5548908984918</longitude>
+				<latitude>40.17356299694051</latitude>
+				<altitude>0</altitude>
+				<heading>0.07116474152322302</heading>
+				<tilt>0</tilt>
+				<range>560.1500881145389</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5559235484443,40.17294407766568,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Potato Patch Campground</name>
+			<LookAt>
+				<longitude>-121.5313729087201</longitude>
+				<latitude>40.18828376964112</latitude>
+				<altitude>0</altitude>
+				<heading>0.08633755922224035</heading>
+				<tilt>0</tilt>
+				<range>221.0847051816282</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5320135947876,40.18788599475052,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Ponderosa Way Bridge</name>
+			<LookAt>
+				<longitude>-121.7068240077552</longitude>
+				<latitude>40.07079854667356</latitude>
+				<altitude>0</altitude>
+				<heading>-0.02677025201498471</heading>
+				<tilt>0</tilt>
+				<range>1239.338586756245</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin3</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.704696169535,40.07033350377693,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Blackrock Thermo</name>
+			<LookAt>
+				<longitude>-121.7144574136507</longitude>
+				<latitude>40.18317023928795</latitude>
+				<altitude>0</altitude>
+				<heading>0.310378496161571</heading>
+				<tilt>0</tilt>
+				<range>218.0468807385936</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.7144381946949,40.18322130238286,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Buckhorn Gulch</name>
+			<LookAt>
+				<longitude>-121.8436126509266</longitude>
+				<latitude>40.15337948943149</latitude>
+				<altitude>0</altitude>
+				<heading>0.2270347417087134</heading>
+				<tilt>0</tilt>
+				<range>212.9515685982617</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.8433889196127,40.1532163073153,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Canyon Camp</name>
+			<LookAt>
+				<longitude>-121.5884925381541</longitude>
+				<latitude>40.23483756443213</latitude>
+				<altitude>0</altitude>
+				<heading>0.391659536212949</heading>
+				<tilt>0</tilt>
+				<range>335.2808613137259</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5892313566773,40.23496436259092,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Mill Trail</name>
+			<LookAt>
+				<longitude>-121.5555302119907</longitude>
+				<latitude>40.27667688913655</latitude>
+				<altitude>0</altitude>
+				<heading>0.4129542720827591</heading>
+				<tilt>0</tilt>
+				<range>3032.441704205524</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.561704443623,40.27357507540811,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>HIG</name>
+			<LookAt>
+				<longitude>-121.5627321520164</longitude>
+				<latitude>40.30852950372815</latitude>
+				<altitude>0</altitude>
+				<heading>0.4082968279017387</heading>
+				<tilt>0</tilt>
+				<range>335.2459735026394</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5632710539362,40.30867529838446,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>McCarthy Place</name>
+			<LookAt>
+				<longitude>-121.6656023624358</longitude>
+				<latitude>40.20008034485534</latitude>
+				<altitude>0</altitude>
+				<heading>0.3419055911151758</heading>
+				<tilt>0</tilt>
+				<range>388.0726774380875</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.6661722353094,40.19975346569796,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Savercool Place</name>
+			<LookAt>
+				<longitude>-121.6898649690672</longitude>
+				<latitude>40.19064571637104</latitude>
+				<altitude>0</altitude>
+				<heading>0.3262472028124394</heading>
+				<tilt>0</tilt>
+				<range>175.5401216745526</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.6902007388016,40.19061412218507,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Pape Place</name>
+			<LookAt>
+				<longitude>-121.8044291841581</longitude>
+				<latitude>40.17546285802901</latitude>
+				<altitude>0</altitude>
+				<heading>0.2523352873977522</heading>
+				<tilt>0</tilt>
+				<range>188.2073645280691</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin2</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.8046968562442,40.17532884067035,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Little HIG</name>
+			<LookAt>
+				<longitude>-121.5307831001226</longitude>
+				<latitude>40.31814066732814</latitude>
+				<altitude>0</altitude>
+				<heading>-0.2425612971845191</heading>
+				<tilt>0</tilt>
+				<range>376.8132379240873</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5301875733786,40.31850233472657,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Murphy Trail</name>
+			<LookAt>
+				<longitude>-121.6724111477883</longitude>
+				<latitude>40.09641745347823</latitude>
+				<altitude>0</altitude>
+				<heading>-0.3341765534393123</heading>
+				<tilt>0</tilt>
+				<range>261.2221740562174</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.6725984962001,40.09613270659974,0</coordinates>
+			</Point>
+		</Placemark>
+		<Placemark>
+			<name>Big Bend</name>
+			<LookAt>
+				<longitude>-121.5620905059173</longitude>
+				<latitude>40.25389077000698</latitude>
+				<altitude>0</altitude>
+				<heading>-0.2628898782260494</heading>
+				<tilt>0</tilt>
+				<range>577.3890480144212</range>
+				<gx:altitudeMode>relativeToSeaFloor</gx:altitudeMode>
+			</LookAt>
+			<styleUrl>#m_ylw-pushpin</styleUrl>
+			<Point>
+				<gx:drawOrder>1</gx:drawOrder>
+				<coordinates>-121.5617449659836,40.25295163018582,0</coordinates>
+			</Point>
+		</Placemark>
+	</Folder>
+</Document>
+</kml>

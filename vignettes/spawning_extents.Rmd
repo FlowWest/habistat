@@ -13,13 +13,17 @@ vignette: >
 
 ```{r setup, include = FALSE}
 library(tidyverse)
+library(sf)
+library(ggspatial)
+theme_set(theme_minimal())
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   base.dir = "./",
   base.url = "./articles",
-  fig.path = "figures/model-overview-"
+  fig.path = "figures/spawning-extents-"
 )
+knitr::opts_chunk$set(fig.width=6.5, fig.height=4, dpi=300)
 ```
 
 ## Reach Definitions
@@ -30,9 +34,9 @@ A core component of the spawning model is delineating the geographic extent of s
 
 - **Spawning Gravels**: A reach-by-reach determination of the likelihood of spawning gravels, based on geomorphic and sediment transport factors. Reaches determined unlikely to contain gravels remain in the spawning dataset with a zeroed out suitability rating.
 
-### Geographic Scope
+### Spawning Geographic Scope
 
-The spawning geographic scope consists of reaches meeting *all* of the following criteria. Essentially, this analysis takes the current and historical spawning reaches delineated in the [`cv_mainstems`](../reference/cv_mainstems.html) dataset, as described in the [Watershed Aggregation](watershed_aggregation.html) article, and adds in some additional major tributaries. 
+The spawning geographic scope consists of reaches meeting *all* of the following criteria. Essentially, this analysis takes the current and historical spawning reaches delineated in the [`cv_mainstems`](../reference/cv_mainstems.html) dataset, as described in the [Watershed Aggregation](watershed_aggregation.html) article, and adds in some additional major tributaries. **The geographic scope represents maximum potential spawning habitat and does *not* take into account artificial barriers such as dams.**
 
 - elevation > minimum known spawning elevation for the watershed
 - elevation < maximum historical habitat elevation for the watershed
@@ -41,9 +45,65 @@ The spawning geographic scope consists of reaches meeting *all* of the following
 - outside of the valley lowland area (i.e. in valley foothill or bedrock)
 - stream size: stream order ≥4, or stream order ≥3 with drainage area at least 50 km²
 
-### Spawning Gravels
+```{r geographic-scope, echo=FALSE, message=FALSE, warning=FALSE}
+flowlines_filtered <- 
+  habistat::flowline_geom_proj |>
+  filter(comid %in% habistat::wua_predicted$comid) |>
+  inner_join(habistat::flowline_spawning_attr, by=join_by(comid))
 
-Reach-by-reach identification of spawning gravels is experimental. We tested two methods. Currently, reaches are included as likely spawning gravel reaches if they pass the spawning gravel likelihood criteria under *either* method. 
+rearing_mainstems <-
+  habistat::cv_mainstems |>
+  filter(str_detect(habitat, "rearing"))
+
+spawning_mainstems <-
+  habistat::cv_mainstems |>
+  filter(str_detect(habitat, "spawning")) |>
+  inner_join(habistat::flowline_spawning_attr, by=join_by(comid))
+
+spawning_flowlines <-
+  flowlines_filtered |>
+  filter(spawning_geographic_context)
+
+ggplot() + 
+  geom_sf(data=flowlines_filtered, aes(color = "All Habitat Reaches")) +
+  geom_sf(data=rearing_mainstems, aes(color = "Rearing Mainstems")) +
+  geom_sf(data=spawning_flowlines, aes(color = "Spawning Geographic Scope (Tributaries)")) +
+  geom_sf(data=spawning_mainstems, aes(color = "Spawning Geographic Scope (Mainstems)")) +
+  ggtitle("Spawning Geographic Scope") +
+  scale_color_manual(name = "",
+                     values = c("All Habitat Reaches" = "#dddddd", 
+                                "Spawning Geographic Scope (Mainstems)" = "darkblue",
+                                "Spawning Geographic Scope (Tributaries)"= "cornflowerblue",
+                                "Rearing Mainstems" = "darkgoldenrod")) 
+```
+
+### Spawning Gravel Likelihood
+
+Reach-by-reach identification of spawning gravels is experimental. We tested two methods. Currently, reaches are included as likely spawning gravel reaches if they pass the spawning gravel likelihood criteria under *either* method. **The spawning gravel likelihood represents potential spawning gravel availability based on geomorphic channel attributes and does *not* take into account gravel starvation nor gravel augmentation below dams.**
+
+```{r gravel-likelihood, echo=FALSE, message=FALSE, warning=FALSE}
+spawning_flowlines_filtered <- 
+  spawning_flowlines |>
+  filter(spawning_filter_all)
+
+spawning_mainstems_filtered <- 
+  spawning_mainstems |>
+  filter(spawning_filter_all)
+
+ggplot() +
+  geom_sf(data=flowlines_filtered, aes(color = "All Habitat Reaches")) +
+  geom_sf(data=spawning_flowlines, aes(color = "Spawning - Other (Tributaries)")) +
+  geom_sf(data=spawning_mainstems, aes(color = "Spawning - Other (Mainstems)")) +
+  geom_sf(data=spawning_flowlines_filtered, aes(color = "Spawning - Most Likely Spawning Gravels (Tributaries)")) +
+  geom_sf(data=spawning_mainstems_filtered, aes(color = "Spawning - Most Likely Spawning Gravels (Mainstems)")) +
+  ggtitle("Spawning Gravel Likelihood") +
+  scale_color_manual(name = "",
+                     values = c("All Habitat Reaches" = "#dddddd", 
+                                "Spawning - Other (Mainstems)" = "darkblue",
+                                "Spawning - Other (Tributaries)"= "cornflowerblue",
+                                "Spawning - Most Likely Spawning Gravels (Tributaries)" = "mediumvioletred",
+                                "Spawning - Most Likely Spawning Gravels (Mainstems)" = "violetred4")) 
+```
 
 #### Geomorphic Classification
 
@@ -116,7 +176,7 @@ $$D^* [\mathrm{1}]= \frac{(\rho_s - \rho) [\mathrm{g/cm^3}] \cdot g [\mathrm{cm/
 
 ##### Classification
 
-Output $D_{50}$ values for bed mobilization and suspended transport thresholds were reclassified into the Wentworth (<mark>CITE</mark>) size classes. The size class phi ($\phi$) is defined as the negative base 2 logarithm of the median grain size diameter (on the intermediate axis) in millimeters. 
+Output $D_{50}$ values for bed mobilization and suspended transport thresholds were reclassified into the Wentworth size classes.^[Wentworth, C. K. (1922). A Scale of Grade and Class Terms for Clastic Sediments. *The Journal of Geology* 30(5): 377-392. https://www.jstor.org/stable/30063207] The size class phi ($\phi$) is defined as the negative base 2 logarithm of the median grain size diameter (on the intermediate axis) in millimeters. 
 
 ```{r step-2-sed-transport-classes, echo=FALSE}
 # DEFINE WENTWORTH SIZE CLASSES
@@ -131,6 +191,7 @@ phi_labels <- c("very large boulder", "large boulder", "medium boulder", "small 
 tibble(phi = phi_levels, label = phi_labels) |> 
   mutate(max_diam_mm = 2^-phi) |>
   mutate(max_diam_mm = format(max_diam_mm, digits=3, scientific=F, drop0trailing=T)) |>
+  group_by(label) |> filter(max_diam_mm == max(max_diam_mm)) |>
   knitr::kable()
 ```
 
@@ -143,7 +204,31 @@ $$-8 \leq \phi_B \leq -2$$
 - **suspended transport**: bankfull flows are able to transport particles larger than silts and clays. Where $\phi_S$ is the size class of the maximum grain size suspended,
 
 $$\phi_S \leq 3$$
+
 ## Validation
 
-<mark>TODO: Add here the validation based on redd surveys.</mark>
+Spawning geographic extent was validated against redd surveys. Redd survey data were assembled for the following reaches. Redd counts from surveys were binned by river mile for comparison. Habistat spawning extents and predicted spawning habitat area were similarly mapped onto river miles using NHD reach lengths or published river mile standards where available. Visual comparison for alignment provided a first round of validation, which will continue to be refined and used to adapt the spawning reach delineation logic.
+
+| Reach            | River Mile Source | Redd Survey Description |
+| ---------------- | ----------------- | ----------------------- | 
+| Lower Yuba River | Published (DWR)   | <mark>add here</mark> |
+| Feather River    | Published (DWR)   | <mark>add here</mark> |
+| Battle Creek     | NHDPlusV2         | <mark>add here</mark> |
+| Clear Creek      | NHDPlusV2         | <mark>add here</mark> |
+| Mill Creek       | NHDPlusV2         | <mark>add here</mark> |
+<!--
+| American River   | Published (DWR)   | <mark>add here</mark> |
+| Mokelumne River  | Published (EBMUD) | <mark>add here</mark> |
+| Deer Creek       | NHDPlusV2         | <mark>add here</mark> |
+-->
+
+![](figures/spawning-extents-validation-reaches.png)
+
+The following charts compare the modeled geographic scope, the modeled habitat area, and summarized redd survey outputs.
+
+![](figures/spawning-extents-val-lower-yuba-river.png)
+![](figures/spawning-extents-val-feather-river.png)
+![](figures/spawning-extents-val-battle-creek.png)
+![](figures/spawning-extents-val-clear-creek.png)
+![](figures/spawning-extents-val-mill-creek.png)
 

@@ -137,5 +137,5 @@ We don't know exactly where, so we apply an average of the previous duration fac
 The result is a scaled version of the original flow-to-suitable-area curve that accounts for the reduction in habitat suitability due to less-than-optimal duration lengths.
 The scaled curve will be less than or equal to the original curve at each flow, but will never exceed it.
 
-![](figures/duration_plot_example.png)
+![Example duration analyis plot for comid 7972411](figures/duration_plot_example.png)
 

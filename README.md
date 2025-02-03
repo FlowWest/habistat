@@ -29,6 +29,10 @@ Habistat documentation is located at [flowwest.github.io/habistat](https://floww
 
 Use the **[Interactive Map](https://flowwest.shinyapps.io/habistat)** published at [flowwest.shinyapps.io/habistat](https://flowwest.shinyapps.io/habistat) to explore results by reach, mainstem, and watershed.
 
+***Tools, methods, results, and documentation are currently incomplete and under active development.***
+
+## Getting Started with the R Package
+
 You can install the development version of habistat from [GitHub](https://github.com/) with:
 
 ``` r
@@ -36,7 +40,84 @@ You can install the development version of habistat from [GitHub](https://github
 devtools::install_github("FlowWest/habistat")
 ```
 
-***Tools, methods, results, and documentation are currently incomplete and under active development.***
+Load the package:
+
+``` r
+library(habistat)
+```
+
+Pull a flow-to-suitable-area curve (predicted by the statistical model trained on depth/velocity data)
+``` r
+habitat_fsa(mainstem = "American River", 
+            habitat_type = "rearing",
+            units = "ac")
+```
+
+Predict suitable habitat area (predicted by the statistical model trained on depth/velocity data) for a given series of flows:
+
+``` r
+flows <- c(100, 300, 1000, 3000)
+
+flows |> habitat_predict(mainstem = "American River", 
+                         habitat_type = "rearing",
+                         units = "ac")
+```
+
+Pull an inundation duration curve from a selection of CDEC streamgages:
+
+``` r
+habitat_drc(streamgage = "AFO",
+            habitat_type = "rearing",
+            run = "fall",
+            wy_group = "Dry")
+```
+
+Calculate a flow-to-suitable-area curve that incorporates this inundation duration criteria:
+
+``` r
+habitat_fsa_duration(mainstem = "American River", 
+                     habitat_type = "rearing",
+                     units = "ac",
+                     streamgage = "AFO",
+                     run = "fall",
+                     wy_group = "Dry")
+```
+
+Predict suitable habitat area, applying the inundation duration criteria:
+
+``` r
+flows |> habitat_predict(mainstem = "American River", 
+                         habitat_type = "rearing",
+                         units = "ac",
+                         streamgage = "AFO",
+                         run = "fall",
+                         wy_group = "Dry")
+```
+
+View all mainstem options
+
+``` r
+unique(cv_mainstems$river_cvpia)
+```
+
+View all CDEC streamgage options
+
+``` r
+unique(streamgage_attr$station_id)
+
+```
+
+Access the raw predictor variables dataset
+
+``` r
+pillar::glimpse(flowline_attr)
+```
+
+Access the raw prediction outputs
+
+``` r
+pillar::glimpse(wua_predicted)
+```
 
 ## Partners
 
