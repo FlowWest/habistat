@@ -135,6 +135,19 @@ function(input, output, session){
                                    round(wua_per_lf_pred_SN,2), " ft2/ft", "<br />"))
   })
 
+  active_geom_watershed <- reactive({
+    watersheds |>
+      inner_join(active_predictions_watershed(),
+                 by = join_by(watershed_level_3)) |>
+      mutate(wua_per_lf = !!sym(input$wua_var)) |>
+      filter(!is.na(wua_per_lf)) |>
+      mutate(object_label = paste0("<strong>", watershed_level_3, "</strong>", "<br />",
+                                   "Scale-Dependent Model: ",
+                                   round(wua_per_lf_pred_SD,2), " ft2/ft", "<br />",
+                                   "Scale-Normalized Model: ",
+                                   round(wua_per_lf_pred_SN,2), " ft2/ft", "<br />"))
+  })
+
   # SELECTED COMID OBSERVER ----------------------------------------------------
 
   selected_point <- reactiveValues(object_id = NULL,
@@ -228,9 +241,10 @@ function(input, output, session){
                         "Predicted" = "#78A5BF",
                         "Actual" = "#ffae34")
     if (most_recent_map_click$type == "comid") { #& (length(selected_point$comid)>0)) {
-    predictions |>
+    pf <- predictions |>
       filter(comid == selected_point$comid) |>
-      filter(habitat == input$habitat_type) |>
+      filter(habitat == input$habitat_type)
+    pf |>
       ggplot(aes(x = flow_cfs)) + #|> add_color_scale(type = input$habitat_type) +
       geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
                       ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
@@ -248,22 +262,34 @@ function(input, output, session){
       #geom_line(aes(y = !!sym(input$wua_var), linetype = "Unscaled"), linewidth=1) +
       #geom_line(data=duration_curve(), aes(x = q, y = durwua, linetype="Duration Scaled", color = durwua)) +
       #geom_hline(aes(yintercept = chan_width_ft)) + #, linetype="Channel Width (ft)")) +
-      #geom_vline(aes(xintercept = baseflow_cfs)) +
+      geom_vline(aes(xintercept = active_map_params$flow)) +
+      geom_point(aes(x = active_map_params$flow,
+                     y = if (active_map_params$flow %in% flow_idx) pf[[wua_var()]][[which(flow_idx == active_map_params$flow)]] else NA)) +
       #geom_text(aes(x = 1, y = chan_width_ft, label = chan_width_ft)) +
       scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
-      scale_y_continuous(limits = c(0, NA)) +
       #scale_y_continuous(trans = ihs, labels = scales::label_comma(), limits = c(0, NA)) +
       theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
+      scale_y_continuous(limits = c(0, NA)) +
+      labs(title = str_glue("Suitable Habitat Area vs Flow for {clicked_item_label()}"),
+           subtitle = NULL,
+           caption =
+             if (selected_gage() %in% streamgage_attr$station_id) {
+               paste("Duration Analysis using CDEC Streamgage",
+                     streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]])
+             } else {
+               "No Duration Data Available"
+             }) +
       xlab("Flow (cfs)") + ylab(wua_lab()) +
       scale_color_manual(aesthetics = c("fill", "color"),
                          name = "Model Type",
                          values = palette_colors) +
-      scale_linetype_manual(name = paste("Duration Analysis", coalesce(paste0("(",str_to_upper(selected_gage()), ")"), "")),
+      scale_linetype_manual(name = "Duration Analysis",
                             values = palette_linetypes)
     } else if (most_recent_map_click$type == "watershed") {
-      predictions_watershed |>
+      pf <- predictions_watershed |>
         filter(watershed_level_3 == selected_watershed$watershed_name) |>
-        filter(habitat == input$habitat_type) |>
+        filter(habitat == input$habitat_type)
+      pf |>
         ggplot(aes(x = flow_cfs)) +
         geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
                         ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
@@ -279,9 +305,21 @@ function(input, output, session){
           input$wua_var == "wua_per_lf_pred_SN" ~ "Scale-Normalized",
           input$wua_var == "wua_per_lf_pred" ~ "Predicted",
           input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
+        geom_vline(aes(xintercept = active_map_params$flow)) +
+        geom_point(aes(x = active_map_params$flow,
+                       y = if (active_map_params$flow %in% flow_idx) pf[[wua_var()]][[which(flow_idx == active_map_params$flow)]] else NA)) +
         scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
         scale_y_continuous(limits = c(0, NA)) +
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
+        labs(title = str_glue("Suitable Habitat Area vs Flow for {clicked_item_label()}"),
+             subtitle = NULL,
+             caption =
+               if (selected_gage() %in% streamgage_attr$station_id) {
+                 paste("Duration Analysis using CDEC Streamgage",
+                       streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]])
+               } else {
+                 "No Duration Data Available"
+               }) +
         xlab("Flow (cfs)") + ylab(wua_lab()) +
         scale_color_manual(aesthetics = c("fill", "color"),
                            name = "Model Type",
@@ -289,9 +327,10 @@ function(input, output, session){
         scale_linetype_manual(name = paste("Duration Analysis", coalesce(paste0("(",str_to_upper(selected_gage()), ")"), "")),
                               values = palette_linetypes)
     } else if (most_recent_map_click$type == "mainstem") {
-      predictions_mainstem |>
+      pf <- predictions_mainstem |>
         filter(river_cvpia == selected_mainstem$river_name) |>
-        filter(habitat == input$habitat_type) |>
+        filter(habitat == input$habitat_type)
+      pf |>
         ggplot(aes(x = flow_cfs)) +
         geom_ribbon(aes(ymin = !!sym(paste0(input$wua_units,"_pred_SD")),
                         ymax = !!sym(paste0(input$wua_units,"_pred_SN")),
@@ -306,9 +345,21 @@ function(input, output, session){
           input$wua_var == "wua_per_lf_pred_SN" ~ "Scale-Normalized",
           input$wua_var == "wua_per_lf_pred" ~ "Predicted",
           input$wua_var == "wua_per_lf_actual" ~ "Actual"))) +
+        geom_vline(aes(xintercept = active_map_params$flow)) +
+        geom_point(aes(x = active_map_params$flow,
+                       y = if (active_map_params$flow %in% flow_idx) pf[[wua_var()]][[which(flow_idx == active_map_params$flow)]] else NA)) +
         scale_x_log10(labels = scales::label_comma()) + annotation_logticks(sides = "b") +
         scale_y_continuous(limits = c(0, NA)) +
         theme_minimal() + theme(panel.grid.minor = element_blank(), legend.position = "top", legend.box="vertical", text=element_text(size=21)) +
+        labs(title = str_glue("Suitable Habitat Area vs Flow for {clicked_item_label()}"),
+             subtitle = NULL,
+             caption =
+               if (selected_gage() %in% streamgage_attr$station_id) {
+                 paste("Duration Analysis using CDEC Streamgage",
+                       streamgage_attr$station_label[[which(streamgage_attr$station_id == selected_gage())]])
+               } else {
+                 "No Duration Data Available"
+               }) +
         xlab("Flow (cfs)") + ylab(wua_lab()) +
         scale_color_manual(aesthetics = c("fill", "color"),
                            name = "Model Type",
@@ -325,7 +376,8 @@ function(input, output, session){
 
     # first remove any existing flowlines
     m |> leaflet::removeShape(geom$object_id)
-    m |> leaflet::removeShape(mainstems$object_id)
+    m |> leaflet::removeShape(mainstems$mainstem_id)
+    m |> leaflet::removeShape(watersheds$watershed_id)
 
     if(type == "comid") {
     if(show) {
@@ -337,7 +389,7 @@ function(input, output, session){
                                  label = ~lapply(object_label, htmltools::HTML),
                                  color = ~pal(wua_per_lf, type=input$habitat_type), #pal(wua_per_lf),
                                  opacity = 1,
-                                 weight = 2,
+                                 weight = ~if_else(comid %in% attr$comid[which(!is.na(attr$river_cvpia))], 2, 1),
                                  options = leaflet::pathOptions(pane = "Flowlines"),
                                  group = "flowlines",
                                  highlightOptions = leaflet::highlightOptions(color = "#8B0000",
@@ -346,9 +398,10 @@ function(input, output, session){
       ) |>
         leaflet::addLegend(position = "bottomright",
                            colors = rev(flow_scale_colors[[input$habitat_type]]),
-#                           colors = rev(pal(seq(pal_limits[[1]], pal_limits[[2]], (pal_limits[[2]]-pal_limits[[1]])/5))),
-                           labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
-#                           labels = c(round(pal_limits[[2]],2), rep("", 5-1), round(pal_limits[[1]],2)),
+                           # # discrete version
+                           # labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                           # continuous version
+                           labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
                            title = "Suitable Habitat Area (ft2) per linear ft",
                            layerId = "clegend")
       } else {
@@ -373,13 +426,59 @@ function(input, output, session){
       ) |>
         leaflet::addLegend(position = "bottomright",
                            colors = rev(flow_scale_colors[[input$habitat_type]]),
-                           #                           colors = rev(pal(seq(pal_limits[[1]], pal_limits[[2]], (pal_limits[[2]]-pal_limits[[1]])/5))),
-                           labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
-                           #                           labels = c(round(pal_limits[[2]],2), rep("", 5-1), round(pal_limits[[1]],2)),
+                           # # discrete version
+                           # labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                           # continuous version
+                           labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
                            title = "Suitable Habitat Area (ft2) per linear ft",
                            layerId = "clegend")
     } else {
         m |> leaflet::removeShape(active_geom_mainstem()$object_id) |> leaflet::removeControl("clegend")
+      }
+    } else if (type == "watershed") {
+      if(show) {
+        message("plotting ", nrow(active_geom_watershed()), " watersheds")
+        m |>  leaflet::addPolygons(data = active_geom_watershed(),
+                                   stroke = T,
+                                   weight = 3,
+                                   color = "#FFFFFF",
+                                   opacity = 0.5,
+                                   fill = T,
+                                   fillColor = ~pal(wua_per_lf, type=input$habitat_type),
+                                   fillOpacity = 0.33,
+                                   layerId = ~watershed_id,
+                                   group = "watersheds",
+                                   label = ~lapply(watershed_label, htmltools::HTML),
+                                   highlightOptions = highlightOptions(stroke = T,
+                                                                       weight = 3,
+                                                                       color = "#8B0000",
+                                                                       opacity = 1,
+                                                                       fill = T,
+                                                                       fillColor = "#8B0000",
+                                                                       fillOpacity = 0.33,
+                                                                       bringToFront = T),
+                                   options = leaflet::pathOptions(pane = "Watersheds")) |>
+          leaflet::addPolylines(data = geom,
+                                layerId = ~object_id,
+                                label = ~str_glue("{comid} - {gnis_name}"),
+                                color = "darkgray",
+                                opacity = 1,
+                                weight = ~if_else(comid %in% attr$comid[which(!is.na(attr$river_cvpia))], 2, 1),
+                                options = leaflet::pathOptions(pane = "FlowlinesContext"),
+                                group = "flowlines") |>
+          leaflet::addLegend(position = "bottomright",
+                             colors = rev(flow_scale_colors[[input$habitat_type]]),
+                             # # discrete version
+                             # labels = lapply(paste("&ge;", rev(flow_scale_breaks[[input$habitat_type]])), htmltools::HTML),
+                             # continuous version
+                             labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
+                             title = "Suitable Habitat Area (ft2) per linear ft",
+                             layerId = "clegend")
+      } else {
+        m |>
+          leaflet::removeShape(geom$object_id) |>
+          leaflet::removeShape(active_geom_watersheds()$watershed_id) |>
+          leaflet::removeControl("clegend")
       }
     }
   }
@@ -395,7 +494,10 @@ function(input, output, session){
     leaflet::leaflet() |>
       leaflet::addMapPane("Basemap", zIndex = 400) |>
       leaflet::addMapPane("ValleyLowland", zIndex = 440) |>
+      leaflet::addMapPane("FlowlinesContext", zIndex = 444) |>
       leaflet::addMapPane("Watersheds", zIndex = 445) |>
+      leaflet::addMapPane("Underlays", zIndex = 465) |>
+      leaflet::addMapPane("ActiveGeom", zIndex = 466) |>
       leaflet::addMapPane("Flowlines", zIndex = 470) |>
       leaflet::addMapPane("Overlays", zIndex = 475) |>
       leaflet::addMapPane("AOI", zIndex = 480) |>
@@ -425,26 +527,26 @@ function(input, output, session){
                          lat1 = bbox[["ymin"]],
                          lng2 = bbox[["xmax"]],
                          lat2 = bbox[["ymax"]]) |>
-      leaflet::addPolygons(data = watersheds,
-                           stroke = T,
-                           weight = 1,
-                           color = "#31a1b3",
-                           opacity = 0.5,
-                           fill = T,
-                           fillColor = "#FFFFFF",
-                           fillOpacity = 0,
-                           layerId = ~watershed_id,
-                           group = "watersheds",
-                           label = ~lapply(watershed_label, htmltools::HTML),
-                           highlightOptions = highlightOptions(stroke = T,
-                                                               weight = 1,
-                                                               color = "white",
-                                                               opacity = 1,
-                                                               fill = T,
-                                                               fillColor = "#31a1b3",
-                                                               fillOpacity = 0.5,
-                                                               bringToFront = F)
-      ) |>
+    #  leaflet::addPolygons(data = watersheds,
+    #                       stroke = T,
+    #                       weight = 1,
+    #                       color = "#31a1b3",
+    #                       opacity = 0.5,
+    #                       fill = T,
+    #                       fillColor = "#FFFFFF",
+    #                       fillOpacity = 0,
+    #                       layerId = ~watershed_id,
+    #                       group = "watersheds",
+    #                       label = ~lapply(watershed_label, htmltools::HTML),
+    #                       highlightOptions = highlightOptions(stroke = T,
+    #                                                           weight = 1,
+    #                                                           color = "white",
+    #                                                           opacity = 1,
+    #                                                           fill = T,
+    #                                                           fillColor = "#31a1b3",
+    #                                                           fillOpacity = 0.5,
+    #                                                           bringToFront = F)
+    #  ) |>
       leaflet::addPolygons(data = hqt, group = "HQT - Valley Lowland",
                            popup = "Habitat Quantification Tool Boundary",
                            color = "darkgrey",
@@ -452,6 +554,19 @@ function(input, output, session){
                            fillColor = "grey",
                            fillOpacity = 0.33,
                            options = leaflet::pathOptions(pane = "ValleyLowland")) |>
+      leaflet::addCircleMarkers(data = streamgage_pts,
+                                group = "streamgages",
+                                label = ~lapply(paste0(station_label,
+                                                       "<br />",
+                                                       "<em>Select a nearby flowline or watershed to calculate duration suitability.</em>"),
+                                                htmltools::HTML),
+                                color = "black",
+                                opacity = 0.33,
+                                fillColor = NA,
+                                fillOpacity = 0,
+                                radius = 6,
+                                weight = 1,
+                                options = leaflet::pathOptions(pane = "Underlays"))|>
       addLayersControl(
         baseGroups = c("Terrain (default)", "Aerial Imagery"),
         overlayGroups = c("flowlines", "watersheds", "streamgages", "HQT - Valley Lowland"),
@@ -548,12 +663,10 @@ selected_watershed <- reactiveValues(object_id = NA,
                              weight = 6,
                              color = "#f6b911",
                              opacity = 1,
-                             fill = T,
-                             fillColor = "#f6b911",
-                             fillOpacity = 0.33,
-                             group = "watersheds", # this will make the active watershed also show/hide with the layer toggle
+                             fill = F,
                              layerId = "active_watershed",
-                             label = ~lapply(watershed_label, htmltools::HTML)) |>
+                             label = ~lapply(watershed_label, htmltools::HTML),
+                             options = leaflet::pathOptions(pane = "ActiveGeom")) |>
         leaflet::fitBounds(lng1 = selected_watershed_bbox()$xmin,
                            lat1 = selected_watershed_bbox()$ymin,
                            lng2 = selected_watershed_bbox()$xmax,
@@ -583,11 +696,12 @@ selected_watershed <- reactiveValues(object_id = NA,
       proxy |>
         leaflet::removeShape("active_flowline") |>
         leaflet::addPolylines(data = clicked_polyline,
-                              weight = 20,
+                              weight = 9,
                               color = "#f6b911",
                               opacity = 1,
                               layerId = "active_flowline",
-                              label = ~lapply(object_label, htmltools::HTML)) #|>
+                              label = ~lapply(object_label, htmltools::HTML),
+                              options = leaflet::pathOptions(pane = "ActiveGeom")) #|>
       #fitBounds(bbox$ymin, bbox$xmin, bbox$ymax, bbox$xmax)
 
     } else {
@@ -746,10 +860,16 @@ selected_watershed <- reactiveValues(object_id = NA,
       proxy |>
         leaflet::addCircleMarkers(data = streamgage_options_geom_labelled(),
                                   layerId = ~paste0("streamgage_", station_id),
-                                  group = "streamgages",
-                                  label = ~station_label,
+                                  group = "streamgages_active",
+                                  label = ~lapply(paste0(station_label,
+                                                         "<br />",
+                                                         if_else(selected,
+                                                                 "<em>Active streamgage for duration suitability calculation</em>",
+                                                                 "<em>Click to use this streamgage to calculate duration suitability</em>")),
+                                                  htmltools::HTML),
                                   color = ~if_else(selected, "#00A2E8", "#000000"),
                                   radius = 6,
+                                  weight = 2,
                                   options = leaflet::markerOptions(pane = "Overlays"))
     }
     message("/// Observe streamgage_options_geom_labelled: Update streamgage leaflet map layer")
@@ -801,6 +921,7 @@ selected_watershed <- reactiveValues(object_id = NA,
     }
     message("/// Render output$flowscale_toggle")
   })
+
 
   # DURATION ANALYSIS ----------------------------------------------------------
 
@@ -993,8 +1114,8 @@ selected_watershed <- reactiveValues(object_id = NA,
         group_by(habitat, run, wy_group,
                  !!sym(group_var), q = flow_idx) |> # better to use the float version
         summarize(across(c(wua, durwua), switch(input$wua_units,
-                                                wua_per_lf = function(y) sum(y * reach_length_ft) / sum(reach_length_ft),
-                                                wua_acres = function(y) sum(y * reach_length_ft) / 43560)),
+                                                wua_per_lf = function(y) sum(y * reach_length_ft, na.rm=T) / sum(reach_length_ft, na.rm=T),
+                                                wua_acres = function(y) sum(y * reach_length_ft, na.rm=T) / 43560)),
                   .groups="drop")
       } else {
 
@@ -1045,7 +1166,10 @@ selected_watershed <- reactiveValues(object_id = NA,
         annotation_logticks(sides = "b") +
         ylab("") + xlab("Flow (cfs)") +
         theme(legend.position = "none",
-              panel.grid.minor = element_blank()) +
+              panel.grid.minor = element_blank(),
+              axis.title = element_text(size = 12, face = "bold"),
+              axis.text = element_text(size = 10, face = "bold"),
+              strip.text = element_text(size = 15, face = "bold")) +
         scale_linetype_manual(name = "",
                               values = c("None" = "solid",
                                          "ref" = "dashed",
@@ -1066,12 +1190,16 @@ selected_watershed <- reactiveValues(object_id = NA,
         scale_y_continuous(breaks = scales::breaks_extended(8), labels = scales::label_comma(), limits=c(0, NA)) +
         annotation_logticks(sides = "b") +
         theme(legend.position = "top",
-              panel.grid.minor = element_blank()) +
+              panel.grid.minor = element_blank(),
+              axis.title = element_text(size = 12),
+              axis.text = element_text(size = 10, face = "bold"),
+              title = element_text(size = 15, face = "bold"),
+              plot.caption = element_text(face = "italic")) +
         scale_linetype_manual(name = "",
                               values = c("Original" = "solid",
                                          "Duration-Weighted" = "dashed")) +
         labs(subtitle = "Suitable Habitat Curve",
-             caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids (at cfs downscaled by drainage area and precipitation ratio).")
+             caption = "Aggregated from duration-scaled habitat curves for outlet comid (at nominal cfs) and other comids \n(at cfs downscaled by drainage area and precipitation ratio).")
 
       plt_gage_drc <-
         streamgage_drc() |>
@@ -1083,9 +1211,13 @@ selected_watershed <- reactiveValues(object_id = NA,
         annotation_logticks(sides = "b") +
         ylab("Number of Days") + xlab("Flow (cfs)") +
         theme(legend.position = "none",
-              panel.grid.minor = element_blank()) +
+              panel.grid.minor = element_blank(),
+              axis.title = element_text(size = 12),
+              axis.text = element_text(size = 10, face = "bold"),
+              title = element_text(size = 15, face = "bold"),
+              plot.caption = element_text(face = "italic")) +
         labs(subtitle = str_glue("{str_to_upper(selected_gage())} Max Length of Period Exceeding Flow per WY-Season"),
-             caption = str_glue("Showing raw flow duration curve for streamgage, not scaled to {most_recent_map_click$type}."))
+             caption = str_glue("Showing raw flow duration curve for streamgage,\nnot scaled to {most_recent_map_click$type}."))
 
       (plt_gage_drc / plt_fsa_dur) + plot_layout(axes = "collect_x")
 

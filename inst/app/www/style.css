@@ -17,7 +17,8 @@ div[role=main] {
 }
 .leaflet-Basemap-pane {
   opacity: 0.75;
-  filter: saturate(0.75);
+  /*filter: saturate(0.75);*/
+  filter: saturate(0.25);
 }
 .leaflet-Reference-pane {
   filter: saturate(0);
@@ -27,6 +28,12 @@ div[role=main] {
 .leaflet-ValleyLowland-pane {
   mix-blend-mode: multiply;
   opacity: 0.33;
+}
+.leaflet-Watersheds-pane {
+  mix-blend-mode: multiply;
+}
+.leaflet-FlowlinesContext-pane {
+  mix-blend-mode: multiply;
 }
 
 #invmassControlPanel {
@@ -73,4 +80,18 @@ div[role=main] {
   max-width: calc(75vw - 200px);
 }
 
+/* navbar header area */
 
+.navbar-brand {
+  padding: 5px 15px !important;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+}
+
+.title-image {
+  height: 40px;
+  margin-right: 10px;
+}
