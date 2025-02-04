@@ -49,6 +49,9 @@
     <li>
       <a href="../articles/spawning_extents.html">Spawning Extents</a>
     </li>
+    <li>
+      <a href="../articles/interactive_map.html">Interactive Map User Guide</a>
+    </li>
   </ul></li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -157,7 +160,7 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example temporal prediction given comid and streamgage</span></span></span>
 <span class="r-in"><span><span class="fu">habitat_predict</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">150</span>, <span class="fl">300</span>, <span class="fl">9999</span><span class="op">)</span>, reach <span class="op">=</span> <span class="fl">7978069</span>, streamgage <span class="op">=</span> <span class="st">"FSB"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.09784275 0.09784275 0.10407396 0.10596990 3.34399588</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in approx(x = fsa_weighted$q, xout = fsa$flow_cfs, y = fsa_weighted$durwua,     rule = 2:2, na.rm = F):</span> need at least two non-NA values to interpolate</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example non-temporal prediction given mainstem</span></span></span>
 <span class="r-in"><span><span class="fu">habitat_predict</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">150</span>, <span class="fl">300</span>, <span class="fl">9999</span><span class="op">)</span>, mainstem <span class="op">=</span> <span class="st">"Feather River"</span><span class="op">)</span></span></span>
@@ -165,7 +168,12 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example temporal prediction given comid and streamgage</span></span></span>
 <span class="r-in"><span><span class="fu">habitat_predict</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">150</span>, <span class="fl">300</span>, <span class="fl">9999</span><span class="op">)</span>, mainstem <span class="op">=</span> <span class="st">"Feather River"</span>, streamgage <span class="op">=</span> <span class="st">"FSB"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1]  0.06529095  0.06529095  0.07566989  0.81503042 17.19756125</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mutate(mutate(mutate(filter(flow_xw, comid %in% comids), fsa = map2(comid,     multiplier, function(x, y) {        habistat::habitat_fsa_reach_scaled(reach = x, multiplier = y,             habitat_type = habitat_type, units = "ft")    })), drc = map2(comid, streamgage, function(x, y) {    habistat::habitat_drc_weighted(reach = x, streamgage = y,         run = run, wy_group = wy_group, gradient = gradient,         scale = "flow")})), fsa_x_drc = map2(fsa, drc, function(f, d) {    fsa_weighted &lt;- habistat::duration_apply_dhsi_to_fsa_curve(fsa = f,         drc = d, fsa_q = flow_cfs, fsa_wua = habitat, drc_q = flow_cfs,         drc_dhsi = durhsi)    return(tibble(flow_cfs = f$flow_cfs, habitat = approx(x = fsa_weighted$q,         xout = f$flow_cfs, y = fsa_weighted$durwua, rule = 2:2,         na.rm = F)$y))})):</span> <span style="color: #00BBBB;">ℹ</span> In argument: `fsa_x_drc = map2(...)`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In group 1: `river_cvpia = "Feather River"`.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `map2()`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In index: 1.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `approx()`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> need at least two non-NA values to interpolate</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example manual prediction given custom provided flow-to-suitable-area curve</span></span></span>
 <span class="r-in"><span><span class="fu">habitat_predict</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">150</span>, <span class="fl">300</span>, <span class="fl">9999</span><span class="op">)</span>, fsa_x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span>, fsa_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">47</span>, <span class="fl">470</span>, <span class="fl">4700</span><span class="op">)</span><span class="op">)</span></span></span>

@@ -72,6 +72,9 @@
     <li>
       <a href="../articles/spawning_extents.html">Spawning Extents</a>
     </li>
+    <li>
+      <a href="../articles/interactive_map.html">Interactive Map User Guide</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -100,7 +103,7 @@ Prediction</h1>
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2024-11-07</h4>
+            <h4 data-toc-skip class="date">2025-02-04</h4>
       
 
       <div class="hidden name"><code>statistical_model.Rmd</code></div>
@@ -271,7 +274,7 @@ representing the magnitude of flow in the watershed. A product of the
 drainage area and mean annual precipitation with units of million acre
 feet (Maf), this value represents the average quantity of water input
 into the reach’s catchment in a year:</p>
-<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>S</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">f</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>=</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup><mo>×</mo><mrow><mi>D</mi><mi>A</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>×</mo><mrow><mi>M</mi><mi>A</mi><mi>P</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">{Scalar [\mathrm{Maf}]} = 10^{-6} \times {DA [\mathrm{ac}]} \times {MAP [\mathrm{ft}]}</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>S</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">f</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>=</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>6</mn></mrow></msup><mo>×</mo><mrow><mi>D</mi><mi>A</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>×</mo><mrow><mi>M</mi><mi>A</mi><mi>P</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">{Scalar [\mathrm{Maf}]} = 10^{-6} \times {DA [\mathrm{ac}]} \times {MAP [\mathrm{ft}]}</annotation></semantics></math></p>
 <p>The habitat and flow variables are multiplied by this scalar prior to
 prediction, then divided by the scalar after prediction.</p>
 <blockquote>

@@ -1,12 +1,13 @@
-pandoc: 3.1.11
+pandoc: '3.2'
 pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   duration_analysis: duration_analysis.html
   habitat_training_data: habitat_training_data.html
+  interactive_map: interactive_map.html
   model_overview: model_overview.html
   predictor_variables: predictor_variables.html
   spawning_extents: spawning_extents.html
   statistical_model: statistical_model.html
   watershed_aggregation: watershed_aggregation.html
-last_built: 2024-11-07T19:12Z
+last_built: 2025-02-04T20:51Z
