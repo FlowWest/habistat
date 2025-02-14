@@ -209,13 +209,13 @@ $$\phi_S \leq 3$$
 
 Spawning geographic extent was validated against redd surveys. Redd survey data were assembled for the following reaches. Redd counts from surveys were binned by river mile for comparison. Habistat spawning extents and predicted spawning habitat area were similarly mapped onto river miles using NHD reach lengths or published river mile standards where available. Visual comparison for alignment provided a first round of validation, which will continue to be refined and used to adapt the spawning reach delineation logic.
 
-| Reach            | River Mile Source | Redd Survey Description |
-| ---------------- | ----------------- | ----------------------- | 
-| Lower Yuba River | Published (DWR)   | <mark>add here</mark> |
-| Feather River    | Published (DWR)   | <mark>add here</mark> |
-| Battle Creek     | NHDPlusV2         | <mark>add here</mark> |
-| Clear Creek      | NHDPlusV2         | <mark>add here</mark> |
-| Mill Creek       | NHDPlusV2         | <mark>add here</mark> |
+| Reach            | River Mile Source | Runs        | Season  | Years     | Data Source |
+| ---------------- | ----------------- | ----------- | ------- | --------- | ----------- |
+| Lower Yuba River | USGS i12 (via [DWR](https://gis.water.ca.gov/arcgis/rest/services/InlandWaters/i12_River_Mile_Markers_USGS/FeatureServer)) | Spring/Fall | Sep-Nov | 2009-2010 | [Lower Yuba River Management Team (RMT)](https://docs.google.com/document/d/1wEZAAv_Gppihmb7VfjV_5iBLUvXA6SbD/edit), by season and binned RM |
+| Feather River    | USGS i12 (via [DWR](https://gis.water.ca.gov/arcgis/rest/services/InlandWaters/i12_River_Mile_Markers_USGS/FeatureServer)) | _ | Sep-Dec |2014-2023 | weekly dataset at discrete survey sites ([link](https://github.com/FlowWest/feather-redd/blob/main/data/archive/all_redd_data.csv)) |
+| Battle Creek     | USFWS (2018)^[USFWS (2018), *Summary of Actions to Jumpstart the Reintroduction of Sacramento River Winter-run Chinook Salmon, to Battle Creek, 2017 – 2018*. [https://www.noaa.gov/sites/default/files/legacy/document/2020/Oct/07354626189.pdf](https://www.noaa.gov/sites/default/files/legacy/document/2020/Oct/07354626189.pdf)] | Spring      | Sep-Oct | 2011-2022 | [SRJPE](https://github.com/SRJPE/JPE-datasets/blob/main/data-raw/qc-markdowns/adult-holding-redd-and-carcass-surveys/battle-creek/battle_creek_redd_qc.md), by river mile |
+| Clear Creek      | NHDPlusV2         | Spring | Sep-Oct | 2000-2019 | [SRJPE](https://github.com/FlowWest/JPE-datasets/blob/main/data-raw/qc-markdowns/adult-holding-redd-and-carcass-surveys/clear-creek/clear_creek_redds_survey_qc.md), by lat/lon points |
+| Mill Creek       | NHDPlusV2         | Spring | _ | 1997-2020 | CDFW via [SRJPE](https://github.com/FlowWest/JPE-datasets/blob/main/data-raw/qc-markdowns/adult-holding-redd-and-carcass-surveys/mill-creek/mill-creek-redd-survey-qc-checklist.md), by named reaches |
 <!--
 | American River   | Published (DWR)   | <mark>add here</mark> |
 | Mokelumne River  | Published (EBMUD) | <mark>add here</mark> |

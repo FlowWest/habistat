@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Spawning Extents</h1>
                         <h4 data-toc-skip class="author"><a href="slewis@flowwest.com">Skyler Lewis</a></h4>
             
-            <h4 data-toc-skip class="date">2025-02-04</h4>
+            <h4 data-toc-skip class="date">2025-02-14</h4>
       
 
       <div class="hidden name"><code>spawning_extents.Rmd</code></div>
@@ -443,36 +443,70 @@ where available. Visual comparison for alignment provided a first round
 of validation, which will continue to be refined and used to adapt the
 spawning reach delineation logic.</p>
 <table class="table">
+<colgroup>
+<col width="22%">
+<col width="23%">
+<col width="15%">
+<col width="9%">
+<col width="12%">
+<col width="15%">
+</colgroup>
 <thead><tr class="header">
 <th>Reach</th>
 <th>River Mile Source</th>
-<th>Redd Survey Description</th>
+<th>Runs</th>
+<th>Season</th>
+<th>Years</th>
+<th>Data Source</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td>Lower Yuba River</td>
-<td>Published (DWR)</td>
-<td><mark>add here</mark></td>
+<td>USGS i12 (via <a href="https://gis.water.ca.gov/arcgis/rest/services/InlandWaters/i12_River_Mile_Markers_USGS/FeatureServer" class="external-link">DWR</a>)</td>
+<td>Spring/Fall</td>
+<td>Sep-Nov</td>
+<td>2009-2010</td>
+<td>
+<a href="https://docs.google.com/document/d/1wEZAAv_Gppihmb7VfjV_5iBLUvXA6SbD/edit" class="external-link">Lower
+Yuba River Management Team (RMT)</a>, by season and binned RM</td>
 </tr>
 <tr class="even">
 <td>Feather River</td>
-<td>Published (DWR)</td>
-<td><mark>add here</mark></td>
+<td>USGS i12 (via <a href="https://gis.water.ca.gov/arcgis/rest/services/InlandWaters/i12_River_Mile_Markers_USGS/FeatureServer" class="external-link">DWR</a>)</td>
+<td>_</td>
+<td>Sep-Dec</td>
+<td>2014-2023</td>
+<td>weekly dataset at discrete survey sites (<a href="https://github.com/FlowWest/feather-redd/blob/main/data/archive/all_redd_data.csv" class="external-link">link</a>)</td>
 </tr>
 <tr class="odd">
 <td>Battle Creek</td>
-<td>NHDPlusV2</td>
-<td><mark>add here</mark></td>
+<td>USFWS (2018)<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>
+</td>
+<td>Spring</td>
+<td>Sep-Oct</td>
+<td>2011-2022</td>
+<td>
+<a href="https://github.com/SRJPE/JPE-datasets/blob/main/data-raw/qc-markdowns/adult-holding-redd-and-carcass-surveys/battle-creek/battle_creek_redd_qc.md" class="external-link">SRJPE</a>,
+by river mile</td>
 </tr>
 <tr class="even">
 <td>Clear Creek</td>
 <td>NHDPlusV2</td>
-<td><mark>add here</mark></td>
+<td>Spring</td>
+<td>Sep-Oct</td>
+<td>2000-2019</td>
+<td>
+<a href="https://github.com/FlowWest/JPE-datasets/blob/main/data-raw/qc-markdowns/adult-holding-redd-and-carcass-surveys/clear-creek/clear_creek_redds_survey_qc.md" class="external-link">SRJPE</a>,
+by lat/lon points</td>
 </tr>
 <tr class="odd">
 <td>Mill Creek</td>
 <td>NHDPlusV2</td>
-<td><mark>add here</mark></td>
+<td>Spring</td>
+<td>_</td>
+<td>1997-2020</td>
+<td>CDFW via <a href="https://github.com/FlowWest/JPE-datasets/blob/main/data-raw/qc-markdowns/adult-holding-redd-and-carcass-surveys/mill-creek/mill-creek-redd-survey-qc-checklist.md" class="external-link">SRJPE</a>,
+by named reaches</td>
 </tr>
 </tbody>
 </table>
@@ -499,6 +533,9 @@ J. of Water Resources Research. <a href="https://doi.org/10.1029/2019WR026691" c
 <li id="fn4"><p>Wentworth, C. K. (1922). A Scale of Grade and Class
 Terms for Clastic Sediments. <em>The Journal of Geology</em> 30(5):
 377-392. <a href="https://www.jstor.org/stable/30063207" class="external-link uri">https://www.jstor.org/stable/30063207</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>USFWS (2018), <em>Summary of Actions to Jumpstart the
+Reintroduction of Sacramento River Winter-run Chinook Salmon, to Battle
+Creek, 2017 – 2018</em>. <a href="https://www.noaa.gov/sites/default/files/legacy/document/2020/Oct/07354626189.pdf" class="external-link">https://www.noaa.gov/sites/default/files/legacy/document/2020/Oct/07354626189.pdf</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
