@@ -37,11 +37,11 @@ habistat::wua_hydraulic |>
 
 | Stream | Extent | Length | Author | Year | Platform | Flow Range |
 | ------ | ------ | ------ | ------ | ---- | -------- | ---------- |
-| Deer Creek | Delaney Slough to Sacramento River confluence | 40,000 LF | FlowWest | 2021 | HEC-RAS 2D | 100 - 15,000 cfs |
+| Deer Creek | Delaney Slough to Sacramento River confluence | 54,000 LF | FlowWest | 2021 | HEC-RAS 2D | 100 - 15,000 cfs |
 | Lower Yuba River | Englebright Dam to Feather River confluence | 120,000 LF | CBEC | 2020 | SRH-2D | 300 - 110,400 cfs |
-| Stanislaus River | Knights Ferry to San Joaquin River confluence | 90,000 LF | NewFields | 2013 | SRH-2D | 500 - 5,000 cfs |
-| Tuolumne River | Basso-La Grange Reach | ___ LF | FlowWest | ___ | HEC-RAS 2D | 80 - 9,600 cfs |
-| Mokelumne River | Camanche Dam to North/South Mokelume Divergence | ___ LF | EBMUD | ___ | HEC-RAS 2D | 100 - 5,000 cfs |
+| Stanislaus River | Knights Ferry to San Joaquin River confluence | 280,000 LF | NewFields | 2013 | SRH-2D | 500 - 5,000 cfs |
+| Tuolumne River | Basso-La Grange Reach | 22,000 LF | FlowWest | 2022 | HEC-RAS 2D | 80 - 9,600 cfs |
+| Mokelumne River | Camanche Dam to North/South Mokelume Divergence | 162,000 LF | EBMUD | 2015 (rev. 2023) | HEC-RAS 2D | 100 - 5,000 cfs |
 
 Datasets are temporarily filtered to a maximum flow of 15,000 cfs during model development.
 
@@ -133,7 +133,7 @@ The result is two values for each ComID (reach) at each flow. Units are ft2/ft, 
 
 ### Baseflow Channel Removal
 
-For rearing reaches, it is also necessary to eliminate the area within within the perennial baseflow channel, even where depths and velocities are within the suitable range of the habitat suitability index (HSI). <mark>TODO Why?</mark>
+For rearing reaches, it is also necessary to eliminate the area within the perennial baseflow channel, even where depths and velocities are within the suitable range of the habitat suitability index (HSI), "due to lack of cover and food production mechanisms."^[CBEC (2022). Yuba River Flow Effects Modeling Project Lower Yuba River Temporal Habitat Evaluation Report. CBEC Project #19-1029. [https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view](https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view)]
 
 This is achieved by zeroing out the grid cells corresponding to the baseflow channel in the original hydraulic model output, prior to summarizing habitat suitability and creating the training dataset. The spatial extent of the baseflow channel can be estimated by choosing a specific baseflow (cfs) for each training reach and clipping out the inundation extent at this flow. In most cases, this is the minimum of the available flows in the provided hydraulic model results grids.
 

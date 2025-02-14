@@ -102,7 +102,7 @@
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-04</h4>
+            <h4 data-toc-skip class="date">2025-02-14</h4>
       
 
       <div class="hidden name"><code>habitat_training_data.Rmd</code></div>
@@ -141,7 +141,7 @@ models:</p>
 <tr class="odd">
 <td>Deer Creek</td>
 <td>Delaney Slough to Sacramento River confluence</td>
-<td>40,000 LF</td>
+<td>54,000 LF</td>
 <td>FlowWest</td>
 <td>2021</td>
 <td>HEC-RAS 2D</td>
@@ -159,7 +159,7 @@ models:</p>
 <tr class="odd">
 <td>Stanislaus River</td>
 <td>Knights Ferry to San Joaquin River confluence</td>
-<td>90,000 LF</td>
+<td>280,000 LF</td>
 <td>NewFields</td>
 <td>2013</td>
 <td>SRH-2D</td>
@@ -168,18 +168,18 @@ models:</p>
 <tr class="even">
 <td>Tuolumne River</td>
 <td>Basso-La Grange Reach</td>
-<td>___ LF</td>
+<td>22,000 LF</td>
 <td>FlowWest</td>
-<td>___</td>
+<td>2022</td>
 <td>HEC-RAS 2D</td>
 <td>80 - 9,600 cfs</td>
 </tr>
 <tr class="odd">
 <td>Mokelumne River</td>
 <td>Camanche Dam to North/South Mokelume Divergence</td>
-<td>___ LF</td>
+<td>162,000 LF</td>
 <td>EBMUD</td>
-<td>___</td>
+<td>2015 (rev. 2023)</td>
 <td>HEC-RAS 2D</td>
 <td>100 - 5,000 cfs</td>
 </tr>
@@ -370,9 +370,9 @@ for each reach, at each flow.</li>
 <h3 id="baseflow-channel-removal">Baseflow Channel Removal<a class="anchor" aria-label="anchor" href="#baseflow-channel-removal"></a>
 </h3>
 <p>For rearing reaches, it is also necessary to eliminate the area
-within within the perennial baseflow channel, even where depths and
-velocities are within the suitable range of the habitat suitability
-index (HSI). <mark>TODO Why?</mark></p>
+within the perennial baseflow channel, even where depths and velocities
+are within the suitable range of the habitat suitability index (HSI),
+“due to lack of cover and food production mechanisms.”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 <p>This is achieved by zeroing out the grid cells corresponding to the
 baseflow channel in the original hydraulic model output, prior to
 summarizing habitat suitability and creating the training dataset. The
@@ -395,6 +395,14 @@ spatially clipping.</p>
 </h2>
 <p>The summarized habitat training dataset by reach is available in the
 data package as <a href="../reference/wua_hydraulic.html"><code>wua_hydraulic</code></a>.</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr>
+<ol>
+<li id="fn1"><p>CBEC (2022). Yuba River Flow Effects Modeling Project
+Lower Yuba River Temporal Habitat Evaluation Report. CBEC Project
+#19-1029. <a href="https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view" class="external-link">https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
   </div>
 
