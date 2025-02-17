@@ -106,7 +106,9 @@ shinyUI(
                  shinyjs::useShinyjs(),
                  shinycssloaders::withSpinner(leafletOutput("main_map"), hide.ui = FALSE)
                )
-      )
+      ),
+      bslib::nav_item(a(href="https://flowwest.github.io/habistat/articles/interactive_map.html", "User Guide", target = "_blank")),
+      bslib::nav_item(a(href="https://flowwest.github.io/habistat", "HabiStat Methods & Documentation", target = "_blank")),
     )
   )
 )
