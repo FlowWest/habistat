@@ -100,7 +100,7 @@
       <h1 data-toc-skip>Interactive Map User Guide</h1>
                         <h4 data-toc-skip class="author"><a href="slewis@flowwest.com">Skyler Lewis</a></h4>
             
-            <h4 data-toc-skip class="date">2025-02-04</h4>
+            <h4 data-toc-skip class="date">2025-02-17</h4>
       
 
       <div class="hidden name"><code>interactive_map.Rmd</code></div>
@@ -155,54 +155,101 @@ the flowline, including those used in the habistat model prediction.
 </ul>
 </li>
 </ul>
-<p><mark>Screenshot: Home Screen</mark></p>
 </div>
 <div class="section level2">
-<h2 id="general-settings">General Settings<a class="anchor" aria-label="anchor" href="#general-settings"></a>
+<h2 id="getting-around-the-map">Getting Around the Map<a class="anchor" aria-label="anchor" href="#getting-around-the-map"></a>
 </h2>
-<p><mark>Screenshot: Home Screen</mark></p>
+<p>The map allows you to view habitat estimates (in units of square feet
+per linear foot of stream channel) at a given flow. It also allows you
+to pan, zoom, and select a particular reach (<code>comid</code>),
+mainstem, or watershed to get detailed model estimates for.</p>
+<p>The default view for the map shows rearing results, broken down at
+the individual comid (reach) scale, at 1000 cfs:</p>
+<p><img src="figures/screenshot_home_zoomed.png"></p>
+<p>Change the <strong>Habitat Type</strong> from <em>rearing</em> to
+<em>spawning</em> to view results for spawning. Once the map view is set
+to <em>spawning</em>, clicking on a reach (<code>comid</code>),
+mainstem, or watershed will provide the detailed spawning results.</p>
+<p><img src="figures/screenshot_home_spawning_zoomed.png"></p>
+<p>Change the <strong>Geographic Scope</strong> from <em>comid</em> to
+<em>mainstem</em> to aggregate results at the mainstem scale. As
+described in the <a href="../watershed_aggregation.html">Watershed Flow
+Aggregation</a> article, <strong>FINISH HERE DESCRIBING AGG</strong></p>
+<p><img src="figures/screenshot_home_mainstem_zoomed.png"></p>
+<p>Similarly, set <strong>Geographic Scope</strong> to
+<em>watershed</em> to aggregate results at the watershed scale.</p>
+<p><img src="figures/screenshot_home_watershed_zoomed.png"></p>
+<p>Changing the <strong>Flow (cfs) to show on map</strong> changes the
+color scheme on the map display to reflect the chosen flow.</p>
+<p><img src="figures/screenshot_home_alt_flow_zoomed.png"></p>
 </div>
 <div class="section level2">
-<h2 id="map-view">Map View<a class="anchor" aria-label="anchor" href="#map-view"></a>
+<h2 id="viewing-results-by-individual-reach-comid">Viewing Results by Individual Reach (ComID)<a class="anchor" aria-label="anchor" href="#viewing-results-by-individual-reach-comid"></a>
 </h2>
-<div class="section level3">
-<h3 id="selecting-a-flowline">Selecting a Flowline<a class="anchor" aria-label="anchor" href="#selecting-a-flowline"></a>
-</h3>
-<p><mark>Screenshot: Map with comids</mark></p>
-<p><mark>Screenshot: Map with mainstems</mark></p>
-</div>
-<div class="section level3">
-<h3 id="selecting-a-watershed">Selecting a Watershed<a class="anchor" aria-label="anchor" href="#selecting-a-watershed"></a>
-</h3>
-<p><mark>Screenshot: Map with watersheds and overlay
-mainstems</mark></p>
-</div>
-<div class="section level3">
-<h3 id="basemap-and-view-settings">Basemap and View Settings<a class="anchor" aria-label="anchor" href="#basemap-and-view-settings"></a>
-</h3>
-<p><mark>Screenshot: Layer panel</mark></p>
-</div>
+<p>To dive into results at a particular location, select a
+<em>comid</em> (individual NHD reach), mainstem, or watershed on the
+map. In the example below, the map view was on the <em>comid</em> scale
+for <em>rearing</em> habitat type, so the results returned match these
+settings.</p>
+<ul>
+<li><p>The solid line is the physical habitat estimate trained on depth
+and velocity criteria.</p></li>
+<li><p>The shaded area is the range of estimates produced by the
+different HabiStat model versions.</p></li>
+<li><p>The dashed line is the habitat area estimate that has been scaled
+for inundation duration using streamgage data at the gage indicated. The
+selected gage is also highlighted on the map in blue.</p></li>
+</ul>
+<p><img src="figures/screenshot_select_comid.png"></p>
+<p>The “Flowline Attributes” tab shows a detailed report of the
+attribute variables associated with this <em>comid</em>. This includes
+all the variables used by the HabiStat model to predict the suitable
+habitat area, and some additional attributes of interest.</p>
+<p><img src="figures/screenshot_select_comid_flowline_attr.png"></p>
+<p>The “Inundation Duration Analysis” tab dives into greater detail on
+the duration-based scaling of the physical habitat estimate. Settings
+allow the user to change the time of year based on a particular
+salmon/steelhead run’s rearing or spawning time window, as well as the
+water year type. The chart shows the duration exceedence curve for the
+streamgage, the suitability factors derived from that curve, and the
+resulting scaled suitable habitat estimates.</p>
+<p><img src="figures/screenshot_duration_comid.png"></p>
+<p>The tool defaults to the closest streamgage to the point of interest,
+but a different streamgage can be selected by clicking it on the map.
+<em>Flows from a selected streamgage are always scaled to the point of
+interest based on drainage area and mean annual precipitation.</em></p>
+<p><img src="figures/screenshot_duration_comid_alt_streamgage.png"></p>
 </div>
 <div class="section level2">
-<h2 id="results-for-selected-item">Results for Selected Item<a class="anchor" aria-label="anchor" href="#results-for-selected-item"></a>
+<h2 id="viewing-aggregated-results-by-mainstem-or-watershed">Viewing Aggregated Results by Mainstem or Watershed<a class="anchor" aria-label="anchor" href="#viewing-aggregated-results-by-mainstem-or-watershed"></a>
 </h2>
-<p><mark>Screenshot: Results for Selected Item</mark></p>
-<div class="section level3">
-<h3 id="suitable-habitat-area-by-flow">Suitable Habitat Area by Flow<a class="anchor" aria-label="anchor" href="#suitable-habitat-area-by-flow"></a>
-</h3>
-<p><mark>Screenshot: Main Results Panel</mark></p>
-</div>
-<div class="section level3">
-<h3 id="inundation-duration-analysis">Inundation Duration Analysis<a class="anchor" aria-label="anchor" href="#inundation-duration-analysis"></a>
-</h3>
-<p><mark>Screenshot: Inundation Duration Analysis Panel</mark></p>
-<p><mark>Screenshot: Streamgage Selection on Map</mark></p>
-</div>
-<div class="section level3">
-<h3 id="flowline-attributes">Flowline Attributes<a class="anchor" aria-label="anchor" href="#flowline-attributes"></a>
-</h3>
-<p><mark>Screenshot: Flowline Attributes Panel</mark></p>
-</div>
+<p>Let’s set the <strong>Geographic Scope</strong> to <em>mainstem</em>
+mode and try another example. As with the <em>comid</em> mode, selecting
+a mainstem on the map will display a flow-to-suitable area curve. For
+mainstems and watersheds, the curve is displayed by default in units of
+total habitat acres rather than “square feet per linear feet.”</p>
+<p>The habitat area shown is totaled for the entire mainstem, and
+reported for what the flow would be at the outlet.</p>
+<p>Let’s say in an example river, whenever flow is 1,000 cfs at the
+outlet, flow is about 200 cfs at its farthest upstream reach. In this
+case, our “1,000 cfs” estimated habitat for the mainstem will include
+the 1,000 cfs habitat area at the outlet, the 200 cfs habitat area at
+the farthest upstream end, and similarly for all reaches in between.
+This calculation is documented further in the <a href="../watershed_aggregation.html">Watershed Flow Aggregation</a>
+article.</p>
+<p><img src="figures/screenshot_select_mainstem.png"></p>
+<p>The duration analysis for the mainstem is based on the nearest
+streamgage to the point that was clicked, but can be updated by
+selecting a different streamgage on the map.</p>
+<p>It’s generally recommended to select the streamgage nearest to the
+outlet, unless a different streamgage has a better reporting time
+period. Historical flow data used in the calculation are always scaled
+to the outlet of the mainstem.</p>
+<p><img src="figures/screenshot_duration_mainstem.png"></p>
+<p>Viewing results for a watershed works exactly the same way as for a
+mainstem, except that habitat area totals include habitat area on
+delineated tributaries in addition to the mainstem.</p>
+<p><img src="figures/screenshot_select_watershed.png"></p>
 </div>
   </div>
 

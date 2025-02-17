@@ -104,7 +104,7 @@
 <!-- rebuild logo using pkgdown::build_favicons(overwrite=T) -->
 <!-- badges: start -->
 <!-- badges: end -->
-<p><img src="reference/figures/logo-480.png" align="right" alt="habistat" style="height: 240px; margin: 0px 24px"></p>
+<p><img src="reference/figures/logo-480.png" alt="habistat" align="right" style="height: 240px; margin: 0px 24px"></p>
 <p>FlowWest is working with Trout Unlimited on an innovative method called HabiStat to quantify the relationship between flow and suitable habitat for salmonids, including spawning habitat and juvenile rearing habitat. The impetus for this project was the <a href="https://csamp.baydeltalive.com/recovery/reorienting-to-recovery" class="external-link">Reorienting to Recovery</a> project, which in its early phase needed current/baseline estimates of available salmonid habitat in the Central Valley watershed to model and predict the changes that suites of actions would have on existing habitat. However, there was little to no data on available salmonid habitat within Central Valley rivers. The HabiStat project was created to fill in this data gap and to give scientists and managers the ability to better understand and predict how much-needed restoration actions will impact habitat availability, and thus salmon and trout populations.</p>
 <p>HabiStat leverages existing hydraulic models and river-specific geospatial characteristics to predict ideal spawning and rearing habitats by training a statistical model with available data and extrapolating from there using the most conservative assumptions possible.</p>
 <div class="section level2">
@@ -118,14 +118,19 @@
 <p>Restoration decision-making for salmonids commonly requires data quantifying existing available habitat at a range of flows. Available habitat data, however, is generally of poor quality, often outdated, and highly variable across watersheds. HabiStat leverages available hydraulic models and a wide array of remotely sensed environmental data as inputs to a statistical model to predict suitable spawning and rearing habitat for salmonids. The method is being developed with engaged community representatives, and uses prior work within the Central Valley of California. The HabiStat approach will produce transparent, consistent, and easily updatable suitable habitat datasets that are readily available for a wide range of applications and will greatly improve the effectiveness of restoration decision-making processes.</p>
 </div>
 <div class="section level2">
+<h2 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>
+</h2>
+<p>The HabiStat model outputs a “potential physical/hydraulic habitat” that takes into account suitable spawning and rearing depths and velocities but does not include cover, temperature, food availability or other factors that could further reduce or modify the potential total habitat available.</p>
+</div>
+<div class="section level2">
 <h2 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
 </h2>
 <p>Habistat documentation is located at <a href="https://flowwest.github.io/habistat" class="external-link">flowwest.github.io/habistat</a></p>
 <ul>
-<li><p>Methods and analysis are described in a series of <strong><a href="https://flowwest.github.io/habistat/articles/index.html" class="external-link">Articles</a></strong>.</p></li>
-<li><p>Refer to the <strong><a href="https://flowwest.github.io/habistat/reference" class="external-link">Reference</a></strong> section for details on packaged datasets and R functions.</p></li>
+<li><p>Methods and analysis are described in a series of <a href="https://flowwest.github.io/habistat/articles/index.html" class="external-link"><strong>Articles</strong></a>.</p></li>
+<li><p>Refer to the <a href="https://flowwest.github.io/habistat/reference" class="external-link"><strong>Reference</strong></a> section for details on packaged datasets and R functions.</p></li>
 </ul>
-<p>Use the <strong><a href="https://flowwest.shinyapps.io/habistat" class="external-link">Interactive Map</a></strong> published at <a href="https://flowwest.shinyapps.io/habistat" class="external-link">flowwest.shinyapps.io/habistat</a> to explore results by reach, mainstem, and watershed.</p>
+<p>Use the <a href="https://flowwest.shinyapps.io/habistat" class="external-link"><strong>Interactive Map</strong></a> published at <a href="https://flowwest.shinyapps.io/habistat" class="external-link">flowwest.shinyapps.io/habistat</a> to explore results by reach, mainstem, and watershed.</p>
 <p><strong><em>Tools, methods, results, and documentation are currently incomplete and under active development.</em></strong></p>
 </div>
 <div class="section level2">
@@ -190,15 +195,20 @@
 </h2>
 <ul>
 <li><p>Trout Unlimited (Rene Henery, Natalie Stauffer-Olsen, Mia Van Docto)</p></li>
-<li><p>FlowWest (Maddee Rubenson, Skyler Lewis, Mark Tompkins)</p></li>
+<li><p>FlowWest (Maddee Wiggins, Skyler Lewis, Mark Tompkins)</p></li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="funding">Funding<a class="anchor" aria-label="anchor" href="#funding"></a>
 </h2>
 <ul>
-<li>State Water Contractors</li>
+<li>Version 1 of HabiStat was developed using funding from State Water Contractors</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
+<p>The HabiStat team is currently seeking funding to: 1) expand the geographic extent outside of the Central Valley; 2) further refine the existing model with additional training data and potability to existing life cycle models; 3) use the flow-suitable area curves to identify potential risks to salmonids from changes in water levels</p>
 </div>
 </div>
   </div>
