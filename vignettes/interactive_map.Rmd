@@ -11,7 +11,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The habistat [interactive map](https://flowwest.shinyapps.io/habistat) is the quickest way to explore suitable habitat model results without needing to install and load the habistat R package.
+<span class="key_takeaways">
+The HabiStat [interactive map](https://flowwest.shinyapps.io/habistat) application is the quickest way to explore suitable habitat model results without needing to install and load the `habistat` R package. This article describes how to navigate through the map, query results by individual reach or aggregated by mainstem or watershed, and select specific streamgage hydrology for the inundation duration suitability factor. 
+</span>
 
 ## Navigation
 

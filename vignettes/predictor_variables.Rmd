@@ -21,6 +21,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+<span class="key_takeaways">
+A variety of hydrologic and geospatial attributes were collected for all stream reaches within the study area (the Sacramento and San Joaquin river basins, HUC-4 hydrologic subregions 1802 and 1804). The basis of stream reach delineation is the ComID reach as defined in [NHDPlusV2](https://nhdplus.com/NHDPlus/NHDPlusV2_home.php). Attributes include local characteristics like stream gradient, sinuosity, and depth to bedrock; upstream drainage characteristics like drainage area size, elevation, mean annual precipitation, and soil erodibility; and custom modeled confinement measures like topographic position index (mTPI) and levee confinement.
+</span>
+
 ## Data Sources
 
 Major data sources are as follows. Some additional data sources are also listed inline in the descriptions for specific variables.

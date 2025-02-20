@@ -26,6 +26,10 @@ knitr::opts_chunk$set(
 knitr::opts_chunk$set(fig.width=6.5, fig.height=4, dpi=300)
 ```
 
+<span class="key_takeaways">
+The spawning model includes additional filtering of reaches into those within spawning range and likely to include spawning gravels. The core spawning scope is intended to capture overall spawning suitability for any run; additional geographic scope filters and season-specific hydrology can be applied to narrow the analysis to a specific run. To determine reaches for potential spawning, we first delineated the upstream and downstream limits of current, historical, and potential spawning. Then, we applied a reach-by-reach determination of the likelihood of spawning gravels, based on geomorphic and sediment transport factors.
+</span>
+
 ## Reach Definitions
 
 A core component of the spawning model is delineating the geographic extent of spawning reaches based on current/historical/potential salmonid presence and likelihood of spawning gravels. These values are used to limit the range of reaches for which the flow-to-suitable-area outputs of the habistat statistical model are applied. This is done in two steps.

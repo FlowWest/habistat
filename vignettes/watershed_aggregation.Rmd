@@ -24,7 +24,9 @@ knitr::opts_chunk$set(
 )
 ```
 
+<span class="key_takeaways">
 Reach-scale predictions are aggregated to the scale of the river (mainstem) reach or watershed for usability in decision support models and other applications. Aggregating reach-scale predictions across a river or watershed extent is more complicating than adding up habitat values at a given flow, because instantaneous flows at different points in the watershed differ. This article describes the delineation of watersheds and mainstems, as well as the method for aggregating reach-scale predictions.
+</span>
 
 ## Delineation
 

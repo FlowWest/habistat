@@ -21,6 +21,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+<span class="key_takeaways">
+The hydraulically modeled flow-to-suitable-area relationships developed for reaches in Step 2 are joined to the reach predictor variable table from Step 1. This dataset (one observation per flow per reach) is then used to train a statistical model that can be used to predict flow-to-suitable-area curves for reaches that are not hydraulically modeled. Random Forest Regression, a decision tree-based machine learning approach, allows for non-linear relationships between suitable habitat, flow, and the array of predictor variables.
+</span>
+
 ## Introduction
 
 We are currently developing and refining a statistical model to predict flow-to-suitable-habitat-area relationships for stream reaches in the Sacramento-San Joaquin Basin, based on a variety of widely-available geospatial and hydrologic variables. Predictor variable data collection is detailed in the [Predictor Variables](predictor_variables.html) article.

@@ -25,6 +25,10 @@ knitr::opts_chunk$set(
 )
 ```
 
+<span class="key_takeaways">
+Depth and velocity outputs from existing two-dimensional hydraulic models were assembled for "training reaches" within the study area, at a variety of flows. The depth and velocity raster grids (for HEC-RAS 2D models) or vector meshes (for SRH-2D models) were divided up based on ComID reach delineations. A habitat suitability index was applied based on depth and velocity values (e.g. 1 if a cell is within suitable depth and velocity range, else 0). Then, habitat suitability was summarized for each reach, at each flow, into a measure of total suitable habitat area per linear foot of channel (aka WUA/LF), for each flow. The result is a flow-to-suitable-area curve for each reach in the training dataset, normalized by linear feet to be independent of arbitrary reach length.
+</span>
+
 ## Data Sources
 
 Depth and velocity outputs from existing two-dimensional hydraulic models were assembled for "training reaches" within the study area, at a variety of flows. The model is currently trained on the following models:

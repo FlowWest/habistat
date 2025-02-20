@@ -24,11 +24,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Duration Analysis
-
+<span class="key_takeaways">
 The habitat areas (flow-to-suitable-area curves) predicted by the [Statistical Model](statistical_model.html) are derived from depth- and velocity-based habitat suitability index (HSI) criteria only.
 Duration of inundation was not included at the statistical model step because it does not have the same one-to-one predictable relationship with flow: the duration of inundation at a given flow will vary by local hydrology and by water year.
 Sometimes we might be interested in simulating a historic hydrology, other times we might be considering a potential future hydrology, so the ability to vary the inundation duration factor is necessary.
+</span>
 
 ### Spatial Method
 
