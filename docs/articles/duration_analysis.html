@@ -17,7 +17,8 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Duration Analysis">
+<script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Duration Analysis">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -102,7 +103,7 @@
 <a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-17</h4>
+            <h4 data-toc-skip class="date">2025-02-20</h4>
       
 
       <div class="hidden name"><code>duration_analysis.Rmd</code></div>
@@ -111,18 +112,16 @@
 
     
     
-<div class="section level2">
-<h2 id="duration-analysis">Duration Analysis<a class="anchor" aria-label="anchor" href="#duration-analysis"></a>
-</h2>
-<p>The habitat areas (flow-to-suitable-area curves) predicted by the <a href="statistical_model.html">Statistical Model</a> are derived from
-depth- and velocity-based habitat suitability index (HSI) criteria only.
-Duration of inundation was not included at the statistical model step
-because it does not have the same one-to-one predictable relationship
-with flow: the duration of inundation at a given flow will vary by local
-hydrology and by water year. Sometimes we might be interested in
-simulating a historic hydrology, other times we might be considering a
-potential future hydrology, so the ability to vary the inundation
-duration factor is necessary.</p>
+<p><span class="key_takeaways"> The habitat areas (flow-to-suitable-area
+curves) predicted by the <a href="statistical_model.html">Statistical
+Model</a> are derived from depth- and velocity-based habitat suitability
+index (HSI) criteria only. Duration of inundation was not included at
+the statistical model step because it does not have the same one-to-one
+predictable relationship with flow: the duration of inundation at a
+given flow will vary by local hydrology and by water year. Sometimes we
+might be interested in simulating a historic hydrology, other times we
+might be considering a potential future hydrology, so the ability to
+vary the inundation duration factor is necessary. </span></p>
 <div class="section level3">
 <h3 id="spatial-method">Spatial Method<a class="anchor" aria-label="anchor" href="#spatial-method"></a>
 </h3>
@@ -338,7 +337,6 @@ it.</p>
 <div class="float">
 <img src="figures/duration_plot_example.png" alt="Example duration analyis plot for comid 7972411"><div class="figcaption">Example duration analyis plot for comid
 7972411</div>
-</div>
 </div>
 </div>
 </div>
