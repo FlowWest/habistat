@@ -1,6 +1,6 @@
 ---
 title: "Preictor Data Prep: Aquatic Species"
-author: "Maddee Rubenson (FlowWest)"
+author: "Maddee Wiggins (FlowWest)"
 date: "`r Sys.Date()`"
 output: 
   github_document:

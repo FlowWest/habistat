@@ -140,17 +140,15 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">habitat_fsa_duration</span><span class="op">(</span>reach <span class="op">=</span> <span class="fl">7978069</span>, streamgage <span class="op">=</span> <span class="st">"FSB"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>restarting interrupted promise evaluation</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>internal error 1 in R_decompress1 with libdeflate</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in habitat_fsa_duration_reach(reach = reach, streamgage = streamgage,     habitat_type = habitat_type, units = units, run = run, wy_group = wy_group,     gradient = gradient):</span> lazy-load database 'C:/Users/skylerlewis/AppData/Local/R/win-library/4.4/habistat/R/habistat.rdb' is corrupt</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in approx(x = fsa_weighted$q, xout = fsa$flow_cfs, y = fsa_weighted$durwua,     rule = 2:2, na.rm = F):</span> need at least two non-NA values to interpolate</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">habitat_fsa_duration</span><span class="op">(</span>mainstem <span class="op">=</span> <span class="st">"Feather River"</span>, streamgage <span class="op">=</span> <span class="st">"FSB"</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mutate(mutate(mutate(filter(flow_xw, comid %in% comids), fsa = map2(comid,     multiplier, function(x, y) {        habistat::habitat_fsa_reach_scaled(reach = x, multiplier = y,             habitat_type = habitat_type, units = "ft")    })), drc = map2(comid, streamgage, function(x, y) {    habistat::habitat_drc_weighted(reach = x, streamgage = y,         run = run, wy_group = wy_group, gradient = gradient,         scale = "flow")})), fsa_x_drc = map2(fsa, drc, function(f, d) {    fsa_weighted &lt;- habistat::duration_apply_dhsi_to_fsa_curve(fsa = f,         drc = d, fsa_q = flow_cfs, fsa_wua = habitat, drc_q = flow_cfs,         drc_dhsi = durhsi)    return(tibble(flow_cfs = f$flow_cfs, habitat = approx(x = fsa_weighted$q,         xout = f$flow_cfs, y = fsa_weighted$durwua, rule = 2:2,         na.rm = F)$y))})):</span> <span style="color: #00BBBB;">ℹ</span> In argument: `fsa_x_drc = map2(...)`.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In group 1: `river_cvpia = "Feather River"`.</span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `map2()`:</span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> In index: 1.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `.f()`:</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> lazy-load database 'C:/Users/skylerlewis/AppData/Local/R/win-library/4.4/habistat/R/habistat.rdb' is corrupt</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="font-weight: bold;">Caused by error in `approx()`:</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> need at least two non-NA values to interpolate</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -162,11 +160,11 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Maddee Rubenson, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
+  <p></p><p>Developed by Maddee Wiggins, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>

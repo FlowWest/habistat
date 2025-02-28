@@ -1,5 +1,5 @@
-pandoc: '3.2'
-pkgdown: 2.1.0
+pandoc: 3.1.1
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   duration_analysis: duration_analysis.html
@@ -10,4 +10,4 @@ articles:
   spawning_extents: spawning_extents.html
   statistical_model: statistical_model.html
   watershed_aggregation: watershed_aggregation.html
-last_built: 2025-02-20T19:35Z
+last_built: 2025-02-28T19:13Z

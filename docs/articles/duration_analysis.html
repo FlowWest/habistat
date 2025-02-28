@@ -100,10 +100,10 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Duration Analysis</h1>
                         <h4 data-toc-skip class="author">
-<a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
+<a href="mailto:mrubenson@flowwest.com">Maddee Wiggins</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-20</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
 
       <div class="hidden name"><code>duration_analysis.Rmd</code></div>
@@ -112,7 +112,7 @@
 
     
     
-<p><span class="key_takeaways"> The habitat areas (flow-to-suitable-area
+<p><span class="key_takeaways">The habitat areas (flow-to-suitable-area
 curves) predicted by the <a href="statistical_model.html">Statistical
 Model</a> are derived from depth- and velocity-based habitat suitability
 index (HSI) criteria only. Duration of inundation was not included at
@@ -121,7 +121,7 @@ predictable relationship with flow: the duration of inundation at a
 given flow will vary by local hydrology and by water year. Sometimes we
 might be interested in simulating a historic hydrology, other times we
 might be considering a potential future hydrology, so the ability to
-vary the inundation duration factor is necessary. </span></p>
+vary the inundation duration factor is necessary.</span></p>
 <div class="section level3">
 <h3 id="spatial-method">Spatial Method<a class="anchor" aria-label="anchor" href="#spatial-method"></a>
 </h3>
@@ -134,15 +134,15 @@ inundating flow for a given grid cell. (For raster models, this can be
 calculated using the <a href="../reference/raster_first_inundating_flow.html"><code>raster_first_inundating_flow</code></a>
 function in habistat.) This example is shown for the Deer Creek
 hydraulic model:</p>
-<p><img src="figures/duration_deer_fif.png"></p>
+<p><img src="figures%2Fduration_deer_fif.png"></p>
 <p>Given a hydrograph for a particular water year, a relationship can be
 derived between flow and the number of contiguous days in a water year
 at which that flow is exceeded. This method is implemented in the
 habistat function <a href="../reference/duration_calc_days_inundated.html"><code>duration_calc_days_inundated</code></a>.</p>
-<p><img src="figures/duration_example_2_rating_curve.png"></p>
+<p><img src="figures%2Fduration_example_2_rating_curve.png"></p>
 <p>Combining the previous two steps, a spatial map of inundation
 duration can be created for this particular water year.</p>
-<p><img src="figures/duration_deer_max.png"></p>
+<p><img src="figures%2Fduration_deer_max.png"></p>
 <p>These duration values can then be used, in the same manner as depth
 and velocity, to calculate a habitat suitability index at each model
 grid cell.</p>
@@ -158,7 +158,7 @@ hydrology.</p>
 applying inundation duration criteria to an already generated
 flow-to-suitable-area curve, approximating a duration-weighted
 estimate:</p>
-<p><img src="figures/flowchart_duration.png"></p>
+<p><img src="figures%2Fflowchart_duration.png"></p>
 <div class="section level4">
 <h4 id="input-flow-to-suitable-area-curve">Input flow-to-suitable-area curve<a class="anchor" aria-label="anchor" href="#input-flow-to-suitable-area-curve"></a>
 </h4>
@@ -180,9 +180,9 @@ water year type group.</p>
 </h5>
 <p>To capture only ecologically relevant time windows, we filter the
 hydrographs by relevant months for the salmonid run of interest:<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-<table style="width:51%;" class="table">
+<table style="width:50%;" class="table">
 <colgroup>
-<col width="18%">
+<col width="16%">
 <col width="16%">
 <col width="16%">
 </colgroup>
@@ -271,17 +271,17 @@ flowlines are included. Results are stored in:</p>
 <p>These inundation duration values calculated in the previous step are
 next mapped against duration HSI weighting factors, assigning zero for
 flows that are never reached.</p>
-<p>We apply inundation duration suitability factors for the relevant
+<p>We apply inundation duration suitability factors<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for the relevant
 habitat type corresponding to fish usage of the river.</p>
 <p>For rearing, the duration factors are defined in the Habitat
 Quantification Tool based on the gradient class of the river. For
 spawning, we assume a minimum of 12 weeks of continuous inundation is
-required for spawning and incubation.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+required for spawning and incubation.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
 <table style="width:99%;" class="table">
 <colgroup>
+<col width="34%">
 <col width="35%">
-<col width="35%">
-<col width="26%">
+<col width="28%">
 </colgroup>
 <thead><tr class="header">
 <th>Rearing - Valley Lowland</th>
@@ -316,7 +316,7 @@ flow-to-inundation-duration curve to produce a flow-to-suitable-area
 curve that has been scaled down using the duration criteria. The
 following figure illustrates the process, which is implemented in the
 habistat function <a href="../reference/duration_apply_dhsi_to_fsa_curve.html"><code>duration_apply_dhsi_to_fsa_curve</code></a>.</p>
-<p><img src="figures/flowchart_duration_detail.png"></p>
+<p><img src="figures%2Fflowchart_duration_detail.png"></p>
 <p>We assume that as we look at increasing flows (on the x axis), the
 marginal new habitat being added at each additional flow corresponds to
 area being newly inundated at that flow. This is a simplification that
@@ -335,7 +335,7 @@ less-than-optimal duration lengths. The scaled curve will be less than
 or equal to the original curve at each flow, but will never exceed
 it.</p>
 <div class="float">
-<img src="figures/duration_plot_example.png" alt="Example duration analyis plot for comid 7972411"><div class="figcaption">Example duration analyis plot for comid
+<img src="figures%2Fduration_plot_example.png" alt="Example duration analysis plot for ComID 7972411"><div class="figcaption">Example duration analysis plot for ComID
 7972411</div>
 </div>
 </div>
@@ -347,10 +347,13 @@ it.</p>
 Board, via Fig. 3 in Herbold, B., Carlson, S. M., Heneray, R., Johnson,
 R. C., Mantua, N. McClure, M., Moyle, P. B., &amp; Sommer, T. (2018).
 Managing for Salmon Resilience in California’s Variable and Changing
-Climate. <em>San Francisco Estuary and Watershed Science</em> 16(2): <a href="https://doi.org/10.15447/sfews.2018v16iss2art3" class="external-link uri">https://doi.org/10.15447/sfews.2018v16iss2art3</a> <a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>USFWS Columbia River FWCO Information and Education
+Climate. <em>San Francisco Estuary and Watershed Science</em> 16(2): <a href="https://doi.org/10.15447/sfews.2018v16iss2art3" class="external-link uri">https://doi.org/10.15447/sfews.2018v16iss2art3</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>cbec, inc. <em>Yuba River Flow Effects Modeling Project
+- Lower Yuba River Habitat Evaluation Report</em>. Prepared for Trout
+Unlimited and USFWS, 30 Sept. 2022.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>USFWS Columbia River FWCO Information and Education
 (2022) <em>Life Stage Cheat Sheet for Pacific Salmon</em>: “Chinook eggs
-hatch around 12 weeks after fertilization.” <a href="https://www.fws.gov/sites/default/files/documents/06_Life%20Stage%20Cheat%20Sheet.pdf" class="external-link uri">https://www.fws.gov/sites/default/files/documents/06_Life%20Stage%20Cheat%20Sheet.pdf</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+hatch around 12 weeks after fertilization.” <a href="https://www.fws.gov/sites/default/files/documents/06_Life%20Stage%20Cheat%20Sheet.pdf" class="external-link uri">https://www.fws.gov/sites/default/files/documents/06_Life%20Stage%20Cheat%20Sheet.pdf</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -365,12 +368,12 @@ hatch around 12 weeks after fertilization.” <a href="https://www.fws.gov/sites
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Maddee Rubenson, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
+<p>Developed by Maddee Wiggins, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

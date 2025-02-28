@@ -100,10 +100,10 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Model Overview</h1>
                         <h4 data-toc-skip class="author">
-<a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
+<a href="mailto:mrubenson@flowwest.com">Maddee Wiggins</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-20</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
 
       <div class="hidden name"><code>model_overview.Rmd</code></div>
@@ -138,11 +138,10 @@ delineations. A habitat suitability index was applied based on depth and
 velocity values (e.g. 1 if a cell is within suitable depth and velocity
 range, else 0). Then, habitat suitability was summarized for each reach,
 at each flow, into a measure of total suitable habitat area per linear
-foot of channel (aka WUA/LF), for each flow. The result is a
-flow-to-suitable-area curve for each reach in the training dataset,
-normalized by linear feet to be independent of arbitrary reach length.
-The habitat suitability process and datasets are discussed further in
-the <a href="habitat_training_data.html">Habitat Training Data</a>
+foot of channel, for each flow. The result is a flow-to-suitable-area
+curve for each reach in the training dataset, normalized by linear feet
+to be independent of arbitrary reach length. The habitat suitability
+process and datasets are discussed further in the <a href="habitat_training_data.html">Habitat Training Data</a>
 article.</p></li>
 <li><p><strong>Training statistical model</strong>: The hydraulically
 modeled flow-to-suitable-area relationships developed for reaches in
@@ -179,10 +178,10 @@ water year hydrograph and/or (b) a flow threshold that defines the
 baseflow channel. These methods are defined in the <a href="duration_analysis.html">Duration Analysis</a> article.</p></li>
 <li><p><strong>Filtering to geographic scope</strong>: Rearing
 predictions are limited to perennial, natural stream channels of a
-certain size. The working draft filter includes reaches of stream order
-≥4 (or reaches of stream order ≥3 with drainage area at least 50 km²).
-Minor distributaries with a divergence ratio of less than 50% are also
-excluded.</p></li>
+certain size. The current version of HabiStat filters reaches of stream
+order ≥4 (or reaches of stream order ≥3 with drainage area at least 50
+km²). Minor distributaries with a divergence ratio of less than 50% are
+also excluded.</p></li>
 <li><p><strong>Aggregating from reach to mainstem/watershed
 scale:</strong> Reach-scale predictions are aggregated to the scale of
 the river (mainstem) reach or watershed for usability in decision
@@ -193,7 +192,7 @@ different points in the watershed differ. The delineation of reaches and
 watersheds, as well as the aggregation process, are described in the <a href="watershed_aggregation.html">Watershed Aggregation</a>
 article.</p></li>
 </ol>
-<p><img src="figures/flowchart.png" style="width:100.0%"></p>
+<p><img src="figures%2Fflowchart.png" style="width:100.0%"></p>
 </div>
 <div class="section level2">
 <h2 id="spawning-model-overview">Spawning Model Overview<a class="anchor" aria-label="anchor" href="#spawning-model-overview"></a>
@@ -226,13 +225,13 @@ on geographic scope filters and season-specific hydrology.</p></li>
 </h2>
 <p>The following chart summarizes suitability criteria used in the
 model. These are designed to be generally applicable criteria across the
-Sacramento-San Joaquin basin, rather than tailored to individual stream
+Sacramento-San Joaquin basins, rather than tailored to individual stream
 reaches. Currently, criteria are also generally applied to all runs of
 Chinook salmon, but may be split out into different criteria for
 different runs in the future. Application of the depth and velocity
 criteria is described in the <a href="habitat_training_data.html">Habitat Training Data</a> article,
 while application of the duration criteria is described in the <a href="duration_analysis.html">Duration Analysis</a> article.</p>
-<p><img src="figures/model-overview-hsi_summary-1.png" width="2187.5"></p>
+<p><img src="figures%2Fmodel-overview-hsi_summary-1.png" width="2187.5"></p>
 </div>
   </div>
 
@@ -246,12 +245,12 @@ while application of the duration criteria is described in the <a href="duration
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Maddee Rubenson, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
+<p>Developed by Maddee Wiggins, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

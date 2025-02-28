@@ -1,6 +1,6 @@
 ---
 title: "PRISM data aggregation"
-author: "[Maddee Rubenson](mailto:mrubenson@flowwest.com)"
+author: "[Maddee Wiggins](mailto:mrubenson@flowwest.com)"
 date: "`r Sys.Date()`"
 output: 
   github_document:

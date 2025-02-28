@@ -100,10 +100,10 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Habitat Training Data</h1>
                         <h4 data-toc-skip class="author">
-<a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
+<a href="mailto:mrubenson@flowwest.com">Maddee Wiggins</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-20</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
 
       <div class="hidden name"><code>habitat_training_data.Rmd</code></div>
@@ -112,18 +112,19 @@
 
     
     
-<p><span class="key_takeaways"> Depth and velocity outputs from existing
+<p><span class="key_takeaways">Depth and velocity outputs from existing
 two-dimensional hydraulic models were assembled for “training reaches”
 within the study area, at a variety of flows. The depth and velocity
 raster grids (for HEC-RAS 2D models) or vector meshes (for SRH-2D
-models) were divided up based on ComID reach delineations. A habitat
-suitability index was applied based on depth and velocity values (e.g. 1
-if a cell is within suitable depth and velocity range, else 0). Then,
-habitat suitability was summarized for each reach, at each flow, into a
-measure of total suitable habitat area per linear foot of channel (aka
-WUA/LF), for each flow. The result is a flow-to-suitable-area curve for
-each reach in the training dataset, normalized by linear feet to be
-independent of arbitrary reach length. </span></p>
+models) were divided up based on ComID reach delineations from the
+National Hydrography Dataset. A habitat suitability index was applied
+based on depth and velocity values (e.g. 1 if a cell is within suitable
+depth and velocity range, else 0). Then, habitat suitability was
+summarized for each reach, at each flow, into a measure of total
+suitable habitat area per linear foot of channel, for each flow. The
+result is a flow-to-suitable-area curve for each reach in the training
+dataset, normalized by linear feet to be independent of arbitrary reach
+length.</span></p>
 <div class="section level2">
 <h2 id="data-sources">Data Sources<a class="anchor" aria-label="anchor" href="#data-sources"></a>
 </h2>
@@ -131,15 +132,15 @@ independent of arbitrary reach length. </span></p>
 models were assembled for “training reaches” within the study area, at a
 variety of flows. The model is currently trained on the following
 models:</p>
-<table class="table">
+<table style="width:100%;" class="table">
 <colgroup>
-<col width="13%">
-<col width="13%">
-<col width="13%">
-<col width="13%">
-<col width="8%">
-<col width="17%">
-<col width="21%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
 </colgroup>
 <thead><tr class="header">
 <th>Stream</th>
@@ -164,7 +165,7 @@ models:</p>
 <td>Lower Yuba River</td>
 <td>Englebright Dam to Feather River confluence</td>
 <td>120,000 LF</td>
-<td>CBEC</td>
+<td>cbec, Inc</td>
 <td>2020</td>
 <td>SRH-2D</td>
 <td>300 - 110,400 cfs</td>
@@ -200,7 +201,7 @@ models:</p>
 </table>
 <p>Datasets are temporarily filtered to a maximum flow of 15,000 cfs
 during model development.</p>
-<p><img src="figures/training-data-reaches-1.png" width="700"></p>
+<p><img src="figures%2Ftraining-data-reaches-1.png" width="700"></p>
 <p>The depth and velocity raster grids (for HEC-RAS 2D models) or vector
 meshes (for SRH-2D models) were divided up based on ComID reach
 delineations. Currently, this is a manual process that requires
@@ -254,8 +255,8 @@ different northern California rivers,” was “developed for the California
 State Water Resources Control Board Voluntary Settlement Agreement and …
 agreed upon by a committee of interested stakeholders as part of the
 Voluntary Settlement Agreement process during a meeting held November 9,
-2017.” It was previously applied by CBEC in the <a href="https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view" class="external-link">Yuba
-River Flow Effects Modeling Project</a>.</p>
+2017.” It was previously applied by cbec, Inc in the Yuba River Flow
+Effects Modeling Project<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 </div>
 <div class="section level3">
 <h3 id="spawning">Spawning<a class="anchor" aria-label="anchor" href="#spawning"></a>
@@ -270,7 +271,7 @@ of the runs analyzed.</p>
 <blockquote>
 <p>HSI<sub>depth</sub> = 1 if d&lt;=6.56 else 0</p>
 </blockquote>
-<p><img src="figures/hsi_spawning_depth.png"></p>
+<p><img src="figures%2Fhsi_spawning_depth.png"></p>
 <p>For winter run, a minimum depth also applies:</p>
 <blockquote>
 <p>HSI<sub>depth</sub> = 1 if (d &gt; 1.00 &amp; d&lt;=6.56) else 0</p>
@@ -279,7 +280,7 @@ of the runs analyzed.</p>
 a curve relationship with fractional suitabilities. This curve is the
 upper envelope of all the individual suitability curves for different
 runs.</p>
-<p><img src="figures/hsi_spawning_velocity.png"></p>
+<p><img src="figures%2Fhsi_spawning_velocity.png"></p>
 <p>If both depth and velocity criteria were fractional, then a geometric
 mean would be an appropriate method of combining the two. However, with
 the binary criterion, simple multiplication is appropriate. The overall
@@ -385,7 +386,7 @@ for each reach, at each flow.</li>
 <p>For rearing reaches, it is also necessary to eliminate the area
 within the perennial baseflow channel, even where depths and velocities
 are within the suitable range of the habitat suitability index (HSI),
-“due to lack of cover and food production mechanisms.”<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+“due to lack of cover and food production mechanisms.”<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 <p>This is achieved by zeroing out the grid cells corresponding to the
 baseflow channel in the original hydraulic model output, prior to
 summarizing habitat suitability and creating the training dataset. The
@@ -412,9 +413,12 @@ data package as <a href="../reference/wua_hydraulic.html"><code>wua_hydraulic</c
 <div class="footnotes footnotes-end-of-document">
 <hr>
 <ol>
-<li id="fn1"><p>CBEC (2022). Yuba River Flow Effects Modeling Project
+<li id="fn1"><p>cbec, inc. <em>Yuba River Flow Effects Modeling Project
+- Lower Yuba River Habitat Evaluation Report</em>. Prepared for Trout
+Unlimited and USFWS, 30 Sept. 2022.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>CBEC (2022). Yuba River Flow Effects Modeling Project
 Lower Yuba River Temporal Habitat Evaluation Report. CBEC Project
-#19-1029. <a href="https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view" class="external-link">https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+#19-1029. <a href="https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view" class="external-link uri">https://drive.google.com/file/d/1UUjj0BxwIvbgL2k-frld6Fytx-bmi2Of/view</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -429,12 +433,12 @@ Lower Yuba River Temporal Habitat Evaluation Report. CBEC Project
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Maddee Rubenson, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
+<p>Developed by Maddee Wiggins, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

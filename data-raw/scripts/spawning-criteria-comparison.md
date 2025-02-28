@@ -1,6 +1,6 @@
 Spawning Habitat Suitability Criteria
 ================
-[Maddee Rubenson](mailto:mrubenson@flowwest.com)
+[Maddee Wiggins](mailto:mrubenson@flowwest.com)
 2024-07-17
 
 - [Habitat Suitability Criteria](#habitat-suitability-criteria)

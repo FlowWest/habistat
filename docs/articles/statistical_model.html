@@ -101,10 +101,10 @@
       <h1 data-toc-skip>Statistical Model Development, Training, and
 Prediction</h1>
                         <h4 data-toc-skip class="author">
-<a href="mailto:mrubenson@flowwest.com">Maddee Rubenson</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
+<a href="mailto:mrubenson@flowwest.com">Maddee Wiggins</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-20</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
 
       <div class="hidden name"><code>statistical_model.Rmd</code></div>
@@ -224,7 +224,7 @@ to 26 miles, with a mean length of 1.2 miles. Weighting the estimate by
 linear ft allows longer reaches to have greater influence on the model
 and makes the somewhat arbitrary <code>comid</code> delineations less
 relevant.</p>
-<p><img src="figures/statistical-model-asinh-transform-1.png" width="624"></p>
+<p><img src="figures%2Fstatistical-model-asinh-transform-1.png" width="624"></p>
 </div>
 <div class="section level3">
 <h3 id="flow-variable">Flow Variable<a class="anchor" aria-label="anchor" href="#flow-variable"></a>
@@ -233,7 +233,7 @@ relevant.</p>
 is evenly spaced on a logarithmic axis:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">interp_flows</span> <span class="op">&lt;-</span> <span class="fu">habistat</span><span class="fu">::</span><span class="fu"><a href="../reference/seq_log10.html">seq_log10</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">15000</span>, <span class="fl">0.05</span>, snap<span class="op">=</span><span class="fl">100</span><span class="op">)</span></span></code></pre></div>
-<p><img src="figures/statistical-model-interp_flows-1.png" width="624"></p>
+<p><img src="figures%2Fstatistical-model-interp_flows-1.png" width="624"></p>
 </div>
 <div class="section level3">
 <h3 id="model-versions-tested">Model Versions Tested<a class="anchor" aria-label="anchor" href="#model-versions-tested"></a>
@@ -284,7 +284,7 @@ representing the magnitude of flow in the watershed. A product of the
 drainage area and mean annual precipitation with units of million acre
 feet (Maf), this value represents the average quantity of water input
 into the reach’s catchment in a year:</p>
-<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>S</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">f</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>=</mo><msup><mn>10</mn><mrow><mi>−</mi><mn>6</mn></mrow></msup><mo>×</mo><mrow><mi>D</mi><mi>A</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>×</mo><mrow><mi>M</mi><mi>A</mi><mi>P</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">{Scalar [\mathrm{Maf}]} = 10^{-6} \times {DA [\mathrm{ac}]} \times {MAP [\mathrm{ft}]}</annotation></semantics></math></p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi>S</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">M</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">f</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>=</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>6</mn></mrow></msup><mo>×</mo><mrow><mi>D</mi><mi>A</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">a</mi><mi mathvariant="normal">c</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow><mo>×</mo><mrow><mi>M</mi><mi>A</mi><mi>P</mi><mrow><mo stretchy="true" form="prefix">[</mo><mrow><mi mathvariant="normal">f</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="true" form="postfix">]</mo></mrow></mrow></mrow><annotation encoding="application/x-tex">{Scalar [\mathrm{Maf}]} = 10^{-6} \times {DA [\mathrm{ac}]} \times {MAP [\mathrm{ft}]}</annotation></semantics></math></p>
 <p>The habitat and flow variables are multiplied by this scalar prior to
 prediction, then divided by the scalar after prediction.</p>
 <blockquote>
@@ -345,8 +345,8 @@ relationships were limitations.</p>
 <th>Model Version 2: Scale-Normalized</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td><img src="figures/lm-sd2-coeffs-1.png" style="width:100.0%"></td>
-<td><img src="figures/lm-si2-coeffs-1.png" style="width:100.0%"></td>
+<td><img src="figures%2Flm-sd2-coeffs-1.png" style="width:100.0%"></td>
+<td><img src="figures%2Flm-si2-coeffs-1.png" style="width:100.0%"></td>
 </tr></tbody>
 </table>
 </div>
@@ -432,12 +432,12 @@ valid.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Maddee Rubenson, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
+<p>Developed by Maddee Wiggins, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

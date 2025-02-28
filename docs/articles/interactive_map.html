@@ -101,7 +101,7 @@
       <h1 data-toc-skip>Interactive Map User Guide</h1>
                         <h4 data-toc-skip class="author"><a href="slewis@flowwest.com">Skyler Lewis</a></h4>
             
-            <h4 data-toc-skip class="date">2025-02-20</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
 
       <div class="hidden name"><code>interactive_map.Rmd</code></div>
@@ -170,23 +170,23 @@ to pan, zoom, and select a particular reach (<code>comid</code>),
 mainstem, or watershed to get detailed model estimates for.</p>
 <p>The default view for the map shows rearing results, broken down at
 the individual comid (reach) scale, at 1000 cfs:</p>
-<p><img src="figures/screenshot_home_zoomed.png"></p>
+<p><img src="figures%2Fscreenshot_home_zoomed.png"></p>
 <p>Change the <strong>Habitat Type</strong> from <em>rearing</em> to
 <em>spawning</em> to view results for spawning. Once the map view is set
 to <em>spawning</em>, clicking on a reach (<code>comid</code>),
 mainstem, or watershed will provide the detailed spawning results.</p>
-<p><img src="figures/screenshot_home_spawning_zoomed.png"></p>
+<p><img src="figures%2Fscreenshot_home_spawning_zoomed.png"></p>
 <p>Change the <strong>Geographic Scope</strong> from <em>comid</em> to
 <em>mainstem</em> to aggregate results at the mainstem scale. As
 described in the <a href="../watershed_aggregation.html">Watershed Flow
 Aggregation</a> article, <strong>FINISH HERE DESCRIBING AGG</strong></p>
-<p><img src="figures/screenshot_home_mainstem_zoomed.png"></p>
+<p><img src="figures%2Fscreenshot_home_mainstem_zoomed.png"></p>
 <p>Similarly, set <strong>Geographic Scope</strong> to
 <em>watershed</em> to aggregate results at the watershed scale.</p>
-<p><img src="figures/screenshot_home_watershed_zoomed.png"></p>
+<p><img src="figures%2Fscreenshot_home_watershed_zoomed.png"></p>
 <p>Changing the <strong>Flow (cfs) to show on map</strong> changes the
 color scheme on the map display to reflect the chosen flow.</p>
-<p><img src="figures/screenshot_home_alt_flow_zoomed.png"></p>
+<p><img src="figures%2Fscreenshot_home_alt_flow_zoomed.png"></p>
 </div>
 <div class="section level2">
 <h2 id="viewing-results-by-individual-reach-comid">Viewing Results by Individual Reach (ComID)<a class="anchor" aria-label="anchor" href="#viewing-results-by-individual-reach-comid"></a>
@@ -205,12 +205,12 @@ different HabiStat model versions.</p></li>
 for inundation duration using streamgage data at the gage indicated. The
 selected gage is also highlighted on the map in blue.</p></li>
 </ul>
-<p><img src="figures/screenshot_select_comid.png"></p>
+<p><img src="figures%2Fscreenshot_select_comid.png"></p>
 <p>The “Flowline Attributes” tab shows a detailed report of the
 attribute variables associated with this <em>comid</em>. This includes
 all the variables used by the HabiStat model to predict the suitable
 habitat area, and some additional attributes of interest.</p>
-<p><img src="figures/screenshot_select_comid_flowline_attr.png"></p>
+<p><img src="figures%2Fscreenshot_select_comid_flowline_attr.png"></p>
 <p>The “Inundation Duration Analysis” tab dives into greater detail on
 the duration-based scaling of the physical habitat estimate. Settings
 allow the user to change the time of year based on a particular
@@ -218,12 +218,12 @@ salmon/steelhead run’s rearing or spawning time window, as well as the
 water year type. The chart shows the duration exceedence curve for the
 streamgage, the suitability factors derived from that curve, and the
 resulting scaled suitable habitat estimates.</p>
-<p><img src="figures/screenshot_duration_comid.png"></p>
+<p><img src="figures%2Fscreenshot_duration_comid.png"></p>
 <p>The tool defaults to the closest streamgage to the point of interest,
 but a different streamgage can be selected by clicking it on the map.
 <em>Flows from a selected streamgage are always scaled to the point of
 interest based on drainage area and mean annual precipitation.</em></p>
-<p><img src="figures/screenshot_duration_comid_alt_streamgage.png"></p>
+<p><img src="figures%2Fscreenshot_duration_comid_alt_streamgage.png"></p>
 </div>
 <div class="section level2">
 <h2 id="viewing-aggregated-results-by-mainstem-or-watershed">Viewing Aggregated Results by Mainstem or Watershed<a class="anchor" aria-label="anchor" href="#viewing-aggregated-results-by-mainstem-or-watershed"></a>
@@ -242,7 +242,7 @@ the 1,000 cfs habitat area at the outlet, the 200 cfs habitat area at
 the farthest upstream end, and similarly for all reaches in between.
 This calculation is documented further in the <a href="../watershed_aggregation.html">Watershed Flow Aggregation</a>
 article.</p>
-<p><img src="figures/screenshot_select_mainstem.png"></p>
+<p><img src="figures%2Fscreenshot_select_mainstem.png"></p>
 <p>The duration analysis for the mainstem is based on the nearest
 streamgage to the point that was clicked, but can be updated by
 selecting a different streamgage on the map.</p>
@@ -250,11 +250,11 @@ selecting a different streamgage on the map.</p>
 outlet, unless a different streamgage has a better reporting time
 period. Historical flow data used in the calculation are always scaled
 to the outlet of the mainstem.</p>
-<p><img src="figures/screenshot_duration_mainstem.png"></p>
+<p><img src="figures%2Fscreenshot_duration_mainstem.png"></p>
 <p>Viewing results for a watershed works exactly the same way as for a
 mainstem, except that habitat area totals include habitat area on
 delineated tributaries in addition to the mainstem.</p>
-<p><img src="figures/screenshot_select_watershed.png"></p>
+<p><img src="figures%2Fscreenshot_select_watershed.png"></p>
 </div>
   </div>
 
@@ -268,12 +268,12 @@ delineated tributaries in addition to the mainstem.</p>
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Maddee Rubenson, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
+<p>Developed by Maddee Wiggins, <a href="mailto:slewis@flowwest.com">Skyler Lewis</a>.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>

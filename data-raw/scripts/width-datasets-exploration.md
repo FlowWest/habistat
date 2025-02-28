@@ -1,6 +1,6 @@
 Channel Width Datasets
 ================
-Maddee Rubenson (FlowWest)
+Maddee Wiggins (FlowWest)
 2024-02-07
 
 ## River Channel Width Dataset Exploration

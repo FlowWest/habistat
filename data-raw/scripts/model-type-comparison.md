@@ -1,6 +1,6 @@
 Model Comparison
 ================
-Maddee Rubenson (FlowWest)
+Maddee Wiggins (FlowWest)
 2024-09-05
 
 The purpose of this markdown is to explore the different model methods
