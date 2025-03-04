@@ -103,7 +103,7 @@
 <a href="mailto:mrubenson@flowwest.com">Maddee Wiggins</a> &amp; <a href="slewis@flowwest.com">Skyler Lewis</a>
 </h4>
             
-            <h4 data-toc-skip class="date">2025-02-28</h4>
+            <h4 data-toc-skip class="date">2025-03-04</h4>
       
 
       <div class="hidden name"><code>duration_analysis.Rmd</code></div>
@@ -134,15 +134,15 @@ inundating flow for a given grid cell. (For raster models, this can be
 calculated using the <a href="../reference/raster_first_inundating_flow.html"><code>raster_first_inundating_flow</code></a>
 function in habistat.) This example is shown for the Deer Creek
 hydraulic model:</p>
-<p><img src="figures%2Fduration_deer_fif.png"></p>
+<p><img src="figures/duration_deer_fif.png"></p>
 <p>Given a hydrograph for a particular water year, a relationship can be
 derived between flow and the number of contiguous days in a water year
 at which that flow is exceeded. This method is implemented in the
 habistat function <a href="../reference/duration_calc_days_inundated.html"><code>duration_calc_days_inundated</code></a>.</p>
-<p><img src="figures%2Fduration_example_2_rating_curve.png"></p>
+<p><img src="figures/duration_example_2_rating_curve.png"></p>
 <p>Combining the previous two steps, a spatial map of inundation
 duration can be created for this particular water year.</p>
-<p><img src="figures%2Fduration_deer_max.png"></p>
+<p><img src="figures/duration_deer_max.png"></p>
 <p>These duration values can then be used, in the same manner as depth
 and velocity, to calculate a habitat suitability index at each model
 grid cell.</p>
@@ -158,7 +158,7 @@ hydrology.</p>
 applying inundation duration criteria to an already generated
 flow-to-suitable-area curve, approximating a duration-weighted
 estimate:</p>
-<p><img src="figures%2Fflowchart_duration.png"></p>
+<p><img src="figures/flowchart_duration.png"></p>
 <div class="section level4">
 <h4 id="input-flow-to-suitable-area-curve">Input flow-to-suitable-area curve<a class="anchor" aria-label="anchor" href="#input-flow-to-suitable-area-curve"></a>
 </h4>
@@ -316,7 +316,7 @@ flow-to-inundation-duration curve to produce a flow-to-suitable-area
 curve that has been scaled down using the duration criteria. The
 following figure illustrates the process, which is implemented in the
 habistat function <a href="../reference/duration_apply_dhsi_to_fsa_curve.html"><code>duration_apply_dhsi_to_fsa_curve</code></a>.</p>
-<p><img src="figures%2Fflowchart_duration_detail.png"></p>
+<p><img src="figures/flowchart_duration_detail.png"></p>
 <p>We assume that as we look at increasing flows (on the x axis), the
 marginal new habitat being added at each additional flow corresponds to
 area being newly inundated at that flow. This is a simplification that
@@ -335,7 +335,7 @@ less-than-optimal duration lengths. The scaled curve will be less than
 or equal to the original curve at each flow, but will never exceed
 it.</p>
 <div class="float">
-<img src="figures%2Fduration_plot_example.png" alt="Example duration analysis plot for ComID 7972411"><div class="figcaption">Example duration analysis plot for ComID
+<img src="figures/duration_plot_example.png" alt="Example duration analysis plot for ComID 7972411"><div class="figcaption">Example duration analysis plot for ComID
 7972411</div>
 </div>
 </div>
@@ -373,7 +373,7 @@ hatch around 12 weeks after fertilization.” <a href="https://www.fws.gov/sites
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
