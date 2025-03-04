@@ -1,6 +1,6 @@
 ---
 title: "Statistical Model Development, Training, and Prediction"
-author: "[Maddee Wiggins](mailto:mrubenson@flowwest.com) & [Skyler Lewis](slewis@flowwest.com)"
+author: "[Maddee Wiggins](mailto:mrubenson@flowwest.com) & [Skyler Lewis](mailto:slewis@flowwest.com)"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:

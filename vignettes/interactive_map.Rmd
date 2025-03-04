@@ -1,6 +1,6 @@
 ---
 title: "Interactive Map User Guide"
-author: "[Skyler Lewis](slewis@flowwest.com)"
+author: "[Skyler Lewis](mailto:slewis@flowwest.com)"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
