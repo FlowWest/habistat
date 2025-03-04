@@ -1,4 +1,4 @@
-# habistat
+# HabiStat
 
 <!-- rebuild logo using pkgdown::build_favicons(overwrite=T) -->
 

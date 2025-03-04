@@ -4,7 +4,8 @@ Title: HabiStat
 Version: 0.1.0
 Author: FlowWest, Trout Unlimited
 Authors@R: c(person("Maddee", "Wiggins", email = "mrubenson@flowwest.com", role = c("aut", "pdr")), person("Skyler", "Lewis", email = "slewis@flowwest.com", role = c("aut", "cre")))
-Description: Description here
+Description: HabiStat uses previously-developed 2D hydraulic models and river-specific geospatial characteristics to predict flow-to-suitable habitat area relationships for Chinook salmon rearing and spawning across California's Sacramento-San Joaquin Basin. 
+URL: http://flowwest.github.io/habistat
 License: MIT
 Encoding: UTF-8
 LazyData: true

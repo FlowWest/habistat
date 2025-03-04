@@ -2,6 +2,10 @@
 #  bootstrap: 5
 #  bootswatch: cosmo
 #  bootswatch: sandstone
+url: http://flowwest.github.io/habistat
+home:
+  title: HabiStat
+  description: Statistically modeled habitat suitability for Chinook salmon rearing and spawning in California's Sacramento-San Joaquin Basin
 authors:
   Skyler Lewis:
     href: mailto:slewis@flowwest.com
