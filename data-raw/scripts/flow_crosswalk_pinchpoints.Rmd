@@ -1,0 +1,369 @@
+---
+title: "Flow Crosswalk Pinchpoints"
+author: "[Skyler Lewis](mailto:slewis@flowwest.com)"
+date: "`r Sys.Date()`"
+output: 
+  github_document:
+    toc: true
+    toc_depth: 4
+    number_sections: false
+    math_method:
+      engine: webtex
+      url: https://latex.codecogs.com/svg.image?
+---
+
+```{r setup}
+library(tidyverse)
+library(sf)
+library(habistat)
+library(patchwork)
+theme_set(theme_minimal() + theme(panel.grid.minor = element_blank()))
+glimpse_plot <- function(x, ...) {
+  plot(x, ...)
+  invisible(x)
+}
+knitr::opts_chunk$set(fig.width=6.5, fig.height=4, dpi=300)
+```
+
+```{r}
+# Water type indices from  https://cdec.water.ca.gov/reportapp/javareports?name=WSIHIST
+water_year_types <- read_csv(here::here("data-raw", "source", "water_year_type", "water_year_type.csv")) |>
+  mutate(wy_type = factor(wy_type, 
+                          levels=c("C", "D", "BN", "N", "AN", "W"), 
+                          labels=c("Critical", "Dry", "Below Normal", "Normal", "Above Normal", "Wet"))) |>
+  mutate(wy_group = factor(case_when(wy_type %in% c("Critical","Dry") ~ "Dry", 
+                                     wy_type %in% c("Below Normal", "Normal", "Above Normal") ~ "Normal", 
+                                     wy_type %in% c("Wet") ~ "Wet")))
+
+wy_lookup <- water_year_types |>
+  group_by(water_year) |>
+  summarize(combined_index = sum(wy_index)) |>
+  mutate(combined_class = 
+           case_when(combined_index >= ((9.2 + 3.8)) ~ "Wet",
+                     combined_index >= ((7.8 + 3.1)) ~ "Above Normal",
+                     combined_index >= ((6.5 + 2.5)) ~ "Below Normal",
+                     combined_index >= ((5.4 + 2.1)) ~ "Dry",
+                     TRUE ~ "Critical") |> factor(levels = c("Wet", "Above Normal", "Below Normal", "Dry", "Critical"))) |>
+  mutate(wy_group = factor(case_when(combined_class %in% c("Critical","Dry") ~ "Dry", 
+                                     combined_class %in% c("Below Normal", "Above Normal") ~ "Normal", 
+                                     combined_class %in% c("Wet") ~ "Wet"), levels = c("Dry", "Normal", "Wet"))) |>
+  select(-combined_index)
+
+wy_lookup
+```
+
+```{r import-sensors, eval=TRUE, echo=TRUE, include=FALSE, message=FALSE, warning=FALSE}
+# Import manually listed stations of interest and query CDEC sensors
+
+cdec_station_sensor_list_filename <- here::here("data-raw", "source", "gages_cdec", "cdec_station_sensor_list.Rds")
+
+if(!file.exists(cdec_station_sensor_list_filename)){
+  
+  cdec_station_sensor_list <- 
+    river_basins |>
+      filter(selected) |>
+      mutate(stations = map(river_basin, possibly(function(x) {
+        CDECRetrieve::cdec_stations(river_basin = x) |> 
+          select(-river_basin, -elevation) # dropping elev, CDECRetrieve issue
+        }, otherwise = NA))) |> 
+      unnest(stations) |>
+      mutate(datasets = map(station_id, possibly(function(x) {
+        CDECRetrieve::cdec_datasets(station = x)
+        }, otherwise = NA))) |>
+      unnest(datasets)
+  
+  cdec_station_sensor_list |> saveRDS(cdec_station_sensor_list_filename)
+  
+} else {
+  
+  cdec_station_sensor_list <- readRDS(cdec_station_sensor_list_filename)
+  
+}
+
+# Create station and station*sensor data frames
+
+selected_sensors <- c(20, 41, 110, 23)
+
+cdec_station_sensors <- 
+  cdec_station_sensor_list |> 
+  mutate(min_wy = year(start %m+% months(3)),
+         max_wy = year(end %m+% months(3))) |>
+  filter(sensor_number %in% selected_sensors) |>
+  st_as_sf(coords = c("longitude", "latitude"), crs="EPSG:4269") |>
+  st_transform("EPSG:3310")
+
+cdec_stations <- cdec_station_sensors |>
+  group_by(station_id, name, county, operator) |> # also summarize list of sensors included
+  summarize(sensors = list(unique(sensor_number))) |>
+  st_union(by_feature = TRUE) 
+
+dir.create(here::here("data-raw", "temp"))
+
+cdec_stations_geom <- cdec_stations |> 
+  mutate(sensors = map_chr(sensors, function(x) paste(x, collapse=", "))) |>
+  st_write(here::here("data-raw", "temp", "cdec_stations.shp"), append=FALSE)
+
+# Add manually delineated mainstem identifiers from CSV
+
+all_sections <- read_csv(here::here("data-raw", "source", "gages_cdec", "cdec_mainstem_stations.csv")) |>
+  janitor::clean_names() |>
+  arrange(section) |> pull(section) |> unique()
+
+manual_station_list <- 
+  read_csv(here::here("data-raw", "source", "gages_cdec", "cdec_mainstem_stations.csv")) |>
+  janitor::clean_names() |>
+  filter(!is.na(channel) & channel != "???") |>
+  #full_join(tibble(section = all_sections)) |> # add back sections with no stations
+  mutate(station_id = str_to_lower(station_id),
+         mainstem = TRUE,
+         section = factor(section, levels=unique(section))) # force order from CSV
+
+cdec_stations <- cdec_stations |>
+  left_join(manual_station_list, join_by(station_id == station_id)) |>
+  mutate(mainstem = coalesce(mainstem, FALSE))
+
+cdec_station_sensors <- cdec_station_sensors |>
+  left_join(manual_station_list, join_by(station_id == station_id)) |>
+  mutate(mainstem = coalesce(mainstem, FALSE))
+```
+
+```{r}
+# select daily where available, otherwise hourly/event
+cdec_station_sensors_selected <- cdec_station_sensors |>
+  st_drop_geometry() |>
+  group_by(station_id) |> #, sensor_number) |>
+  summarize(durations = list(duration)) |>
+  mutate(has_daily = map_lgl(durations, function(L) "daily" %in% L),
+         has_hourly = map_lgl(durations, function(L) "hourly" %in% L),
+         has_event = map_lgl(durations, function(L) "event" %in% L)) |>
+  transmute(station_id,# sensor_number, 
+            duration = case_when(has_daily ~ "daily",
+                                 has_hourly ~ "hourly", 
+                                 has_event ~ "event")) |>
+  inner_join(st_drop_geometry(cdec_station_sensors))
+
+cdec_queries <-
+  cdec_station_sensors_selected |>
+    st_drop_geometry() |>
+    filter(!is.na(section))
+
+cdec_filenames <-
+    cdec_queries |>
+    mutate(filename = pmap(list(station_id, 
+                              sensor_number, 
+                              case_when(duration=="event"~"E",
+                                        duration=="hourly"~"H",
+                                        duration=="daily"~"D",
+                                        duration=="monthly"~"M"),
+                              start, end),
+      #function(sta,sen,dur,start,end) count_obs_by_wy(retrieve_cdec_csv(sta,sen,dur,start,end)))) |>
+      function(sta,sen,dur,start,end) habistat::cdec_csv_retrieve(sta,sen,dur,start,end,dir=here::here("data-raw", "temp"))))
+      #cdec_csv_retrieve_safe))
+
+cdec_filenames |> saveRDS(here::here("data-raw", "temp", "cdec_filenames.Rds"))
+```
+
+```{r}
+safe_cdec_csv_parse <- possibly(cdec_csv_parse, tibble(value=numeric(0)))
+
+streamgage_median_monthly_flow <- 
+  cdec_filenames |>
+  mutate(result = map(filename, \(x) cdec_csv_parse(x) |> 
+                        mutate(value = as.numeric(value),
+                               value = if_else(value >= 0, value, NA),
+                               date_time = as.POSIXct(date_time),
+                               ))) |>
+  unnest(result) |>
+  inner_join(wy_lookup, by=join_by(water_year)) |>
+  mutate(wy_month = factor(month(date_time),
+                           levels = c(seq(10, 12), seq(1, 9)))) |>
+  group_by(station_id, wy_group, wy_month) |>
+  summarize(median_flow_cfs = median(value, na.rm=T), .groups="drop") |>
+  inner_join(habistat::streamgage_da_attr |> select(station_id, gage_comid)) 
+
+safe_habitat_predict <- possibly(habistat::habitat_predict, NA)
+
+streamgage_median_monthly_habitat <- 
+  streamgage_median_monthly_flow |>
+  group_by(station_id, gage_comid) |>
+  mutate(hab_ft2_per_lf = safe_habitat_predict(median_flow_cfs, 
+                                               reach = first(gage_comid),
+                                               units = "ft")) |>
+  ungroup()
+
+# median_flow_crosswalk <-
+#   with(streamgage_median_monthly_habitat,
+#        expand_grid(base_station_id = unique(station_id),
+#                    wy_group = unique(wy_group),
+#                    wy_month = unique(wy_month),
+#                    comp_station_id = unique(station_id))) |>
+#     inner_join(median_by_month_wytype |> 
+#                  rename(base_median_flow_cfs = median_flow_cfs,
+#                         base_hab_ft2_per_lf = hab_ft2_per_lf), 
+#                by = join_by(base_station_id == station_id, wy_group, wy_month)) |>
+#     inner_join(median_by_month_wytype |> 
+#                  rename(comp_median_flow_cfs = median_flow_cfs,
+#                             comp_hab_ft2_per_lf = hab_ft2_per_lf), 
+#              by = join_by(comp_station_id == station_id, wy_group, wy_month))
+
+streamgage_median_monthly_habitat |>
+  ggplot() +
+  facet_grid(cols = vars(wy_group)) +
+  geom_line(aes(y = hab_ft2_per_lf, x = wy_month, color = station_id, group = station_id)) +
+  labs(x = "Month of Water Year",
+       y = "Suitable Habitat Area (ft2/ft) at Median Flow") +
+  theme(legend.position = "none")
+```
+
+```{r}
+streamgages_and_outlets <- 
+  habistat::streamgage_da_attr |>
+  inner_join(habistat::cv_mainstems_flow_xw, 
+             by = join_by(gage_comid == comid)) 
+  # transmute(station_id, 
+  #           gage_comid, 
+  #           outlet_comid, 
+  #           gage_to_outlet_factor = (da_outlet / da_gage) * (pc_outlet / pc_gage))
+#  flow multiplier to convert gage flow to outlet flow
+
+streamgages_and_outlets
+```
+
+```{r}
+tabulate_mainstem_habitat_acres <- function(selected_station) {
+  
+  # get attributes of selected station
+  station_comid <- habistat::streamgage_da_attr$gage_comid[[which(habistat::streamgage_da_attr$station_id==selected_station)]]
+  selected_mainstem <- habistat::cv_mainstems_flow_xw$river_cvpia[[which(habistat::cv_mainstems_flow_xw$comid == station_comid)]]
+  
+  # pull filtered versions of data frames
+  selected_gage_xw <- habistat::cv_mainstems_flow_xw |> filter(comid == station_comid) |> as.list()
+  mainstem_xw <- habistat::cv_mainstems_flow_xw |> filter(river_cvpia == selected_mainstem)
+  
+  # scale up median flow from the gage to the outlet using drainage area and precipitation
+  median_flow_by_month_wyt <- 
+    streamgage_median_monthly_flow |> 
+    filter(station_id == selected_station) |>
+    mutate(median_flow_at_ds_outlet = median_flow_cfs / selected_gage_xw$multiplier)
+  
+  # scale outlet flow to each comid using the DA/precip multiplier and use this to get a precip
+  habitat_acres_by_comid <- 
+    expand_grid(mainstem_xw, median_flow_by_month_wyt) |>
+    mutate(corresponding_flow_at_comid = median_flow_at_ds_outlet * multiplier) |>
+    group_by(station_id, gage_comid) |>
+    mutate(hab_ac = safe_habitat_predict(median_flow_cfs, 
+                                         reach = first(gage_comid),
+                                         units = "ac")) |>
+    ungroup() 
+  
+  habitat_acres_by_comid |>
+    group_by(river_cvpia, station_id, wy_group, wy_month, median_flow_cfs, median_flow_at_ds_outlet) |>
+    summarize(tot_hab_ac = sum(hab_ac, na.rm=T), .groups="drop")
+
+}
+
+tabulate_mainstem_habitat_acres <- possibly(tabulate_mainstem_habitat_acres, otherwise=NA)
+
+tabulate_mainstem_habitat_acres("afo")
+
+```
+
+
+
+```{r}
+mainstem_median_monthly_habitat <-
+  streamgages_and_outlets |>
+  mutate(result = map(station_id, tabulate_mainstem_habitat_acres)) |>
+  ungroup() |>
+  select(-river_cvpia, -station_id) |>
+  unnest(result)
+```
+
+```{r}
+mainstem_median_monthly_habitat |>
+  drop_na() |>
+  ggplot() +
+  facet_grid(cols = vars(wy_group)) +
+  geom_line(aes(y = tot_hab_ac, x = wy_month, color = paste(river_cvpia, station_id), group = station_id)) +
+  labs(x = "Month of Water Year",
+       y = "Suitable Habitat Area (acres) at Median Flow") +
+  theme(legend.position = "none")
+```
+
+
+```{r}
+# version that uses the nearest streamgage
+
+tabulate_mainstem_habitat_acres_2 <- function(selected_mainstem) {
+  
+  # pull filtered versions of data frames
+  mainstem_xw <- habistat::cv_mainstems_flow_xw |> filter(river_cvpia == selected_mainstem)
+  mainstem_gage_xw <- habistat::streamgage_da_attr |>
+    inner_join(habistat::cv_mainstems_flow_xw, 
+             by = join_by(gage_comid == comid)) |>
+    filter(river_cvpia == selected_mainstem)
+  
+  # assign each comid to the first gage upstream of it
+  mainstem_gage_xw_nearest_gage <-
+    mainstem_xw |>
+    left_join(mainstem_gage_xw |>
+                transmute(station_id, gage_comid, da_gage, pc_gage, gage_multiplier = multiplier) %>%
+                bind_rows(. |> filter(da_gage == min(da_gage)) |> mutate(da_gage = 0)),
+              by = join_by(closest(da_reach >= da_gage)))
+  
+  # scale up median flow from the gage to the outlet using drainage area and precipitation
+  median_flow_by_month_wyt <- 
+    streamgage_median_monthly_flow |> 
+    filter(station_id %in% mainstem_gage_xw$station_id) |>
+    mutate(median_flow_at_ds_outlet = median_flow_cfs / selected_gage_xw$multiplier)
+  
+  # scale outlet flow to each comid using the DA/precip multiplier and use this to get a precip
+  habitat_acres_by_comid <- 
+    full_join(mainstem_gage_xw_nearest_gage, 
+              median_flow_by_month_wyt, 
+              by=join_by(station_id, gage_comid),
+              relationship="many-to-many") |>
+    mutate(corresponding_flow_at_comid = median_flow_at_ds_outlet * multiplier) |>
+    group_by(station_id, gage_comid) |>
+    mutate(hab_ac = safe_habitat_predict(median_flow_cfs, 
+                                         reach = first(gage_comid),
+                                         units = "ac")) |>
+    ungroup() 
+  
+  habitat_acres_by_comid |>
+    group_by(river_cvpia, wy_group, wy_month) |>
+    summarize(tot_hab_ac = sum(hab_ac, na.rm=T), .groups="drop") |>
+    drop_na()
+
+}
+
+tabulate_mainstem_habitat_acres_2 <- possibly(tabulate_mainstem_habitat_acres_2, otherwise=NA)
+
+tabulate_mainstem_habitat_acres_2("American River")
+```
+
+```{r}
+mainstem_median_monthly_habitat_2 <-
+  streamgages_and_outlets |>
+  mutate(result = map(river_cvpia, tabulate_mainstem_habitat_acres_2)) |>
+  ungroup() |>
+  unnest(result)
+```
+
+```{r}
+mainstem_median_monthly_habitat_2 |>
+  filter(str_detect(river_cvpia, "Feather River") 
+         | str_detect(river_cvpia, "Yuba River")
+         | str_detect(river_cvpia, "Bear River")) |>
+  ggplot() +
+  facet_grid(rows = vars(wy_group), scales="free_y", space="free_y") +
+  scale_y_continuous(breaks = scales::breaks_width(100)) +
+  geom_line(aes(y = tot_hab_ac, x = wy_month, color = river_cvpia, group = river_cvpia)) +
+  labs(x = "Month of Water Year",
+       y = "Suitable Habitat Area (acres) at Median Flow",
+       title = "Suitable Habitat Area, Feather River and Tributaries",
+       subtitle = "HabiStat Suitability * Median Monthly Flow on Nearest CDEC Streamgage") +
+  scale_color_brewer(palette="Paired", name="Mainstem")
+```
+
+
