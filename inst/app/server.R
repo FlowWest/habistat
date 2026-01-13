@@ -105,7 +105,7 @@ function(input, output, session){
   })
 
   active_geom <- reactive({
-    geom |>
+    g <- geom |>
       inner_join(active_predictions(),
                  by = join_by(comid)) |>
       mutate(wua_per_lf = !!sym(input$wua_var)) |>
@@ -120,6 +120,13 @@ function(input, output, session){
                                    #"Scale-Normalized Model (post-model baseflow removal): ",
                                    #round(wua_per_lf_pred_SN_ph_bfc_rm,2), " ft2/ft", "<br />",
                                    "Actual: ", round(wua_per_lf_actual,2), " ft2/ft"))
+
+    if (is.null(g) || nrow(g) == 0) {
+      return(base_geom[0, , drop = FALSE])
+      } else {
+        return(g)
+      }
+
   })
 
   active_geom_mainstem <- reactive({
@@ -381,10 +388,14 @@ function(input, output, session){
 
     if(type == "comid") {
     if(show) {
-      # pal_limits <- c(min(active_geom()$wua_per_lf), max(active_geom()$wua_per_lf))
-      message("plotting ", nrow(active_geom()), " flowlines")
-      #m |> leafgl::addGlPolylines(data = active_geom(),layerId = ~object_id)
-      m |> leaflet::addPolylines(data = active_geom(), # TODO switch to leafgl::addGlPolylines
+      geom <- active_geom()
+      if (!inherits(geom, "sf") || nrow(geom) == 0) {
+        message("Skipping flowline rendering: no active geometries")
+        return(m)
+      }
+      # pal_limits <- c(min(geom$wua_per_lf), max(geom$wua_per_lf))
+      message("plotting ", nrow(geom), " flowlines")
+      m |> leaflet::addPolylines(data = geom, # TODO switch to leafgl::addGlPolylines
                                  layerId = ~object_id,
                                  label = ~lapply(object_label, htmltools::HTML),
                                  color = ~pal(wua_per_lf, type=input$habitat_type), #pal(wua_per_lf),
@@ -404,15 +415,26 @@ function(input, output, session){
                            labels = lapply(rev(flow_scale_breaks[[input$habitat_type]]), htmltools::HTML),
                            title = "Suitable Habitat Area (ft2) per linear ft",
                            layerId = "clegend")
+
       } else {
-        m |> leaflet::removeShape(active_geom()$object_id) |> leaflet::removeControl("clegend")
+
+        if (exists("geom") && inherits(geom, "sf") && nrow(geom) > 0) {
+          m |> leaflet::removeShape(geom$object_id) |>  leaflet::removeControl("clegend")
+          } else {
+            return(m)
+            }
         # TODO switch to leaflet::removeGlPolylines
       }
     } else if (type == "mainstem") {
     if(show) {
-      pal_limits <- c(min(active_geom_mainstem()$wua_per_lf), max(active_geom_mainstem()$wua_per_lf))
-      message("plotting ", nrow(active_geom_mainstem()), " flowlines")
-      m |> leaflet::addPolylines(data = active_geom_mainstem(),
+      geom <- active_geom_mainstem()
+      if (!inherits(geom, "sf") || nrow(geom) == 0) {
+        message("Skipping flowline rendering: no active geometries")
+        return(m)
+      }
+      message("plotting ", nrow(geom), " flowlines")
+      pal_limits <- c(min(geom$wua_per_lf), max(geom$wua_per_lf))
+      m |> leaflet::addPolylines(data = geom,
                                  layerId = ~mainstem_id,
                                  label = ~lapply(object_label, htmltools::HTML),
                                  color = ~pal(wua_per_lf, type=input$habitat_type), #pal(wua_per_lf),
@@ -433,12 +455,22 @@ function(input, output, session){
                            title = "Suitable Habitat Area (ft2) per linear ft",
                            layerId = "clegend")
     } else {
-        m |> leaflet::removeShape(active_geom_mainstem()$object_id) |> leaflet::removeControl("clegend")
+
+      if (exists("geom") && inherits(geom, "sf") && nrow(geom) > 0) {
+          m |> leaflet::removeShape(geom$object_id) |>  leaflet::removeControl("clegend")
+          } else {
+            return(m)
+            }
       }
     } else if (type == "watershed") {
       if(show) {
-        message("plotting ", nrow(active_geom_watershed()), " watersheds")
-        m |>  leaflet::addPolygons(data = active_geom_watershed(),
+        geom <- active_geom_watershed()
+        if (!inherits(geom, "sf") || nrow(geom) == 0) {
+          message("Skipping watershed rendering: no active geometries")
+          return(m)
+        }
+        message("plotting ", nrow(geom), " watersheds")
+        m |>  leaflet::addPolygons(data = geom,
                                    stroke = T,
                                    weight = 3,
                                    color = "#FFFFFF",
@@ -475,10 +507,11 @@ function(input, output, session){
                              title = "Suitable Habitat Area (ft2) per linear ft",
                              layerId = "clegend")
       } else {
-        m |>
-          leaflet::removeShape(geom$object_id) |>
-          leaflet::removeShape(active_geom_watersheds()$watershed_id) |>
-          leaflet::removeControl("clegend")
+        if (exists("geom") && inherits(geom, "sf") && nrow(geom) > 0) {
+          m |> leaflet::removeShape(geom$object_id) |> leaflet::removeShape(geom$watershed_id) |>  leaflet::removeControl("clegend")
+          } else {
+            return(m)
+            }
       }
     }
   }
